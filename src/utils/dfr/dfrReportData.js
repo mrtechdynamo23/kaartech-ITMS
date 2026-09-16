@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Unified DFR Report Data Engine
+ * KaarTech ITMS Control Tower — Unified DFR Report Data Engine
  * Single Source of Truth for both Dashboard and PDF Export.
  * Calculates:
  *  - On Date, Current Month (MTD), Previous Month comparison matrices
@@ -63,10 +63,10 @@ export function formatTrendDay(date) {
  * Map an incident or SR to one of the 3 reporting categories:
  *  - 'support': Support Services (Service Desk, L1/L1.5, User Admin, Access, Helpdesk)
  *  - 'infra': Infrastructure (BASIS, Network, Server, DB, Hosting, Cloud Platform)
- *  - 'app': Application (SAP ERP, S/4HANA, Ariba, SF, Custom Apps, Business Domains)
+ *  - 'app': Application (SAP ERP, S/4HANA, Ariba, SF, Custom Apps, Service Domains)
  */
 export function getTicketCategory(ticket) {
-  const domain = ticket.businessDomain || '';
+  const domain = ticket.serviceDomain || '';
   const app = (ticket.application || '').toLowerCase();
   const category = (ticket.category || '').toLowerCase();
   const desc = (ticket.shortDescription || '').toLowerCase();
@@ -332,12 +332,12 @@ export function getDFRReportSnapshot(targetDateStr = '2026-07-31') {
   // ═══════════════════════════════════════════════════
   // SLA Alerts: approaching breach, sorted by timeLeftHrs ascending
   const slaAlertTickets = [
-    { ticketNo: 'INC0041615', assignedTo: 'Fahad Aldossary', timeLeftHrs: 8.7, priority: 'P2', domain: 'E2M' },
-    { ticketNo: 'INC0034172', assignedTo: 'Tamilvanan A', timeLeftHrs: 10.2, priority: 'P2', domain: 'L2C' },
-    { ticketNo: 'SCTASK001082', assignedTo: 'Mohsin Dhunware', timeLeftHrs: 8.3, priority: 'Standard', domain: 'P2P' },
-    { ticketNo: 'RITM0017442', assignedTo: 'Sohail Shaik', timeLeftHrs: 3.9, priority: 'Standard', domain: 'H2R' },
-    { ticketNo: 'INC0042284', assignedTo: 'Yuvaraj P', timeLeftHrs: 10.5, priority: 'P3', domain: 'S2P' },
-    { ticketNo: 'INC0043110', assignedTo: 'Layla Al Qassimi', timeLeftHrs: 11.2, priority: 'P3', domain: 'R2R' },
+    { ticketNo: 'INC0041615', assignedTo: 'Fahad Aldossary', timeLeftHrs: 8.7, priority: 'P2', serviceDomainId: 'TWR-06', serviceDomain: 'SAP ERP and SuccessFactors' },
+    { ticketNo: 'INC0034172', assignedTo: 'Tamilvanan A', timeLeftHrs: 10.2, priority: 'P2', serviceDomainId: 'TWR-06', serviceDomain: 'SAP ERP and SuccessFactors' },
+    { ticketNo: 'SCTASK001082', assignedTo: 'Mohsin Dhunware', timeLeftHrs: 8.3, priority: 'Standard', serviceDomainId: 'TWR-03', serviceDomain: 'Applications, Digital, and Integration' },
+    { ticketNo: 'RITM0017442', assignedTo: 'Sohail Shaik', timeLeftHrs: 3.9, priority: 'Standard', serviceDomainId: 'TWR-01', serviceDomain: 'IT Helpdesk & End User Services' },
+    { ticketNo: 'INC0042284', assignedTo: 'Yuvaraj P', timeLeftHrs: 10.5, priority: 'P3', serviceDomainId: 'TWR-06', serviceDomain: 'SAP ERP and SuccessFactors' },
+    { ticketNo: 'INC0043110', assignedTo: 'Layla Al Qassimi', timeLeftHrs: 11.2, priority: 'P3', serviceDomainId: 'TWR-04', serviceDomain: 'Data, Analytics, AI, and Automation' },
   ].sort((a, b) => a.timeLeftHrs - b.timeLeftHrs);
 
   // Breached Tickets: tickets that have breached SLA with Extra Hours

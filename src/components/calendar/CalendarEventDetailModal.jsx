@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Global Calendar Event Detail Modal
+﻿/**
+ * KaarTech ITMS Control Tower — Global Calendar Event Detail Modal
  * Centered modal dialog displaying complete operational context and direct navigation to originating module.
  */
 import React, { useEffect } from 'react';
@@ -112,11 +112,11 @@ export default function CalendarEventDetailModal({
               </div>
             )}
 
-            {/* Business Domain */}
-            {event.relatedBusinessDomain && (
+            {/* Service Domain */}
+            {event.relatedServiceDomain && (
               <div className="cal-modal-field">
-                <span className="cal-field-label"><Tag size={13} /> Business Domain</span>
-                <span className="cal-field-value">{event.relatedBusinessDomain}</span>
+                <span className="cal-field-label"><Tag size={13} /> Service Domain</span>
+                <span className="cal-field-value">{event.relatedServiceDomain}</span>
               </div>
             )}
 

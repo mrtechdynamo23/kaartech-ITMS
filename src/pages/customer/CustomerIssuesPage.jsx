@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Escalated Issues & VIP Watchlist
+ * KaarTech ITMS Control Tower — Escalated Issues & VIP Watchlist
  * Route: /customer/issues
  * Sections 11–15: Functional "View Action Plan" modal, traceability, and resolution tracking.
  */
@@ -17,8 +17,8 @@ export default function CustomerIssuesPage() {
   const [issues, setIssues] = useState([
     {
       id: 'ESC-001',
-      entity: 'NIMR',
-      title: 'Defense procurement workflow delay on GTS export validation',
+      entity: 'KaarTech Heavy Mobility',
+      title: 'Enterprise procurement workflow delay on GTS export validation',
       severity: 'High',
       status: 'In Triage',
       owner: 'Ravi Shankar',
@@ -50,7 +50,7 @@ export default function CustomerIssuesPage() {
     },
     {
       id: 'ESC-002',
-      entity: 'EDGE HQ',
+      entity: 'KaarTech HQ',
       title: 'Executive Boardroom SAC connectivity latency during board session',
       severity: 'Critical',
       status: 'Resolved',
@@ -63,7 +63,7 @@ export default function CustomerIssuesPage() {
       actionPlan: [
         {
           id: 'ACT-ESC-03',
-          action: 'Reroute dedicated fiber path from Al Ain datacenter to Executive Boardroom SAC hub',
+          action: 'Reroute dedicated fiber path from Jeddah datacenter to Executive Boardroom SAC hub',
           owner: 'Deepak Kumar',
           targetDate: '2026-09-02',
           status: 'Completed',
@@ -81,8 +81,8 @@ export default function CustomerIssuesPage() {
     },
     {
       id: 'ESC-003',
-      entity: 'CARACAL',
-      title: 'Small arms serialization barcode scan failures on export batch',
+      entity: 'KaarTech Precision Works',
+      title: 'Precision component serialization barcode scan failures on export batch',
       severity: 'High',
       status: 'In Triage',
       owner: 'Tariq Al Dhaheri',
@@ -113,8 +113,8 @@ export default function CustomerIssuesPage() {
     },
     {
       id: 'ESC-004',
-      entity: 'ADASI',
-      title: 'UAV flight telemetry log sync latency inquiry from Defense SteerCom',
+      entity: 'KaarTech Autonomous Systems',
+      title: 'Fleet telemetry log sync latency inquiry from Executive SteerCom',
       severity: 'Medium',
       status: 'In Triage',
       owner: 'Noura Al Shamsi',
@@ -159,7 +159,7 @@ export default function CustomerIssuesPage() {
             {criticalCount > 0 && <span className="badge badge-error">{criticalCount} Critical VIP</span>}
           </div>
           <p className="page-subtitle">
-            Track priority stakeholder escalations, executive inquiries, and expedited remediation action plans across EDGE entities.
+            Track priority stakeholder escalations, executive inquiries, and expedited remediation action plans across enterprise operating entities.
           </p>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function CustomerIssuesPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary, #FF5622)' }}>
+                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary, #6B1D2A)' }}>
                     {iss.id}
                   </span>
                   <span className="badge badge-neutral">{iss.entity}</span>
@@ -231,7 +231,7 @@ export default function CustomerIssuesPage() {
                   <span>Escalation Owner: <strong style={{ color: 'var(--text-primary)' }}>{iss.owner}</strong></span>
                   <span>Open: <strong>{iss.daysOpen} days</strong></span>
                   {iss.relatedTicket && <span>Ticket: <strong style={{ color: 'var(--text-secondary)' }}>{iss.relatedTicket}</strong></span>}
-                  {iss.relatedFinding && <span>Finding: <strong style={{ color: 'var(--edge-primary, #FF5622)' }}>{iss.relatedFinding}</strong></span>}
+                  {iss.relatedFinding && <span>Finding: <strong style={{ color: 'var(--brand-primary, #6B1D2A)' }}>{iss.relatedFinding}</strong></span>}
                 </div>
               </div>
 

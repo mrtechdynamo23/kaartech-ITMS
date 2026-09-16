@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Centered Action Plan Modal
+ * KaarTech ITMS Control Tower — Centered Action Plan Modal
  * Sections 11–15: Escalated Issues / VIP Watchlist Action Plan
  * Shows escalation context, remediation action items, traceability, and interactive completion.
  */
@@ -90,8 +90,8 @@ export default function ActionPlanModal({
                 width: '32px',
                 height: '32px',
                 borderRadius: '8px',
-                background: 'rgba(255, 86, 34, 0.12)',
-                color: 'var(--edge-primary, #FF5622)',
+                background: 'rgba(107, 29, 42, 0.12)',
+                color: 'var(--brand-primary, #6B1D2A)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -108,11 +108,11 @@ export default function ActionPlanModal({
                   style={{
                     fontSize: '11px',
                     fontWeight: 800,
-                    color: 'var(--edge-primary, #FF5622)',
-                    background: 'rgba(255, 86, 34, 0.08)',
+                    color: 'var(--brand-primary, #6B1D2A)',
+                    background: 'rgba(107, 29, 42, 0.08)',
                     padding: '2px 7px',
                     borderRadius: 'var(--radius-sm)',
-                    border: '1px solid rgba(255, 86, 34, 0.2)',
+                    border: '1px solid rgba(107, 29, 42, 0.2)',
                   }}
                 >
                   {escalation.id}
@@ -151,7 +151,7 @@ export default function ActionPlanModal({
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                  <span className="badge badge-neutral">{escalation.entity || 'EDGE Group'}</span>
+                  <span className="badge badge-neutral">{escalation.entity || 'KaarTech Group'}</span>
                   <PriorityBadge priority={escalation.severity || escalation.priority || 'High'} size="sm" />
                   <StatusBadge status={escalation.status || 'In Triage'} size="sm" />
                 </div>
@@ -207,7 +207,7 @@ export default function ActionPlanModal({
                     style={{ cursor: onNavigateToRecord ? 'pointer' : 'default', display: 'flex', alignItems: 'center', gap: '4px' }}
                   >
                     <LinkIcon size={10} />
-                    <span>Finding: <strong style={{ color: 'var(--edge-primary, #FF5622)' }}>{escalation.relatedFinding}</strong></span>
+                    <span>Finding: <strong style={{ color: 'var(--brand-primary, #6B1D2A)' }}>{escalation.relatedFinding}</strong></span>
                   </button>
                 )}
                 {escalation.relatedTask && (
@@ -387,6 +387,7 @@ export default function ActionPlanModal({
 
         {/* Footer */}
         <div
+          className="modal-form-sticky-footer"
           style={{
             padding: '14px 24px',
             borderTop: '1px solid var(--border-primary)',
@@ -394,6 +395,7 @@ export default function ActionPlanModal({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-end',
+            flexShrink: 0,
           }}
         >
           <button

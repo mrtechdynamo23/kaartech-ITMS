@@ -1,10 +1,10 @@
-/**
- * EDGE AMS Control Tower — Document-Oriented Knowledge Base Repository
+﻿/**
+ * KaarTech ITMS Control Tower — Document-Oriented Knowledge Base Repository
  * Route: /service-operation/knowledge
  *
  * Implements full document repository per Head Feedback requirement:
  * - Predefined knowledge documents across FAQ, User Manual, Operational Guide, Troubleshooting, SOP, Reference
- * - Filterable by Business Stream (L2C, E2M, P2P, D2S, S2P, A2D, R2R, H2R)
+ * - Filterable by Service Domain (L2C, E2M, P2P, D2S, S2P, A2D, R2R, H2R)
  * - Filterable by Document Type, Application, Status, and Search
  * - Structured table/list view with rich metadata
  * - Centered detail inspection modal with procedure steps, summaries, and linked tickets
@@ -21,7 +21,7 @@ import KnowledgeDocumentModal from '../../components/operation/KnowledgeDocument
 import {
   knowledgeDocuments,
   KNOWLEDGE_DOCUMENT_TYPES,
-  KNOWLEDGE_BUSINESS_STREAMS
+  KNOWLEDGE_SERVICE_DOMAINS
 } from '../../data/knowledgeDocumentsData';
 
 export default function KnowledgeBasePage() {
@@ -55,8 +55,8 @@ export default function KnowledgeBasePage() {
   // Filter evaluation
   const filteredDocuments = useMemo(() => {
     return knowledgeDocuments.filter(doc => {
-      // Business Stream filter
-      if (streamFilter !== 'All' && doc.businessStream !== streamFilter) return false;
+      // Service Domain filter
+      if (streamFilter !== 'All' && doc.serviceDomain !== streamFilter) return false;
 
       // Document Type filter
       if (typeFilter !== 'All' && doc.docType !== typeFilter) return false;
@@ -130,8 +130,8 @@ export default function KnowledgeBasePage() {
       },
     },
     {
-      key: 'businessStream',
-      label: 'Business Stream',
+      key: 'serviceDomain',
+      label: 'Service Domain',
       width: '130px',
       render: (v) => (
         <span
@@ -141,9 +141,9 @@ export default function KnowledgeBasePage() {
             fontWeight: 700,
             padding: '2px 8px',
             borderRadius: '4px',
-            background: 'rgba(255, 86, 34, 0.12)',
-            color: 'var(--edge-primary)',
-            border: '1px solid rgba(255, 86, 34, 0.28)',
+            background: 'rgba(107, 29, 42, 0.12)',
+            color: 'var(--brand-primary)',
+            border: '1px solid rgba(107, 29, 42, 0.28)',
           }}
         >
           {v}
@@ -205,7 +205,7 @@ export default function KnowledgeBasePage() {
           style={{
             padding: '12px 16px',
             background: 'var(--bg-card)',
-            border: typeFilter === 'All' ? '2px solid var(--edge-primary)' : '1.5px solid var(--border-primary)',
+            border: typeFilter === 'All' ? '2px solid var(--brand-primary)' : '1.5px solid var(--border-primary)',
             borderRadius: 'var(--radius-md)',
             cursor: 'pointer',
           }}
@@ -217,7 +217,7 @@ export default function KnowledgeBasePage() {
             {quickCounts.total}
           </div>
           <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)' }}>
-            Across 8 Business Streams
+            Across 8 Service Domains
           </div>
         </div>
 
@@ -249,7 +249,7 @@ export default function KnowledgeBasePage() {
           style={{
             padding: '12px 16px',
             background: 'var(--bg-card)',
-            border: typeFilter === 'User Manual' ? '2px solid var(--edge-primary)' : '1.5px solid var(--border-primary)',
+            border: typeFilter === 'User Manual' ? '2px solid var(--brand-primary)' : '1.5px solid var(--border-primary)',
             borderRadius: 'var(--radius-md)',
             cursor: 'pointer',
           }}
@@ -257,7 +257,7 @@ export default function KnowledgeBasePage() {
           <div style={{ fontSize: '0.6875rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
             User Manuals
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--edge-primary)', marginTop: 2 }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--brand-primary)', marginTop: 2 }}>
             {quickCounts.manuals}
           </div>
           <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)' }}>
@@ -348,7 +348,7 @@ export default function KnowledgeBasePage() {
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Filter size={15} style={{ color: 'var(--edge-primary)' }} />
+            <Filter size={15} style={{ color: 'var(--brand-primary)' }} />
             <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Knowledge Filtering Engine
             </span>
@@ -363,7 +363,7 @@ export default function KnowledgeBasePage() {
                 type="button"
                 onClick={resetFilters}
                 className="btn btn-ghost btn-sm"
-                style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--edge-primary)', fontSize: '0.75rem' }}
+                style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--brand-primary)', fontSize: '0.75rem' }}
               >
                 <RotateCcw size={13} /> Reset Filters
               </button>
@@ -397,18 +397,18 @@ export default function KnowledgeBasePage() {
             />
           </div>
 
-          {/* Primary Business Stream Filter (Mandatory requirement) */}
+          {/* Primary Service Domain Filter (Mandatory requirement) */}
           <div>
             <label style={{ display: 'block', fontSize: '0.6875rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 3, textTransform: 'uppercase' }}>
-              Business Stream
+              Service Domain
             </label>
             <select
               value={streamFilter}
               onChange={(e) => setStreamFilter(e.target.value)}
               style={{ width: '100%', padding: '7px 10px', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-xs)', fontWeight: 600 }}
             >
-              <option value="All">All Business Streams</option>
-              {KNOWLEDGE_BUSINESS_STREAMS.map(s => (
+              <option value="All">All Service Domains</option>
+              {KNOWLEDGE_SERVICE_DOMAINS.map(s => (
                 <option key={s.key} value={s.key}>{s.label}</option>
               ))}
             </select>
@@ -472,7 +472,7 @@ export default function KnowledgeBasePage() {
         columns={columns}
         data={filteredDocuments}
         onRowClick={(item) => setSelectedDoc(item)}
-        exportFilename="edge-knowledge-documents.csv"
+        exportFilename="itms-knowledge-documents.csv"
       />
 
       {/* ─── CENTERED DETAIL MODAL ─── */}

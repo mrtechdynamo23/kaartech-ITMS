@@ -1,9 +1,9 @@
 /**
- * EDGE AMS Control Tower — Organization Structure Stylesheet
+ * KaarTech ITMS Control Tower — Organization Structure Stylesheet
  * 
  * Implements Sections 5, 6, 7, 8, 32, 33, 36, 37, 39 of specifications:
  * - Premium aerospace/defence control tower aesthetic
- * - Intelligent use of EDGE orange (#FF5622) for focus, selection, brand highlights
+ * - Intelligent use of KaarTech maroon (#6B1D2A) for focus, selection, brand highlights
  * - High-contrast node surfaces, subtle borders, restrained transitions
  * - Dark mode primary + robust light mode + RTL Arabic support
  * - True flexbox-centered modals immune to transform/animation offsets
@@ -53,7 +53,7 @@
 
 .hover-card:hover {
   background: var(--bg-hover) !important;
-  border-color: rgba(255, 86, 34, 0.4) !important;
+  border-color: rgba(107, 29, 42, 0.4) !important;
 }
 
 .hover-row:hover {
@@ -67,9 +67,9 @@
 }
 
 .org-node-interactive.resource-node:hover {
-  border-color: var(--edge-primary) !important;
+  border-color: var(--brand-primary) !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 86, 34, 0.2) !important;
+  box-shadow: 0 6px 16px rgba(107, 29, 42, 0.2) !important;
 }
 
 [data-theme="light"] .org-node-interactive.resource-node {
@@ -78,8 +78,8 @@
 }
 
 [data-theme="light"] .org-node-interactive.resource-node:hover {
-  border-color: var(--edge-primary) !important;
-  box-shadow: 0 6px 18px rgba(255, 86, 34, 0.22) !important;
+  border-color: var(--brand-primary) !important;
+  box-shadow: 0 6px 18px rgba(107, 29, 42, 0.22) !important;
 }
 
 /* ── True Centered Modal Architecture ── */
@@ -124,19 +124,36 @@
 }
 
 /* ── Canvas Floating Controls ── */
+.canvas-floating-controls {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="light"] .canvas-floating-controls {
+  background: #FFFFFF !important;
+  border: 1.5px solid #CBD5E1 !important;
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.12) !important;
+}
+
 .canvas-control-btn {
   border-radius: var(--radius-sm);
-  transition: background 0.15s ease, color 0.15s ease;
+  border: 1px solid var(--border-primary) !important;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  transition: all 0.15s ease;
 }
 
 .canvas-control-btn:hover {
-  background: var(--bg-hover) !important;
-  color: var(--edge-primary) !important;
+  background: rgba(107, 29, 42, 0.05) !important;
+  color: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
 }
 
 .canvas-control-btn.active {
-  background: var(--edge-primary) !important;
+  background: var(--brand-primary) !important;
   color: #FFFFFF !important;
+  border-color: var(--brand-primary) !important;
 }
 
 /* ── Grid Flow Mode for Canvas ── */
@@ -227,9 +244,9 @@
   text-align: center;
   white-space: nowrap;
   border-radius: 999px;
-  background: rgba(255, 86, 34, 0.12);
-  color: var(--edge-primary, #FF5622);
-  border: 1px solid rgba(255, 86, 34, 0.32);
+  background: rgba(107, 29, 42, 0.12);
+  color: var(--brand-primary, #6B1D2A);
+  border: 1px solid rgba(107, 29, 42, 0.32);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
   cursor: pointer;
@@ -239,14 +256,14 @@
 }
 
 .member-change-badge:hover {
-  background: rgba(255, 86, 34, 0.22);
-  border-color: var(--edge-primary, #FF5622);
+  background: rgba(107, 29, 42, 0.22);
+  border-color: var(--brand-primary, #6B1D2A);
   transform: scale(1.06);
-  box-shadow: 0 2px 6px rgba(255, 86, 34, 0.25);
+  box-shadow: 0 2px 6px rgba(107, 29, 42, 0.25);
 }
 
 .member-change-badge:focus-visible {
-  outline: 2px solid var(--edge-primary, #FF5622);
+  outline: 2px solid var(--brand-primary, #6B1D2A);
   outline-offset: 1px;
 }
 

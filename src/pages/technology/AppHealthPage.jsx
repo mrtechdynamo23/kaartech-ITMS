@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Application Health & APM
+ * KaarTech ITMS Control Tower — Application Health & APM
  * Route: /technology/application-health
  */
 import React from 'react';
@@ -10,9 +10,9 @@ export default function AppHealthPage() {
   const telemetry = [
     { app: 'SAP S/4HANA 2025', uptime: '99.99%', latency: '112ms', cpu: '42%', ram: '68%', status: 'Healthy', errorRate: '0.01%', host: 'On-Premises Private Cloud' },
     { app: 'SAP SuccessFactors HXM', uptime: '99.95%', latency: '145ms', cpu: 'N/A (SaaS)', ram: 'N/A', status: 'Healthy', errorRate: '0.02%', host: 'SAP Cloud Europe' },
-    { app: 'SAP BTP Integration Suite', uptime: '100.0%', latency: '88ms', cpu: '38%', ram: '54%', status: 'Healthy', errorRate: '0.00%', host: 'SAP Cloud (UAE)' },
+    { app: 'SAP BTP Integration Suite', uptime: '100.0%', latency: '88ms', cpu: '38%', ram: '54%', status: 'Healthy', errorRate: '0.00%', host: 'SAP Cloud (Saudi Dammam)' },
     { app: 'SAP Ariba Sourcing', uptime: '99.92%', latency: '160ms', cpu: 'N/A (SaaS)', ram: 'N/A', status: 'Healthy', errorRate: '0.03%', host: 'SAP Cloud Europe' },
-    { app: 'Microsoft Dynamics 365', uptime: '99.98%', latency: '120ms', cpu: 'N/A (SaaS)', ram: 'N/A', status: 'Healthy', errorRate: '0.01%', host: 'Azure UAE North' },
+    { app: 'Microsoft Dynamics 365', uptime: '99.98%', latency: '120ms', cpu: 'N/A (SaaS)', ram: 'N/A', status: 'Healthy', errorRate: '0.01%', host: 'Azure Saudi Arabia Central (Riyadh)' },
     { app: 'SAP BW/4HANA & BPC', uptime: '99.94%', latency: '185ms', cpu: '56%', ram: '74%', status: 'Healthy', errorRate: '0.02%', host: 'On-Premises Private Cloud' },
     { app: 'Opentext xECM Platform', uptime: '99.90%', latency: '140ms', cpu: '34%', ram: '60%', status: 'Healthy', errorRate: '0.01%', host: 'On-Premises Private Cloud' },
     { app: 'SAP MES / MII (Plant Floor)', uptime: '99.99%', latency: '45ms', cpu: '48%', ram: '62%', status: 'Healthy', errorRate: '0.00%', host: 'Plant Edge Servers' },

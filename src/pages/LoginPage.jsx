@@ -1,9 +1,9 @@
 /**
- * EDGE AMS Control Tower — Login Page
+ * KaarTech ITMS Control Tower — Login Page
  * Route: /login
  * 
  * Simple, premium, corporate login.
- * Left: EDGE identity / restrained technical visual language
+ * Left: KaarTech ITMS identity / restrained technical visual language
  * Right: Authentication card
  * Motion: Restrained (Section 9)
  * Demo credentials: centralized in AuthContext (Section 10)
@@ -52,14 +52,14 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      {/* ── Left Panel: EDGE Identity with Defense Atmosphere ── */}
+      {/* ── Left Panel: KaarTech ITMS Identity ── */}
       <div className="login-left">
         {/* Sleek tech atmosphere gradient mask */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(circle at 20% 30%, rgba(255, 86, 34, 0.07) 0%, transparent 60%)',
+            background: 'radial-gradient(circle at 20% 30%, rgba(107, 29, 42, 0.07) 0%, transparent 60%)',
           }}
         />
         {/* Gradient dark mask */}
@@ -77,40 +77,40 @@ export default function LoginPage() {
             <svg viewBox="0 0 800 800" className="login-pattern-svg">
               <defs>
                 <linearGradient id="gridGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FF5622" stopOpacity="0.08" />
-                  <stop offset="100%" stopColor="#FF5622" stopOpacity="0.02" />
+                  <stop offset="0%" stopColor="#6B1D2A" stopOpacity="0.08" />
+                  <stop offset="100%" stopColor="#6B1D2A" stopOpacity="0.02" />
                 </linearGradient>
               </defs>
               {[...Array(12)].map((_, i) => (
-                <line key={`h${i}`} x1="0" y1={i * 70} x2="800" y2={i * 70} stroke="#FF5622" strokeOpacity="0.08" strokeWidth="0.5" />
+                <line key={`h${i}`} x1="0" y1={i * 70} x2="800" y2={i * 70} stroke="#6B1D2A" strokeOpacity="0.08" strokeWidth="0.5" />
               ))}
               {[...Array(12)].map((_, i) => (
-                <line key={`v${i}`} x1={i * 70} y1="0" x2={i * 70} y2="800" stroke="#FF5622" strokeOpacity="0.08" strokeWidth="0.5" />
+                <line key={`v${i}`} x1={i * 70} y1="0" x2={i * 70} y2="800" stroke="#6B1D2A" strokeOpacity="0.08" strokeWidth="0.5" />
               ))}
               {/* Connection nodes */}
               {[{x:140,y:210},{x:350,y:140},{x:560,y:280},{x:280,y:420},{x:490,y:490},{x:210,y:560},{x:420,y:350},{x:630,y:420}].map((pt, i) => (
                 <React.Fragment key={`n${i}`}>
-                  <circle cx={pt.x} cy={pt.y} r="3" fill="#FF5622" opacity="0.6" />
-                  <circle cx={pt.x} cy={pt.y} r="8" fill="none" stroke="#FF5622" strokeOpacity="0.3" strokeWidth="0.75" />
+                  <circle cx={pt.x} cy={pt.y} r="3" fill="#6B1D2A" opacity="0.6" />
+                  <circle cx={pt.x} cy={pt.y} r="8" fill="none" stroke="#6B1D2A" strokeOpacity="0.3" strokeWidth="0.75" />
                 </React.Fragment>
               ))}
               {/* Connection lines */}
-              <polyline points="140,210 350,140 560,280 420,350" fill="none" stroke="#FF5622" strokeOpacity="0.18" strokeWidth="0.75" />
-              <polyline points="280,420 490,490 630,420 420,350" fill="none" stroke="#FF5622" strokeOpacity="0.18" strokeWidth="0.75" />
-              <line x1="350" y1="140" x2="420" y2="350" stroke="#FF5622" strokeOpacity="0.14" strokeWidth="0.75" />
-              <line x1="280" y1="420" x2="210" y2="560" stroke="#FF5622" strokeOpacity="0.14" strokeWidth="0.75" />
+              <polyline points="140,210 350,140 560,280 420,350" fill="none" stroke="#6B1D2A" strokeOpacity="0.18" strokeWidth="0.75" />
+              <polyline points="280,420 490,490 630,420 420,350" fill="none" stroke="#6B1D2A" strokeOpacity="0.18" strokeWidth="0.75" />
+              <line x1="350" y1="140" x2="420" y2="350" stroke="#6B1D2A" strokeOpacity="0.14" strokeWidth="0.75" />
+              <line x1="280" y1="420" x2="210" y2="560" stroke="#6B1D2A" strokeOpacity="0.14" strokeWidth="0.75" />
             </svg>
           </div>
 
           <div className="login-brand">
             <div
-              className="login-edge-logo"
+              className="login-brand-logo-card"
               style={{
                 background: 'rgba(255, 255, 255, 0.98)',
                 padding: '10px 24px',
                 borderRadius: '10px',
                 boxShadow: '0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.15)',
-                borderTop: '3px solid #FF5622',
+                borderTop: '3px solid #6B1D2A',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -125,7 +125,7 @@ export default function LoginPage() {
             </div>
             <div className="login-brand-text">
               <span className="login-brand-ams">
-                AMS CONTROL TOWER
+                ITMS Control Tower
               </span>
             </div>
           </div>
@@ -136,14 +136,14 @@ export default function LoginPage() {
             <p className="login-left-sub">Operational Intelligence Platform • AMS Landscape</p>
           </div>
 
-          {/* Defense telemetry capability highlights */}
+          {/* Enterprise telemetry capability highlights */}
           <div className="login-left-highlights">
             <div className="login-highlight-pill">
-              <Shield size={13} style={{ color: '#FF5622' }} />
+              <Shield size={13} style={{ color: '#6B1D2A' }} />
               <span>Enterprise Grade SLA 99.9%</span>
             </div>
             <div className="login-highlight-pill">
-              <Lock size={13} style={{ color: '#FF5622' }} />
+              <Lock size={13} style={{ color: '#6B1D2A' }} />
               <span>ISO 20000 / 27001 Certified</span>
             </div>
             <div className="login-highlight-pill">
@@ -156,7 +156,7 @@ export default function LoginPage() {
             <div className="login-env-badge">
               <span className="login-live-dot" />
               <Shield size={13} />
-              <span>{t('auth.amsEnvironment') || 'AMS OPERATIONS ENVIRONMENT'}</span>
+              <span>{t('auth.amsEnvironment') || 'ITMS OPERATIONS ENVIRONMENT'}</span>
             </div>
           </div>
         </div>
@@ -277,7 +277,7 @@ export default function LoginPage() {
         </div>
 
         <div className="login-right-footer">
-          <span>© 2026 AMS Control Tower. All rights reserved.</span>
+          <span>© 2026 ITMS Control Tower. All rights reserved.</span>
         </div>
       </div>
     </div>

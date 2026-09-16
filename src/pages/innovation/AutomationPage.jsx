@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Automation Hub & Bots
+﻿/**
+ * KaarTech ITMS Control Tower — Automation Hub & Bots
  * Route: /service-innovation/automation
  * Automation delivery pipeline: Idea → Assessment → Approved → Build → Pilot → Live (Section 31).
  */
@@ -23,7 +23,7 @@ export default function AutomationPage() {
     { stage: 'Idea', count: 8, color: '#71777C', desc: 'Identified opportunity in backlog' },
     { stage: 'Assessment', count: 5, color: '#2563EB', desc: 'Feasibility & ROI calculation' },
     { stage: 'Approved', count: 4, color: '#7C3AED', desc: 'SteerCom signed off for build' },
-    { stage: 'Build', count: 3, color: '#FF5622', desc: 'Active bot development in sprint' },
+    { stage: 'Build', count: 3, color: '#6B1D2A', desc: 'Active bot development in sprint' },
     { stage: 'Pilot', count: 2, color: '#D97706', desc: 'Entity UAT & dry-run testing' },
     { stage: 'Live (24/7)', count: 4, color: '#0D9F6E', desc: 'Autonomous production execution' },
   ];

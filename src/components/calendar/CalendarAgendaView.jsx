@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Global Calendar Agenda View
+﻿/**
+ * KaarTech ITMS Control Tower — Global Calendar Agenda View
  * Chronological operational agenda list grouped by date, with first-class MOM and Action highlights.
  * Clean titles, no redundant prefixes, separate light and dark mode theme tokens.
  */

@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Production DFR PDF Exporter
+﻿/**
+ * KaarTech ITMS Control Tower — Production DFR PDF Exporter
  * Generates an executive-ready 2-page landscape A4 PDF matching DFR Format(1).pdf.
  */
 
@@ -33,9 +33,9 @@ export async function exportDfrToPdf(targetDateOrSnapshot = '2026-07-31') {
     doc.setProperties({
       title: `Daily Flash Report (DFR) - ${snapshot.formattedDate}`,
       subject: 'Daily Flash Report',
-      author: 'AMS Control Tower',
-      keywords: 'DFR, AMS Control Tower, Daily Flash Report, Service Requests, Incidents, SLA',
-      creator: 'AMS Control Tower PDF Engine',
+      author: 'ITMS Control Tower',
+      keywords: 'DFR, ITMS Control Tower, Daily Flash Report, Service Requests, Incidents, SLA',
+      creator: 'ITMS Control Tower PDF Engine',
     });
 
     // 4. Render Page 1 (Header, Comparison Tables, SR Donut, SR Trend, SLA Alert)
@@ -95,9 +95,9 @@ export async function generateDfrPdfDocument(targetDateOrSnapshot = '2026-07-31'
   doc.setProperties({
     title: `Daily Flash Report (DFR) - ${snapshot.formattedDate}`,
     subject: 'Daily Flash Report',
-    author: 'AMS Control Tower',
-    keywords: 'DFR, AMS Control Tower, Daily Flash Report, Service Requests, Incidents, SLA',
-    creator: 'AMS Control Tower PDF Engine',
+    author: 'ITMS Control Tower',
+    keywords: 'DFR, ITMS Control Tower, Daily Flash Report, Service Requests, Incidents, SLA',
+    creator: 'ITMS Control Tower PDF Engine',
   });
 
   renderPage1(doc, snapshot);

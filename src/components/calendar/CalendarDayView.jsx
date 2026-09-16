@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Global Calendar Day View
+﻿/**
+ * KaarTech ITMS Control Tower — Global Calendar Day View
  * Focused single-day operational timeline with hourly scheduling and rich event cards.
  * Uses semantic CSS classes with separate light and dark mode theme tokens.
  */

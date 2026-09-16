@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Transition Governance
+ * KaarTech ITMS Control Tower — Transition Governance
  * Route: /governance/transition
  * 4-Phase Transition Framework and Domain KT Sign-off Matrix.
  */
@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { GitBranch, CheckCircle2, Clock, ShieldCheck, UserCheck, ArrowRight, Plus, X } from 'lucide-react';
 import KPICard from '../../components/common/KPICard';
-import { BUSINESS_DOMAINS } from '../../data/masterData';
+import { SERVICE_DOMAINS } from '../../data/serviceDomains';
 
 export default function TransitionPage() {
   const transitionPhases = [
@@ -17,9 +17,9 @@ export default function TransitionPage() {
     { phase: 'Phase 4', name: 'Reverse Shadow & Steady State', progress: 96, status: 'Active Go-Live', date: 'In Progress' },
   ];
 
-  const initialDomainReadiness = BUSINESS_DOMAINS.map((d, idx) => ({
-    domain: d.key,
-    label: d.label,
+  const initialDomainReadiness = SERVICE_DOMAINS.map((d, idx) => ({
+    domain: d.id,
+    label: d.name,
     ktScore: 95 + (idx % 5),
     sopCount: 14 + (idx * 3),
     shadowHours: 120 + (idx * 15),
@@ -31,7 +31,7 @@ export default function TransitionPage() {
   const [successBanner, setSuccessBanner] = useState(null);
 
   // Form State
-  const [signOffDomain, setSignOffDomain] = useState('S2P');
+  const [signOffDomain, setSignOffDomain] = useState(SERVICE_DOMAINS[0].id);
   const [ktScore, setKtScore] = useState(98);
   const [sopCount, setSopCount] = useState(28);
   const [shadowHours, setShadowHours] = useState(160);
@@ -139,13 +139,13 @@ export default function TransitionPage() {
         {transitionPhases.map((p, idx) => (
           <div key={idx} className="chart-card" style={{ padding: '18px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary)', textTransform: 'uppercase' }}>{p.phase}</span>
+              <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary)', textTransform: 'uppercase' }}>{p.phase}</span>
               <span className={`badge ${p.status === 'Completed' ? 'badge-success' : 'badge-primary'}`}>{p.status}</span>
             </div>
             <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 12px' }}>{p.name}</h3>
 
             <div style={{ height: '6px', width: '100%', background: 'var(--bg-tertiary)', borderRadius: '3px', overflow: 'hidden', marginBottom: '8px' }}>
-              <div style={{ height: '100%', width: `${p.progress}%`, background: p.progress === 100 ? 'var(--color-emerald)' : 'var(--edge-primary)', borderRadius: '3px' }} />
+              <div style={{ height: '100%', width: `${p.progress}%`, background: p.progress === 100 ? 'var(--color-emerald)' : 'var(--brand-primary)', borderRadius: '3px' }} />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-tertiary)' }}>
               <span>Completion:</span>
@@ -157,13 +157,13 @@ export default function TransitionPage() {
 
       {/* Domain KT Sign-Off Matrix */}
       <div className="chart-card">
-        <h3 className="chart-card-title">Business Domain KT Sign-Off Matrix</h3>
+        <h3 className="chart-card-title">Service Domain KT Sign-Off Matrix</h3>
         <div style={{ overflowX: 'auto' }}>
           <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--text-sm)' }}>
             <thead>
               <tr style={{ background: 'var(--bg-tertiary)' }}>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>Domain Code</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left' }}>Business Domain</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left' }}>Service Domain</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>KT Assessment Score</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>Validated SOPs</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>Shadowing Hours</th>
@@ -173,8 +173,8 @@ export default function TransitionPage() {
             <tbody>
               {domainReadiness.map(d => (
                 <tr key={d.domain} style={{ borderBottom: '1px solid var(--border-secondary)' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: 700, color: 'var(--edge-primary)' }}>{d.domain}</td>
-                  <td style={{ padding: '12px 16px', color: 'var(--text-primary)' }}>{d.label}</td>
+                  <td style={{ padding: '12px 16px', fontWeight: 700, color: 'var(--brand-primary)' }}>{d.domain}</td>
+                  <td style={{ padding: '12px 16px', color: 'var(--text-primary)' }}>{d.name}</td>
                   <td style={{ padding: '12px 16px' }}>
                     <span style={{ color: 'var(--color-emerald)', fontWeight: 700 }}>{d.ktScore}%</span>
                   </td>
@@ -220,8 +220,8 @@ export default function TransitionPage() {
               boxShadow: 'var(--shadow-2xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25))',
               maxWidth: '640px',
               width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              maxHeight: '88vh',
+              overflow: 'hidden',
               margin: 'auto',
               alignSelf: 'center',
               display: 'flex',
@@ -239,10 +239,11 @@ export default function TransitionPage() {
               justifyContent: 'space-between',
               background: 'var(--bg-secondary, #f8fafc)',
               borderRadius: '16px 16px 0 0',
+              flexShrink: 0,
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <UserCheck size={18} color="var(--edge-primary, #FF5622)" />
+                  <UserCheck size={18} color="var(--brand-primary, #6B1D2A)" />
                   <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                     Record Domain KT Sign-off
                   </h3>
@@ -261,11 +262,12 @@ export default function TransitionPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleRecordSignOff} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleRecordSignOff} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+              <div className="modal-form-scrollable-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                    Business Domain
+                    Service Domain
                   </label>
                   <select
                     value={signOffDomain}
@@ -281,7 +283,7 @@ export default function TransitionPage() {
                     }}
                   >
                     {domainReadiness.map(d => (
-                      <option key={d.domain} value={d.domain}>{d.domain} - {d.label}</option>
+                      <option key={d.domain} value={d.domain}>{d.domain} — {d.label}</option>
                     ))}
                   </select>
                 </div>
@@ -416,16 +418,10 @@ export default function TransitionPage() {
                   }}
                 />
               </div>
+              </div>
 
-              {/* Action Buttons */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                marginTop: '12px',
-                paddingTop: '16px',
-                borderTop: '1px solid var(--border-primary, #e2e8f0)',
-              }}>
+              {/* Action Buttons — Sticky Footer */}
+              <div className="modal-form-sticky-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"

@@ -1,7 +1,7 @@
 /**
- * EDGE AMS Control Tower — Programs & Transformation
+ * KaarTech ITMS Control Tower — Programs & Transformation
  * Route: /governance/programs
- * AdvantEDGE enterprise transformation programs and milestone health.
+ * KaarTech Enterprise enterprise transformation programs and milestone health.
  */
 import React, { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
@@ -12,9 +12,9 @@ export default function ProgramsPage() {
   const initialPrograms = [
     {
       id: 'PRG-001',
-      name: 'AdvantEDGE S/4HANA 2025 Wave 3 Rollout',
-      lead: 'Fatima Al Zaabi',
-      entities: 'HALCON, NIMR, LAHAB, EPI',
+      name: 'KaarTech Enterprise S/4HANA 2025 Wave 3 Rollout',
+      lead: 'Fatima Al-Otaibi',
+      entities: 'KaarTech Advanced Manufacturing, Heavy Mobility, Materials Technology',
       progress: 88,
       status: 'On Track',
       targetGoLive: 'Q4 2026',
@@ -43,7 +43,7 @@ export default function ProgramsPage() {
       id: 'PRG-003',
       name: 'Ariba Guided Sourcing & Vendor Integration',
       lead: 'Noura Al Shamsi',
-      entities: 'ADASI, Al Tariq, Beacon Red, Oryx Labs',
+      entities: 'KaarTech Autonomous Systems, Precision Systems, Consulting Services, Intelligence Labs',
       progress: 72,
       status: 'Needs Attention',
       targetGoLive: 'Q1 2027',
@@ -62,7 +62,7 @@ export default function ProgramsPage() {
   // Form State
   const [programName, setProgramName] = useState('');
   const [programLead, setProgramLead] = useState('Mariam Al Nuaimi');
-  const [programEntities, setProgramEntities] = useState('CARACAL, NIMR, JAHEZIYA');
+  const [programEntities, setProgramEntities] = useState('KaarTech Precision Works, Heavy Mobility, Defense Systems');
   const [targetGoLive, setTargetGoLive] = useState('Q2 2027');
   const [progressPct, setProgressPct] = useState(25);
   const [programStatus, setProgramStatus] = useState('On Track');
@@ -106,7 +106,7 @@ export default function ProgramsPage() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <h1 className="page-title">Programs & Transformation Governance</h1>
-            <span className="badge badge-primary">AdvantEDGE Roadmap</span>
+            <span className="badge badge-primary">KaarTech Enterprise Roadmap</span>
           </div>
           <p className="page-subtitle">Track strategic enterprise modernization programs, stage-gate deliverables, and multi-entity wave rollouts.</p>
         </div>
@@ -177,7 +177,7 @@ export default function ProgramsPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary)' }}>{prg.id}</span>
+                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary)' }}>{prg.id}</span>
                   <span className={`badge ${prg.status === 'On Track' ? 'badge-success' : 'badge-warning'}`}>{prg.status}</span>
                 </div>
                 <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{prg.name}</h3>
@@ -249,8 +249,8 @@ export default function ProgramsPage() {
               boxShadow: 'var(--shadow-2xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25))',
               maxWidth: '640px',
               width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              maxHeight: '88vh',
+              overflow: 'hidden',
               margin: 'auto',
               alignSelf: 'center',
               display: 'flex',
@@ -268,10 +268,11 @@ export default function ProgramsPage() {
               justifyContent: 'space-between',
               background: 'var(--bg-secondary, #f8fafc)',
               borderRadius: '16px 16px 0 0',
+              flexShrink: 0,
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <Milestone size={18} color="var(--edge-primary, #FF5622)" />
+                  <Milestone size={18} color="var(--brand-primary, #6B1D2A)" />
                   <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                     New Transformation Program
                   </h3>
@@ -290,7 +291,8 @@ export default function ProgramsPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleCreateProgram} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleCreateProgram} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+              <div className="modal-form-scrollable-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
                   Program Name & Core Objective *
@@ -418,16 +420,10 @@ export default function ProgramsPage() {
                   }}
                 />
               </div>
+              </div>
 
-              {/* Action Buttons */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                marginTop: '12px',
-                paddingTop: '16px',
-                borderTop: '1px solid var(--border-primary, #e2e8f0)',
-              }}>
+              {/* Action Buttons — Sticky Footer */}
+              <div className="modal-form-sticky-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"

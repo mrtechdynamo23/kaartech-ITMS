@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Global Calendar Types & Semantic Theme Tokens
+ * KaarTech ITMS Control Tower — Global Calendar Types & Semantic Theme Tokens
  * Enterprise AMS palette with separate Light Mode and Dark Mode tokens.
  * Single source of truth mapping for all 15 operational event categories.
  */
@@ -32,7 +32,7 @@ export const VIEW_MODES = {
 /**
  * Enterprise Semantic Color Configurations
  * Restrained tints, subtle borders, high-contrast dark text in light mode,
- * clean readable text in dark mode. EDGE orange (#FF5622) is reserved for brand/primary action ONLY.
+ * clean readable text in dark mode. KaarTech Maroon (#6B1D2A) is reserved for brand/primary action ONLY.
  */
 export const EVENT_TYPE_CONFIG = {
   [EVENT_TYPES.MEETING]: {
@@ -177,7 +177,7 @@ export const EVENT_TYPE_CONFIG = {
     dotColor: '#1D4ED8', // Deep Blue
     badgeClass: 'badge-primary',
     sourceModule: 'SLA Management',
-    sourceRoute: '/sla/contract',
+    sourceRoute: '/sla-governance',
   },
   [EVENT_TYPES.CUSTOMER_MEETING]: {
     key: EVENT_TYPES.CUSTOMER_MEETING,

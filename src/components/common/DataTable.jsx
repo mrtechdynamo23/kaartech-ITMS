@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Enterprise DataTable Component
+ * KaarTech ITMS Control Tower — Enterprise DataTable Component
  * Features: Sorting, Search, Pagination, Column Visibility, CSV Export,
  * Row Selection, Custom Cell Renderers, Row Click Drilldown, Responsive.
  */
@@ -154,12 +154,12 @@ export default function DataTable({
       }
     }
     if (col.type === 'currency' && typeof val === 'number') {
-      return `AED ${val.toLocaleString()}`;
+      return `SAR ${val.toLocaleString()}`;
     }
 
     if (col.key === 'id' && typeof val === 'string' && val.startsWith('AUD-')) {
       return (
-        <span style={{ color: 'var(--edge-primary, #FF5622)', fontWeight: 700, letterSpacing: '0.02em' }}>
+        <span style={{ color: 'var(--brand-primary, #6B1D2A)', fontWeight: 700, letterSpacing: '0.02em' }}>
           {val}
         </span>
       );
@@ -230,7 +230,7 @@ export default function DataTable({
                     }}
                   >
                     <span>{col.label}</span>
-                    {visibleColumns.includes(col.key) && <Check size={14} style={{ color: 'var(--edge-primary)' }} />}
+                    {visibleColumns.includes(col.key) && <Check size={14} style={{ color: 'var(--brand-primary)' }} />}
                   </div>
                 ))}
               </div>
@@ -275,7 +275,7 @@ export default function DataTable({
                     style={{
                       padding: '12px 16px', textAlign: 'left', fontWeight: 600,
                       fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: '0.04em',
-                      color: isSorted ? 'var(--edge-primary)' : 'var(--text-secondary)',
+                      color: isSorted ? 'var(--brand-primary)' : 'var(--text-secondary)',
                       cursor: col.sortable !== false ? 'pointer' : 'default',
                       whiteSpace: 'nowrap', borderBottom: '1px solid var(--border-primary)',
                       width: col.width || 'auto',
@@ -323,7 +323,7 @@ export default function DataTable({
                     style={{
                       borderBottom: '1px solid var(--border-secondary)',
                       cursor: onRowClick ? 'pointer' : 'default',
-                      background: isSelected ? 'var(--edge-primary-light)' : undefined,
+                      background: isSelected ? 'var(--brand-primary-light)' : undefined,
                       transition: 'background 0.15s ease',
                     }}
                     className="data-table-row"
@@ -342,7 +342,7 @@ export default function DataTable({
                         key={col.key}
                         style={{
                           padding: '12px 16px',
-                          color: col.key === 'id' ? 'var(--edge-primary)' : 'var(--text-primary)',
+                          color: col.key === 'id' ? 'var(--brand-primary)' : 'var(--text-primary)',
                           fontWeight: col.key === 'id' ? 700 : 400,
                           fontSize: col.key === 'id' ? 'var(--text-xs)' : 'var(--text-sm)',
                           letterSpacing: col.key === 'id' ? '0.02em' : 'normal',

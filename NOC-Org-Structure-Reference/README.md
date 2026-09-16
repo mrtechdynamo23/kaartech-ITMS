@@ -1,4 +1,4 @@
-# NOC Org Structure Reference — EDGE AMS
+# NOC Org Structure Reference — KaarTech ITMS
 
 This bundle contains the NOC AMS implementation files relevant to the **Team / Organization Structure** experience, extracted from the NOC AMS Control Tower source.
 
@@ -19,9 +19,9 @@ This bundle contains the NOC AMS implementation files relevant to the **Team / O
 
 ## Important
 
-These files are provided as **read-only functional/reference material for EDGE AMS**.
+These files are provided as **read-only functional/reference material for KaarTech ITMS**.
 
-Do NOT copy NOC branding, NOC employee identities, NOC-specific business rules, or NOC-specific terminology into EDGE.
+Do NOT copy NOC branding, NOC employee identities, NOC-specific business rules, or NOC-specific terminology into KaarTech ITMS.
 
 Use them to understand:
 

@@ -1,32 +1,33 @@
 /**
- * EDGE AMS Control Tower — Contact & Escalation Matrix
+ * KaarTech ITMS Control Tower — Contact & Escalation Matrix
  * Route: /resources/contact
  * 24/7 On-call roster, emergency escalations, vendor support hotlines,
- * and complete EDGE Resource Master contact directory (Section 5).
+ * and complete Resource Master contact directory.
  */
 import React, { useState, useMemo } from 'react';
 import { Phone, Mail, ShieldAlert, Clock, AlertTriangle, ExternalLink, Search, Users, MapPin } from 'lucide-react';
 import { RESOURCES } from '../../data/demoData';
+import { SERVICE_DOMAINS } from '../../data/serviceDomains';
 
 export default function ContactMatrixPage() {
   const [search, setSearch] = useState('');
   const [domainFilter, setDomainFilter] = useState('all');
 
   const escalations = [
-    { level: 'Level 1: Operational Triage', time: 'Immediate (within 15m)', role: 'General Shift Lead / On-Call Specialist', contact: '+971-50-XXX-1001', email: 'ams.l1@kaartech.com', lead: 'Khalid Al Hashimi' },
-    { level: 'Level 2: Management Escalation', time: 'T + 1 Hour (P1/P2)', role: 'AMS Delivery Manager', contact: '+971-50-XXX-1002', email: 'ams.lead@kaartech.com', lead: 'Fatima Al Zaabi' },
-    { level: 'Level 3: Executive SteerCom', time: 'T + 2 Hours (Critical Outage)', role: 'Program Director', contact: '+971-50-XXX-0001', email: 'director.ams@kaartech.com', lead: 'Dr. Tariq Al Nuaimi' },
+    { level: 'Level 1: Operational Triage', time: 'Immediate (within 15m)', role: 'General Shift Lead / On-Call Specialist', contact: '+966-55-XXX-1001', email: 'ams.l1@kaartech.com', lead: 'Khalid Al Hashimi' },
+    { level: 'Level 2: Management Escalation', time: 'T + 1 Hour (P1/P2)', role: 'AMS Delivery Manager', contact: '+966-55-XXX-1002', email: 'ams.lead@kaartech.com', lead: 'Fatima Al-Otaibi' },
+    { level: 'Level 3: Executive SteerCom', time: 'T + 2 Hours (Critical Outage)', role: 'Program Director', contact: '+966-55-XXX-0001', email: 'director.ams@kaartech.com', lead: 'Dr. Tariq Al Nuaimi' },
   ];
 
   const vendorHotlines = [
-    { vendor: 'SAP SE', contract: 'SAP MaxAttention / Premium', hotline: '1-800-SAP-CARE (Abu Dhabi Hub)', ref: 'Enterprise Cust #8821092' },
-    { vendor: 'Microsoft', contract: 'Unified Enterprise Support', hotline: '800-MICROSOFT (Azure UAE)', ref: 'Enterprise Agreement #MS-9912' },
-    { vendor: 'Opentext', contract: 'Platinum Direct 24/7', hotline: '+971-4-XXX-8890', ref: 'Opentext Support PIN: 44219' },
+    { vendor: 'SAP SE', contract: 'SAP MaxAttention / Premium', hotline: '1-800-SAP-CARE (Riyadh Hub)', ref: 'Enterprise Cust #8821092' },
+    { vendor: 'Microsoft', contract: 'Unified Enterprise Support', hotline: '800-MICROSOFT (Azure KSA)', ref: 'Enterprise Agreement #MS-9912' },
+    { vendor: 'Opentext', contract: 'Platinum Direct 24/7', hotline: '+966-4-XXX-8890', ref: 'Opentext Support PIN: 44219' },
   ];
 
   const filteredResources = useMemo(() => {
     return RESOURCES.filter(r => {
-      if (domainFilter !== 'all' && r.businessDomain !== domainFilter) return false;
+      if (domainFilter !== 'all' && r.serviceDomain !== domainFilter) return false;
       if (search.trim()) {
         const q = search.toLowerCase();
         return (
@@ -63,7 +64,7 @@ export default function ContactMatrixPage() {
             <div key={idx} style={{ background: 'var(--bg-secondary)', padding: '16px 20px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary)', textTransform: 'uppercase' }}>{esc.level}</span>
+                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary)', textTransform: 'uppercase' }}>{esc.level}</span>
                   <span style={{ fontSize: '11px', background: 'var(--bg-tertiary)', padding: '2px 6px', borderRadius: '4px', color: 'var(--text-secondary)' }}>{esc.time}</span>
                 </div>
                 <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{esc.lead} — <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}>{esc.role}</span></div>
@@ -71,7 +72,7 @@ export default function ContactMatrixPage() {
 
               <div style={{ display: 'flex', gap: '16px', fontSize: 'var(--text-xs)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-primary)' }}>
-                  <Phone size={14} style={{ color: 'var(--edge-primary)' }} />
+                  <Phone size={14} style={{ color: 'var(--brand-primary)' }} />
                   <strong>{esc.contact}</strong>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
@@ -92,7 +93,7 @@ export default function ContactMatrixPage() {
             <div key={idx} style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)' }}>
               <div style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '2px' }}>{vh.vendor}</div>
               <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginBottom: '10px' }}>{vh.contract}</div>
-              <div style={{ fontSize: 'var(--text-xs)', color: 'var(--edge-primary)', fontWeight: 600, marginBottom: '4px' }}>
+              <div style={{ fontSize: 'var(--text-xs)', color: 'var(--brand-primary)', fontWeight: 600, marginBottom: '4px' }}>
                 Hotline: {vh.hotline}
               </div>
               <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{vh.ref}</div>
@@ -101,7 +102,7 @@ export default function ContactMatrixPage() {
         </div>
       </div>
 
-      {/* Complete EDGE Resource Master Contact Directory (Section 5) */}
+      {/* Complete Resource Master Contact Directory */}
       <div className="chart-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
           <div>
@@ -138,9 +139,9 @@ export default function ContactMatrixPage() {
                 color: 'var(--text-primary)'
               }}
             >
-              <option value="all">All Domains (8)</option>
-              {['L2C', 'E2M', 'P2P', 'D2S', 'S2P', 'A2D', 'R2R', 'H2R'].map(d => (
-                <option key={d} value={d}>{d}</option>
+              <option value="all">All Service Domains ({SERVICE_DOMAINS.length})</option>
+              {SERVICE_DOMAINS.map(d => (
+                <option key={d.id} value={d.name}>{d.name}</option>
               ))}
             </select>
           </div>
@@ -172,7 +173,7 @@ export default function ContactMatrixPage() {
                   onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-hover)'}
                   onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                 >
-                  <td style={{ padding: '10px 12px', fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--edge-primary)' }}>
+                  <td style={{ padding: '10px 12px', fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--brand-primary)' }}>
                     {res.id}
                   </td>
                   <td style={{ padding: '10px 12px', fontWeight: 600, color: 'var(--text-primary)' }}>
@@ -182,7 +183,7 @@ export default function ContactMatrixPage() {
                     {res.role}
                   </td>
                   <td style={{ padding: '10px 12px' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{res.businessDomain}</span>
+                    <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{res.serviceDomain}</span>
                     <span style={{ color: 'var(--text-tertiary)', fontSize: '11px' }}> — {res.processGroup}</span>
                   </td>
                   <td style={{ padding: '10px 12px' }}>
@@ -197,7 +198,7 @@ export default function ContactMatrixPage() {
                   </td>
                   <td style={{ padding: '10px 12px' }}>
                     <a href={`tel:${res.phone}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'var(--text-primary)', textDecoration: 'none' }}>
-                      <Phone size={12} style={{ color: 'var(--edge-primary)' }} />
+                      <Phone size={12} style={{ color: 'var(--brand-primary)' }} />
                       <span>{res.phone}</span>
                     </a>
                   </td>

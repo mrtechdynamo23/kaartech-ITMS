@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Global Calendar Week View
+﻿/**
+ * KaarTech ITMS Control Tower — Global Calendar Week View
  * 7-Day Operational Grid, Time Axis, All-Day Event Banner, Scheduling Visibility.
  * Clean titles, separate light/dark theme tokens, and non-overlapping event layout.
  */
@@ -53,7 +53,7 @@ export default function CalendarWeekView({
     });
   }
 
-  // Parse start hour from event time string (e.g. "14:00 – 16:00 GST" -> 14)
+  // Parse start hour from event time string (e.g. "14:00 – 16:00 AST" -> 14)
   const getEventHour = (timeStr) => {
     if (!timeStr) return 9;
     const match = timeStr.match(/(\d{1,2}):/);

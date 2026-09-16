@@ -1,9 +1,9 @@
 /**
- * EDGE AMS Control Tower — Resource Detail Modal
+ * KaarTech ITMS Control Tower — Resource Detail Modal
  * 
  * Comprehensive personnel inspection component implementing Section 23 of specifications:
  * - Resource Name, Resource ID, Position ID, Role
- * - Business Domain, Process Group, Track, Location, Allocation
+ * - Service Domain, Process Group, Track, Location, Allocation
  * - Manager / Reporting Manager (clickable drilldown)
  * - Direct Reports (clickable drilldown)
  * - Entity, Status, Onboarding Date, Days Since Onboarding
@@ -11,6 +11,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   X, Mail, Phone, MapPin, Building, Calendar, Award,
   Shield, CheckCircle2, ChevronRight, User, Users,
@@ -27,6 +28,7 @@ export default function ResourceDetailModal({
   onClose,
   onSelectResource,
 }) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('profile');
   const [copied, setCopied] = useState(false);
   const [currentResourceId, setCurrentResourceId] = useState(resourceId || initialResource?.id || null);
@@ -110,7 +112,7 @@ export default function ResourceDetailModal({
         <div
           style={{
             padding: '22px 24px',
-            background: 'linear-gradient(135deg, rgba(255, 86, 34, 0.12) 0%, rgba(20, 24, 30, 0.95) 100%)',
+            background: 'linear-gradient(135deg, rgba(107, 29, 42, 0.12) 0%, rgba(20, 24, 30, 0.95) 100%)',
             borderBottom: '1px solid var(--border-primary)',
             position: 'relative',
           }}
@@ -123,14 +125,14 @@ export default function ResourceDetailModal({
                   width: '56px',
                   height: '56px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, var(--edge-primary) 0%, #B82B10 100%)',
+                  background: 'linear-gradient(135deg, var(--brand-primary) 0%, #4A131E 100%)',
                   color: 'white',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '1.35rem',
                   fontWeight: 800,
-                  boxShadow: '0 6px 16px rgba(255, 86, 34, 0.3)',
+                  boxShadow: '0 6px 16px rgba(107, 29, 42, 0.3)',
                   flexShrink: 0,
                   border: '2px solid rgba(255, 255, 255, 0.2)',
                 }}
@@ -153,7 +155,7 @@ export default function ResourceDetailModal({
                       fontWeight: 700,
                     }}
                   >
-                    ● {res.location === 'Onsite' ? 'Onsite (Abu Dhabi)' : 'Offshore Delivery'}
+                    ● {res.location === 'Onsite' ? 'Onsite (Riyadh)' : 'Offshore Delivery'}
                   </span>
                   <span className="badge badge-neutral" style={{ fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
                     {res.id}
@@ -161,12 +163,16 @@ export default function ResourceDetailModal({
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--edge-primary)', fontWeight: 600 }}>
-                    {res.role}
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--brand-primary)', fontWeight: 600 }}>
+                    {res.role} ({res.level || 'L2'})
+                  </span>
+                  <span style={{ color: 'var(--text-tertiary)', fontSize: '12px' }}>•</span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--brand-primary)', fontWeight: 600, background: 'rgba(107, 29, 42, 0.08)', padding: '2px 6px', borderRadius: '4px' }}>
+                    {res.serviceDomain || 'Service Domain'}
                   </span>
                   <span style={{ color: 'var(--text-tertiary)', fontSize: '12px' }}>•</span>
                   <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>
-                    {res.businessDomain} — {res.processGroup}
+                    {res.serviceDomain} — {res.processGroup}
                   </span>
                   <span style={{ color: 'var(--text-tertiary)', fontSize: '12px' }}>•</span>
                   <span className="badge badge-neutral" style={{ fontSize: '10px' }}>
@@ -176,34 +182,60 @@ export default function ResourceDetailModal({
               </div>
             </div>
 
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              style={{
-                background: 'var(--bg-hover)',
-                border: '1px solid var(--border-secondary)',
-                color: 'var(--text-secondary)',
-                borderRadius: 'var(--radius-md)',
-                width: '32px',
-                height: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.color = 'var(--text-primary)';
-                e.currentTarget.style.borderColor = 'var(--border-primary)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.color = 'var(--text-secondary)';
-                e.currentTarget.style.borderColor = 'var(--border-secondary)';
-              }}
-              aria-label="Close"
-            >
-              <X size={18} />
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                onClick={() => {
+                  onClose();
+                  navigate(`/resources/${res.id}`);
+                }}
+                style={{
+                  background: 'var(--brand-primary)',
+                  border: 'none',
+                  color: 'white',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '6px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontSize: 'var(--text-xs)',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+                title="Open Dedicated Full Profile Page"
+              >
+                <ExternalLink size={13} /> Full Profile
+              </button>
+
+              {/* Close Button */}
+              <button
+                onClick={onClose}
+                style={{
+                  background: 'var(--bg-hover)',
+                  border: '1px solid var(--border-secondary)',
+                  color: 'var(--text-secondary)',
+                  borderRadius: 'var(--radius-md)',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.color = 'var(--text-primary)';
+                  e.currentTarget.style.borderColor = 'var(--border-primary)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.color = 'var(--text-secondary)';
+                  e.currentTarget.style.borderColor = 'var(--border-secondary)';
+                }}
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
           {/* Quick Metrics Bar */}
@@ -229,7 +261,7 @@ export default function ResourceDetailModal({
             </div>
             <div>
               <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 600 }}>Nationality</div>
-              <div style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--text-primary)' }}>{res.nationality} {res.nationality === 'UAE' && '🇦🇪'}</div>
+              <div style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--text-primary)' }}>{res.nationality} {res.nationality === 'Saudi Arabia' && '🇸🇦'}</div>
             </div>
             <div>
               <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 600 }}>Tenure</div>
@@ -284,10 +316,10 @@ export default function ResourceDetailModal({
                   padding: '12px 14px',
                   fontSize: 'var(--text-sm)',
                   fontWeight: isActive ? 700 : 500,
-                  color: isActive ? 'var(--edge-primary)' : 'var(--text-secondary)',
+                  color: isActive ? 'var(--brand-primary)' : 'var(--text-secondary)',
                   background: 'none',
                   border: 'none',
-                  borderBottom: isActive ? '2px solid var(--edge-primary)' : '2px solid transparent',
+                  borderBottom: isActive ? '2px solid var(--brand-primary)' : '2px solid transparent',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
                   marginBottom: '-1px',
@@ -332,7 +364,7 @@ export default function ResourceDetailModal({
                   }}
                 >
                   <div style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Shield size={13} style={{ color: 'var(--edge-primary)' }} />
+                    <Shield size={13} style={{ color: 'var(--brand-primary)' }} />
                     Reports To (Direct Manager)
                   </div>
                   {res.managerInfo ? (
@@ -357,7 +389,7 @@ export default function ResourceDetailModal({
                             width: '34px',
                             height: '34px',
                             borderRadius: '50%',
-                            background: 'var(--edge-primary)',
+                            background: 'var(--brand-primary)',
                             color: 'white',
                             display: 'flex',
                             alignItems: 'center',
@@ -377,7 +409,7 @@ export default function ResourceDetailModal({
                           </div>
                         </div>
                       </div>
-                      <ChevronRight size={16} style={{ color: 'var(--edge-primary)' }} />
+                      <ChevronRight size={16} style={{ color: 'var(--brand-primary)' }} />
                     </div>
                   ) : (
                     <div style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', padding: '6px 0' }}>
@@ -396,7 +428,7 @@ export default function ResourceDetailModal({
                   }}
                 >
                   <div style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Users size={13} style={{ color: 'var(--edge-primary)' }} />
+                    <Users size={13} style={{ color: 'var(--brand-primary)' }} />
                     Direct Reports ({directReportResources.length})
                   </div>
                   {directReportResources.length > 0 ? (
@@ -452,9 +484,15 @@ export default function ResourceDetailModal({
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>Business Domain</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>Primary Service Domain</div>
+                    <div style={{ fontWeight: 700, color: 'var(--brand-primary)', marginTop: '2px' }}>
+                      {res.serviceDomain || 'Service Domain'}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>Service Domain</div>
                     <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: '2px' }}>
-                      {res.businessDomain}
+                      {res.serviceDomain}
                     </div>
                   </div>
                   <div>
@@ -507,7 +545,7 @@ export default function ResourceDetailModal({
                   Core Competency Module
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Award size={18} style={{ color: 'var(--edge-primary)' }} />
+                  <Award size={18} style={{ color: 'var(--brand-primary)' }} />
                   <span style={{ fontSize: 'var(--text-md)', fontWeight: 700, color: 'var(--text-primary)' }}>
                     {res.skill}
                   </span>
@@ -572,8 +610,8 @@ export default function ResourceDetailModal({
                       width: '36px',
                       height: '36px',
                       borderRadius: 'var(--radius-md)',
-                      background: 'rgba(255, 86, 34, 0.1)',
-                      color: 'var(--edge-primary)',
+                      background: 'rgba(107, 29, 42, 0.1)',
+                      color: 'var(--brand-primary)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -626,7 +664,7 @@ export default function ResourceDetailModal({
                 <div>
                   <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>Direct Dial / Contact</div>
                   <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
-                    {res.phone || '+971-50-XXX-XXXX'}
+                    {res.phone || '+966-55-XXX-XXXX'}
                   </div>
                 </div>
               </div>
@@ -660,7 +698,7 @@ export default function ResourceDetailModal({
                   <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>Deployment Base</div>
                   <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
                     {res.location === 'Onsite'
-                      ? 'Enterprise Client HQ, Abu Dhabi, United Arab Emirates (Client Premises)'
+                      ? 'Enterprise Client HQ, Riyadh, Saudi Arabia (Client Premises)'
                       : 'KaarTech Remote Delivery Center (Offshore Center Pool)'}
                   </div>
                 </div>

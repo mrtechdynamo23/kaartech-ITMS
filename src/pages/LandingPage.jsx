@@ -1,13 +1,13 @@
 /**
- * EDGE AMS Control Tower — Comprehensive Scrollable Landing Gateway
+ * KaarTech ITMS Control Tower — Comprehensive Scrollable Landing Gateway
  * Route: /landing
  * 
  * Features:
- * - Cinematic Ken Burns hero viewport with rotating authentic EDGE defense imagery
+ * - Cinematic Ken Burns hero viewport with rotating authentic KaarTech ITMS imagery
  * - High-impact Mission Scale & Operational Metrics Strip
  * - 7 Integrated Capability Domains (Interactive Feature Grid)
- * - AdvantEDGE 4-Tier Enterprise Defense Architecture (Interactive Stack)
- * - 4 EDGE Defense Clusters Footprint (Platforms, Missiles, EW/Cyber, Support)
+ * - KaarTech Enterprise 4-Tier Enterprise Architecture (Interactive Stack)
+ * - 4 KaarTech Enterprise Clusters Footprint (Digital, Systems, Autonomous, Support)
  * - Contractual Delivery Tracks (AMS-ON-RUN, AMS-OF-RUN, AMS-OF-Flex, ENH-OF-RUN)
  * - Operational Calendar & Milestone Schedule Spotlight
  * - Executive Gateway Callout & Full Enterprise Footer
@@ -27,41 +27,31 @@ import {
 } from 'lucide-react';
 import './LandingPage.css';
 
-// Curated authentic EDGE defense assets from /assets
+// Enterprise ITMS Hero Visual Assets
 const HERO_IMAGES = [
   {
-    src: '/assets/edge-hero-air.jpg',
-    title: 'Aerospace & Combat Systems',
-    subtitle: 'Stealth autonomous defense platforms and aerial surveillance',
+    src: '/assets/itms-hero-command.jpg',
+    title: 'Enterprise Control Tower & Operations',
+    subtitle: '24/7 mission-critical IT monitoring and automated telemetry across Riyadh',
   },
   {
-    src: '/assets/edge-space.jpg',
-    title: 'Autonomous Robotics & Drones',
-    subtitle: 'ADASI autonomous air, land, and tactical unmanned systems',
+    src: '/assets/itms-hero-cloud.jpg',
+    title: 'Sovereign Cloud & Resilient Infrastructure',
+    subtitle: 'Tier 4 resilient data centers in accordance with Saudi Vision 2030 standards',
   },
   {
-    src: '/assets/edge-ew-radar.jpg',
-    title: 'Land Systems & Electronic Warfare',
-    subtitle: 'Tactical mobile telemetry, radar, and secure defense networks',
-  },
-  {
-    src: '/assets/edge-naval.jpg',
-    title: 'Naval & Maritime Operations',
-    subtitle: 'Vessel defense engineering and joint strategic command',
-  },
-  {
-    src: '/assets/edge-environment.jpg',
-    title: 'Armored & Advanced Vehicles',
-    subtitle: 'Mission-critical engineering and severe-environment readiness',
+    src: '/assets/itms-hero-boardroom.jpg',
+    title: 'Executive Governance & SteerCom Intelligence',
+    subtitle: 'Integrated SAP S/4HANA ERP architecture and real-time SLA compliance',
   },
 ];
 
 const DOMAIN_PILLARS = [
-  { label: 'Aerospace & Air Defense', icon: Plane },
-  { label: 'Autonomous & Robotics', icon: Cpu },
-  { label: 'Land & Radar Systems', icon: Radio },
-  { label: 'Naval & Maritime', icon: Compass },
-  { label: 'Enterprise Core (SAP/BTP)', icon: Layers },
+  { label: 'S/4HANA Enterprise ERP', icon: Layers },
+  { label: 'Cloud Infrastructure & BTP', icon: Server },
+  { label: 'Cyber Governance & NCA ECC', icon: Shield },
+  { label: 'Intelligent Automation & AI', icon: Cpu },
+  { label: 'Data Analytics & Reporting', icon: BarChart3 },
 ];
 
 const OPERATIONAL_METRICS = [
@@ -69,7 +59,7 @@ const OPERATIONAL_METRICS = [
   { label: 'Core Mission Applications', value: '26', change: 'S/4HANA, SF, Ariba, D365', icon: Server },
   { label: 'Middleware Interfaces', value: '64', change: 'CPI, Kafka, Secure OData', icon: Network },
   { label: 'Core Platform Uptime', value: '99.64%', change: 'Target 99.5% Exceeded', icon: Activity },
-  { label: 'Dedicated AMS Engineers', value: '30', change: 'Onsite Abu Dhabi + CoE', icon: Users },
+  { label: 'Dedicated AMS Engineers', value: '30', change: 'Onsite Riyadh + CoE', icon: Users },
   { label: 'Scheduled Operations', value: '140+', change: 'Next 3+ Months Tracked', icon: Calendar },
 ];
 
@@ -84,7 +74,7 @@ const CAPABILITY_DOMAINS = [
     metric: 'Avg P1 MTTD: 8m | Res: 98.6%',
     route: '/command-center',
     icon: Shield,
-    accent: '#FF5622',
+    accent: '#6B1D2A',
   },
   {
     id: 'executive-board',
@@ -115,7 +105,7 @@ const CAPABILITY_DOMAINS = [
     title: 'Resource Management & Talent CoE',
     titleAr: 'إدارة الموارد ومركز تميز الكفاءات',
     tag: 'Capacity Roster',
-    desc: 'Global 30-FTE roster, onshore Abu Dhabi / offshore CoE distribution, skill matrices, and shift schedules.',
+    desc: 'Global 30-FTE roster, onshore Riyadh / offshore CoE distribution, skill matrices, and shift schedules.',
     descAr: 'سجل الكفاءات لـ 30 مهندساً متخصصاً، والتوزيع الداخلي والخارجي، ومصفوفة المهارات التقنية.',
     metric: '30 Active Engineers • 94% Utilization',
     route: '/resources/directory',
@@ -130,7 +120,7 @@ const CAPABILITY_DOMAINS = [
     desc: 'Real-time 26-system topology, HANA memory utilization, CPI interface latency, and DC1/DC2 redundancy.',
     descAr: 'المخطط الطوبولوجي لـ 26 نظاماً تقنياً، ومراقبة ذاكرة HANA، وزمن استجابة واجهات CPI.',
     metric: '26 Systems Monitored • 0 Outages',
-    route: '/estate/applications',
+    route: '/technology/applications',
     icon: Server,
     accent: '#10B981',
   },
@@ -142,7 +132,7 @@ const CAPABILITY_DOMAINS = [
     desc: 'Entity-level CSAT scores, stakeholder engagement, quarterly reviews, and sentiment tracking across 34 entities.',
     descAr: 'مؤشرات رضا العملاء لكل جهة، ومتابعة التواصل المؤسسي والاجتماعات الدورية عبر 34 جهة.',
     metric: '4.82 / 5.00 Average CSAT',
-    route: '/customer/csat',
+    route: '/customer/feedback',
     icon: Globe,
     accent: '#EC4899',
   },
@@ -154,7 +144,7 @@ const CAPABILITY_DOMAINS = [
     desc: 'Robotic process automation, automated invoice matching, self-healing background jobs, and AI incident copilot.',
     descAr: 'أتمتة العمليات الروبوتية (RPA)، ومطابقة الفواتير الذكية، ونصوص المعالجة الذاتية التلقائية.',
     metric: '5 Active RPA Bots • 18% Efficiency Gain',
-    route: '/innovation/automation',
+    route: '/service-innovation/automation',
     icon: Sparkles,
     accent: '#F59E0B',
   },
@@ -172,7 +162,7 @@ const ARCHITECTURE_TIERS = [
     tier: 'Tier 2: Business Core & Defense Suites',
     tierAr: 'المستوى 2: النواة التشغيلية وحزم الدفاع',
     badge: 'Enterprise Core',
-    color: '#FF5622',
+    color: '#6B1D2A',
     items: ['SAP S/4HANA 2023 Enterprise ERP', 'SAP SuccessFactors HXM Cloud', 'SAP Ariba Guided Sourcing', 'Microsoft Dynamics 365 CRM']
   },
   {
@@ -183,41 +173,41 @@ const ARCHITECTURE_TIERS = [
     items: ['SAP BTP Integration Suite (CPI)', 'Apache Kafka High-Throughput Event Mesh', 'Sovereign Government Secure API Gateway', 'OpenText ArchiveLink Connector']
   },
   {
-    tier: 'Tier 4: Secure Defense Infrastructure',
-    tierAr: 'المستوى 4: البنية التحتية الدفاعية الآمنة',
+    tier: 'Tier 4: Enterprise Sovereign Cloud Infrastructure',
+    tierAr: 'المستوى 4: البنية التحتية السحابية السيادية الآمنة',
     badge: 'Foundational',
     color: '#10B981',
-    items: ['SAP HANA 2.0 In-Memory Database Cluster', 'OpenText xECM Defense Document Vault', 'Abu Dhabi Primary DC1 / Al Ain DC2 Hot-Standby', 'Zero-Trust Bastion Network Enclaves']
+    items: ['SAP HANA 2.0 In-Memory Database Cluster', 'OpenText xECM Enterprise Document Vault', 'Riyadh Primary DC1 / Jeddah DC2 Hot-Standby', 'Zero-Trust Bastion Network Enclaves']
   }
 ];
 
-const DEFENSE_CLUSTERS = [
+const ENTERPRISE_CLUSTERS = [
   {
-    name: 'Platforms & Systems',
-    nameAr: 'المنصات والأنظمة',
-    entities: 'NIMR • ADASI • ADSB • CARACAL',
-    desc: 'Tactical armored vehicles, autonomous UAV systems, naval vessel shipbuilding, and precision defense firearms.',
-    color: '#FF5622'
+    name: 'Industrial & Advanced Manufacturing',
+    nameAr: 'الصناعة والتصنيع المتقدم',
+    entities: 'KaarTech Advanced Manufacturing • Heavy Mobility • Materials Technology • Precision Works',
+    desc: 'Discrete and process manufacturing, plant floor MES/MII execution, automated work orders, and supply chain telemetry.',
+    color: '#6B1D2A'
   },
   {
-    name: 'Missiles & Weapons',
-    nameAr: 'الصواريخ والأسلحة',
-    entities: 'HALCON • LAHAB • AL TARIQ',
-    desc: 'Precision-guided munitions, defense pyrotechnics, artillery ammunition, and advanced aerospace payloads.',
+    name: 'Autonomous Systems & Technology',
+    nameAr: 'الأنظمة الذكية والتقنية',
+    entities: 'KaarTech Autonomous Systems • Precision Systems • Technologies • Advanced Concepts',
+    desc: 'Autonomous fleet management, IoT telemetry synchronization, robotics maintenance, and high-performance engineering.',
     color: '#EF4444'
   },
   {
-    name: 'Electronic Warfare & Cyber',
-    nameAr: 'الحرب الإلكترونية والأمن السيبراني',
-    entities: 'BEACON RED • KATIM • SIGN4L',
-    desc: 'National cyber academies, ultra-secure cryptographic communications, and RF electronic warfare countermeasures.',
+    name: 'Cyber Defense & Sovereign Cloud',
+    nameAr: 'الأمن السيبراني والسحابة السيادية',
+    entities: 'KaarTech Cyber Defense • Data Center Tier 4 • Secure Comms • Intelligence Labs',
+    desc: 'NCA ECC cybersecurity compliance, sovereign hybrid cloud enclaves, ISO 27001 audit controls, and zero-trust bastions.',
     color: '#3B82F6'
   },
   {
-    name: 'Trading & Mission Support',
-    nameAr: 'التجارة والدعم التشغيلي',
-    entities: 'JAHEZIYA • HORIZON • EPI • REMAYA',
-    desc: 'Emergency response academy, helicopter flight school, precision CNC aerospace manufacturing, and shooting ranges.',
+    name: 'Commercial & Shared Services',
+    nameAr: 'الخدمات التجارية والمشتركة',
+    entities: 'KaarTech Corp. HQ • Business Services • Commercial • Global • Support Services',
+    desc: 'Unified financial accounting (R2R), Ariba strategic sourcing (S2P), SuccessFactors talent management (H2R), and billing.',
     color: '#10B981'
   }
 ];
@@ -311,11 +301,11 @@ export default function LandingPage() {
             <img
               src="/assets/kaartech logo.png"
               alt="KaarTech Logo"
-              className="landing-edge-logo"
+              className="landing-kaartech-logo"
             />
           </div>
           <div className="landing-header-title">
-            <span className="landing-header-sub">AMS CONTROL TOWER</span>
+            <span className="landing-header-sub">ITMS Control Tower</span>
           </div>
         </div>
 
@@ -373,17 +363,17 @@ export default function LandingPage() {
             <svg className="landing-network-svg" viewBox="0 0 1000 60" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="edgeLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#FF5622" stopOpacity="0" />
-                  <stop offset="30%" stopColor="#FF5622" stopOpacity="0.8" />
-                  <stop offset="70%" stopColor="#FF5622" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#FF5622" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#6B1D2A" stopOpacity="0" />
+                  <stop offset="30%" stopColor="#6B1D2A" stopOpacity="0.8" />
+                  <stop offset="70%" stopColor="#6B1D2A" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#6B1D2A" stopOpacity="0" />
                 </linearGradient>
               </defs>
-              <line x1="50" y1="30" x2="950" y2="30" stroke="rgba(255, 86, 34, 0.15)" strokeWidth="1" />
+              <line x1="50" y1="30" x2="950" y2="30" stroke="rgba(107, 29, 42, 0.15)" strokeWidth="1" />
               <line x1="200" y1="30" x2="800" y2="30" stroke="url(#edgeLineGrad)" strokeWidth="2" className="landing-pulse-line" />
-              <circle cx="350" cy="30" r="3" fill="#FF5622" />
-              <circle cx="500" cy="30" r="4.5" fill="#FF5622" className="landing-pulse-node" />
-              <circle cx="650" cy="30" r="3" fill="#FF5622" />
+              <circle cx="350" cy="30" r="3" fill="#6B1D2A" />
+              <circle cx="500" cy="30" r="4.5" fill="#6B1D2A" className="landing-pulse-node" />
+              <circle cx="650" cy="30" r="3" fill="#6B1D2A" />
             </svg>
           </div>
 
@@ -399,7 +389,7 @@ export default function LandingPage() {
           <div className="landing-title-block">
             <div className="landing-brand-row">
               <h1 className="landing-hero-heading">
-                <span className="landing-heading-ams">AMS CONTROL TOWER</span>
+                <span className="landing-heading-ams">ITMS Control Tower</span>
               </h1>
             </div>
             <h2 className="landing-hero-subheading">
@@ -430,7 +420,7 @@ export default function LandingPage() {
             <button
               onClick={handleEnter}
               className="landing-enter-btn"
-              aria-label="Enter AMS Control Tower"
+              aria-label="Enter ITMS Control Tower"
             >
               <span>{language === 'ar' ? 'دخول برج المراقبة' : 'ENTER CONTROL TOWER'}</span>
               <ArrowRight size={18} className="landing-btn-arrow" />
@@ -571,7 +561,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── 6. Section 4: AdvantEDGE 4-Tier Architecture Stack ── */}
+      {/* ── 6. Section 4: KaarTech Enterprise 4-Tier Architecture Stack ── */}
       <section className="landing-content-section landing-architecture-section">
         <div className="landing-section-container">
           <div className="landing-section-header">
@@ -619,7 +609,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── 7. Section 5: EDGE Defense Clusters Supported ── */}
+      {/* ── 7. Section 5: Enterprise Operational Clusters Supported ── */}
       <section className="landing-content-section landing-clusters-section">
         <div className="landing-section-container">
           <div className="landing-section-header">
@@ -631,13 +621,13 @@ export default function LandingPage() {
             </h3>
             <p className="landing-section-desc">
               {language === 'ar'
-                ? 'دعم متواصل لـ 4 قطاعات رئيسية تشمل الأسلحة الذكية، والمنصات المستقلة، والأمن السيبراني، والدعم الفني.'
-                : 'Dedicated application lifecycle and specialized business workflow support tailored to each cluster’s unique manufacturing and defense delivery cycles.'}
+                ? 'دعم متواصل لـ 4 قطاعات رئيسية تشمل التصنيع المتقدم، والأنظمة المستقلة، والأمن السيبراني، والخدمات المشتركة.'
+                : 'Dedicated application lifecycle and specialized business workflow support tailored to each cluster’s unique manufacturing and enterprise operational cycles.'}
             </p>
           </div>
 
           <div className="landing-clusters-grid">
-            {DEFENSE_CLUSTERS.map((cluster) => (
+            {ENTERPRISE_CLUSTERS.map((cluster) => (
               <div key={cluster.name} className="landing-cluster-card">
                 <div className="landing-cluster-header">
                   <span className="landing-cluster-dot" style={{ background: cluster.color, boxShadow: `0 0 10px ${cluster.color}` }} />
@@ -745,7 +735,7 @@ export default function LandingPage() {
                   <div className="landing-preview-item">
                     <span className="landing-item-date">OCT 21</span>
                     <span className="landing-item-tag tag-freeze">Freeze</span>
-                    <span className="landing-item-text">UAE Defense Exhibition High-Alert Moratorium</span>
+                    <span className="landing-item-text">National Day System High-Alert Moratorium</span>
                   </div>
                 </div>
               </div>
@@ -800,7 +790,7 @@ export default function LandingPage() {
                 <span className="landing-status-sep">•</span>
                 <span>34 ENTITIES INTEGRATED</span>
                 <span className="landing-status-sep">•</span>
-                <span>GST TIME (UTC+4)</span>
+                <span>AST TIME (UTC+3)</span>
               </div>
             </div>
           </div>
@@ -816,11 +806,11 @@ export default function LandingPage() {
                 <img
                   src="/assets/kaartech logo.png"
                   alt="KaarTech Logo"
-                  className="landing-edge-logo"
+                  className="landing-kaartech-logo"
                 />
               </div>
               <p className="landing-footer-brand-text">
-                AMS Control Tower — Enterprise Application Management Services Platform.
+                ITMS Control Tower — Enterprise Application Management Services Platform.
               </p>
               <div className="landing-footer-sec-badge">
                 <Lock size={12} />
@@ -841,27 +831,27 @@ export default function LandingPage() {
             <div className="landing-footer-col">
               <h5 className="landing-footer-heading">SYSTEM DOMAINS</h5>
               <ul className="landing-footer-links">
-                <li><a onClick={() => navigate('/estate/applications')}>26 Core Applications</a></li>
+                <li><a onClick={() => navigate('/technology/applications')}>26 Core Applications</a></li>
                 <li><a onClick={() => navigate('/resources/directory')}>Resource CoE Directory</a></li>
-                <li><a onClick={() => navigate('/customer/csat')}>Customer Connect & CSAT</a></li>
-                <li><a onClick={() => navigate('/innovation/automation')}>AI & RPA Automation</a></li>
+                <li><a onClick={() => navigate('/customer/feedback')}>Customer Connect & CSAT</a></li>
+                <li><a onClick={() => navigate('/service-innovation/automation')}>AI & RPA Automation</a></li>
               </ul>
             </div>
 
             <div className="landing-footer-col">
               <h5 className="landing-footer-heading">SOVEREIGN GOVERNANCE</h5>
               <p className="landing-footer-gov-text">
-                Operating strictly in accordance with UAE SIA / NESA standards, ISO 27001, ISO 20000, and UAE Federal Tax Authority compliance directives.
+                Operating strictly in accordance with Saudi NCA ECC standards, ZATCA e-invoicing compliance, ISO 27001, and ISO 20000 service governance directives.
               </p>
               <div className="landing-footer-loc">
                 <Globe size={13} />
-                <span>Abu Dhabi, United Arab Emirates</span>
+                <span>Riyadh, Kingdom of Saudi Arabia</span>
               </div>
             </div>
           </div>
 
           <div className="landing-footer-bottom-bar">
-            <span>© 2026 AMS Control Tower. All rights reserved.</span>
+            <span>© 2026 ITMS Control Tower. All rights reserved.</span>
             <span>Security Classification: OFFICIAL // RESTRICTED ACCESS</span>
           </div>
         </div>

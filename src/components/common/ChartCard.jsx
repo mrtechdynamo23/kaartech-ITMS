@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — ChartCard Component
+﻿/**
+ * KaarTech ITMS Control Tower — ChartCard Component
  * Reusable enterprise chart container with header context, action pills, and polished layout.
  */
 import React from 'react';

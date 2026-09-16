@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Release & Deployment Governance
+﻿/**
+ * KaarTech ITMS Control Tower — Release & Deployment Governance
  * Route: /technology/releases
  */
 import React from 'react';
@@ -16,7 +16,7 @@ export default function ReleasesPage() {
 
   const freezeWindows = [
     { name: 'Year-End Financial Closing Freeze', dates: '20 Dec 2026 – 05 Jan 2027', scope: 'All Financial (R2R, L2C, P2P) Systems', status: 'Mandatory Policy' },
-    { name: 'UAE National Day Operational Freeze', dates: '30 Nov 2026 – 04 Dec 2026', scope: 'All Production Systems', status: 'Mandatory Policy' },
+    { name: 'Saudi National Day Operational Freeze', dates: '30 Nov 2026 – 04 Dec 2026', scope: 'All Production Systems', status: 'Mandatory Policy' },
   ];
 
   return (
@@ -73,7 +73,7 @@ export default function ReleasesPage() {
             <div key={r.id} style={{ background: 'var(--bg-secondary)', padding: '16px 20px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary)' }}>{r.id}</span>
+                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary)' }}>{r.id}</span>
                   <span className={`badge ${r.type === 'Major Release' ? 'badge-primary' : 'badge-neutral'}`}>{r.type}</span>
                   <span className={`badge ${r.status === 'Deployed' ? 'badge-success' : 'badge-warning'}`}>{r.status}</span>
                 </div>

@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Software Licenses & Compliance
+ * KaarTech ITMS Control Tower — Software Licenses & Compliance
  * Route: /governance/licenses
  */
 import React, { useState, useMemo } from 'react';
@@ -77,7 +77,7 @@ export default function LicensesPage() {
               <strong style={{ color: isHigh ? 'var(--color-red)' : 'var(--text-primary)' }}>{pct}%</strong>
             </div>
             <div style={{ height: '6px', width: '100%', background: 'var(--bg-tertiary)', borderRadius: '3px', overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${pct}%`, background: isHigh ? 'var(--color-red)' : 'var(--edge-primary)', borderRadius: '3px' }} />
+              <div style={{ height: '100%', width: `${pct}%`, background: isHigh ? 'var(--color-red)' : 'var(--brand-primary)', borderRadius: '3px' }} />
             </div>
           </div>
         );
@@ -166,7 +166,7 @@ export default function LicensesPage() {
         />
         <KPICard
           title="Annual Run-Rate"
-          value={`AED ${(totalCost / 1000000).toFixed(1)}M`}
+          value={`SAR ${(totalCost / 1000000).toFixed(1)}M`}
           subtitle="Consolidated OEM cost"
           sparklineData={[3.8, 4.0, 4.2, (totalCost / 1000000)]}
         />
@@ -179,7 +179,7 @@ export default function LicensesPage() {
         columns={columns}
         data={allLicenses}
         onRowClick={(item) => setSelectedLicense(item)}
-        exportFilename="edge-software-licenses.csv"
+        exportFilename="itms-software-licenses.csv"
       />
 
       {/* Detail Drawer */}
@@ -218,8 +218,8 @@ export default function LicensesPage() {
               boxShadow: 'var(--shadow-2xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25))',
               maxWidth: '640px',
               width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              maxHeight: '88vh',
+              overflow: 'hidden',
               margin: 'auto',
               alignSelf: 'center',
               display: 'flex',
@@ -237,10 +237,11 @@ export default function LicensesPage() {
               justifyContent: 'space-between',
               background: 'var(--bg-secondary, #f8fafc)',
               borderRadius: '16px 16px 0 0',
+              flexShrink: 0,
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <Key size={18} color="var(--edge-primary, #FF5622)" />
+                  <Key size={18} color="var(--brand-primary, #6B1D2A)" />
                   <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                     Add Software Entitlement Record
                   </h3>
@@ -259,7 +260,8 @@ export default function LicensesPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleAddLicense} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleAddLicense} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+              <div className="modal-form-scrollable-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
                   Software / Edition Title *
@@ -424,16 +426,10 @@ export default function LicensesPage() {
                   />
                 </div>
               </div>
+              </div>
 
-              {/* Action Buttons */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                marginTop: '12px',
-                paddingTop: '16px',
-                borderTop: '1px solid var(--border-primary, #e2e8f0)',
-              }}>
+              {/* Action Buttons — Sticky Footer */}
+              <div className="modal-form-sticky-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"

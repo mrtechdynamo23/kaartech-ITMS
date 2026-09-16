@@ -1,10 +1,10 @@
 /**
- * EDGE AMS Control Tower — Interactive Organization Canvas
+ * KaarTech ITMS Control Tower — Interactive Organization Canvas
  * 
  * Main visualization canvas implementing Sections 14, 15, 16, 17, 18, 21, 22, 32, 33:
  * - 4-tier interactive hierarchy:
  *     Tier 1: AMS Leadership & SteerCom
- *     Tier 2: Business Domains (8 Core Streams)
+ *     Tier 2: Service Domains (8 Core Streams)
  *     Tier 3: Capability / Process Teams
  *     Tier 4: Individual Specialized Resources
  * - Intelligent Auto-Fit: Automatically calculates scale to fit the entire flow to the screen on load
@@ -20,7 +20,7 @@ import {
   RotateCcw, Maximize2, MapPin, Award, CheckCircle2, User,
   Briefcase, CornerDownRight, Layers, Eye, Grid, Layout
 } from 'lucide-react';
-import { BUSINESS_DOMAINS } from '../../../data/masterData';
+import { SERVICE_DOMAINS } from '../../../data/serviceDomains';
 
 export default function OrganizationCanvas({
   tree,
@@ -202,6 +202,9 @@ export default function OrganizationCanvas({
               padding: '4px 8px',
               fontSize: '11px',
               fontWeight: flowMode === 'panoramic' ? 700 : 500,
+              background: flowMode === 'panoramic' ? 'var(--brand-primary)' : 'transparent',
+              color: flowMode === 'panoramic' ? '#FFFFFF' : 'var(--text-primary)',
+              borderRadius: 'var(--radius-sm)',
               border: 'none',
               cursor: 'pointer',
             }}
@@ -220,6 +223,9 @@ export default function OrganizationCanvas({
               padding: '4px 8px',
               fontSize: '11px',
               fontWeight: flowMode === 'grid' ? 700 : 500,
+              background: flowMode === 'grid' ? 'var(--brand-primary)' : 'transparent',
+              color: flowMode === 'grid' ? '#FFFFFF' : 'var(--text-primary)',
+              borderRadius: 'var(--radius-sm)',
               border: 'none',
               cursor: 'pointer',
             }}
@@ -240,12 +246,12 @@ export default function OrganizationCanvas({
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
-            padding: '4px 8px',
+            padding: '4px 10px',
             fontSize: '11px',
             fontWeight: 700,
-            color: 'var(--edge-primary)',
-            background: 'rgba(255, 86, 34, 0.08)',
-            border: '1px solid rgba(255, 86, 34, 0.25)',
+            color: 'var(--brand-primary)',
+            background: 'var(--brand-primary-light)',
+            border: '1px solid rgba(107, 29, 42, 0.35)',
             cursor: 'pointer',
             borderRadius: 'var(--radius-sm)',
           }}
@@ -261,18 +267,18 @@ export default function OrganizationCanvas({
         <button
           onClick={handleZoomIn}
           className="canvas-control-btn btn-sm"
-          style={{ width: '28px', height: '28px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}
+          style={{ width: '28px', height: '28px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', cursor: 'pointer' }}
           title="Zoom In"
         >
           <Plus size={14} />
         </button>
-        <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)', minWidth: '38px', textAlign: 'center' }}>
+        <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-primary)', minWidth: '38px', textAlign: 'center', background: 'var(--bg-card)', padding: '4px 6px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-secondary)' }}>
           {Math.round(zoom * 100)}%
         </div>
         <button
           onClick={handleZoomOut}
           className="canvas-control-btn btn-sm"
-          style={{ width: '28px', height: '28px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}
+          style={{ width: '28px', height: '28px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', cursor: 'pointer' }}
           title="Zoom Out"
         >
           <Minus size={14} />
@@ -280,7 +286,7 @@ export default function OrganizationCanvas({
         <button
           onClick={handleResetZoom}
           className="canvas-control-btn btn-sm"
-          style={{ width: '28px', height: '28px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}
+          style={{ width: '28px', height: '28px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', cursor: 'pointer' }}
           title="Reset to 100%"
         >
           <RotateCcw size={12} />
@@ -322,14 +328,14 @@ export default function OrganizationCanvas({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-green)' }} />
-            <span>Onsite (UAE HQ)</span>
+            <span>Onsite (Saudi HQ)</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-blue)' }} />
             <span>Offshore Delivery</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--edge-primary)' }} />
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--brand-primary)' }} />
             <span>Leads & Command</span>
           </div>
         </div>
@@ -364,7 +370,7 @@ export default function OrganizationCanvas({
               borderRadius: '4px',
               fontSize: '10px',
               fontWeight: 700,
-              background: !searchMatches.isFilterActive ? 'var(--edge-primary)' : 'transparent',
+              background: !searchMatches.isFilterActive ? 'var(--brand-primary)' : 'transparent',
               color: !searchMatches.isFilterActive ? '#FFFFFF' : 'var(--text-secondary)',
               border: 'none',
               cursor: 'pointer',
@@ -372,13 +378,13 @@ export default function OrganizationCanvas({
           >
             All 8
           </button>
-          {BUSINESS_DOMAINS.map(d => {
-            const isSelected = searchMatches.matchedNodeIds.has(`domain-${d.key}`);
+          {SERVICE_DOMAINS.map(d => {
+            const isSelected = searchMatches.matchedNodeIds.has(`domain-${d.id}`);
             return (
               <button
-                key={d.key}
+                key={d.id}
                 onClick={() => {
-                  if (onFilterDomain) onFilterDomain(d.key);
+                  if (onFilterDomain) onFilterDomain(d.id);
                   setTimeout(fitToScreen, 100);
                 }}
                 className="domain-focus-pill"
@@ -387,14 +393,14 @@ export default function OrganizationCanvas({
                   borderRadius: '4px',
                   fontSize: '10px',
                   fontWeight: 700,
-                  background: isSelected ? 'rgba(255, 86, 34, 0.15)' : 'transparent',
-                  color: isSelected ? 'var(--edge-primary)' : 'var(--text-secondary)',
-                  border: isSelected ? '1px solid rgba(255, 86, 34, 0.4)' : '1px solid transparent',
+                  background: isSelected ? 'rgba(107, 29, 42, 0.15)' : 'transparent',
+                  color: isSelected ? 'var(--brand-primary)' : 'var(--text-secondary)',
+                  border: isSelected ? '1px solid rgba(107, 29, 42, 0.4)' : '1px solid transparent',
                   cursor: 'pointer',
                 }}
-                title={d.label}
+                title={d.name}
               >
-                {d.key}
+                {d.id}
               </button>
             );
           })}
@@ -434,12 +440,12 @@ export default function OrganizationCanvas({
             onClick={() => onSelectNode(tree.id)}
             style={{
               width: '460px',
-              background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 86, 34, 0.08) 100%)',
-              border: selectedNodeId === tree.id ? '2px solid var(--edge-primary)' : '1px solid var(--border-primary)',
+              background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(107, 29, 42, 0.08) 100%)',
+              border: selectedNodeId === tree.id ? '2px solid var(--brand-primary)' : '1px solid var(--border-primary)',
               borderRadius: 'var(--radius-xl)',
               padding: '18px 20px',
               boxShadow: selectedNodeId === tree.id
-                ? '0 10px 25px -5px rgba(255, 86, 34, 0.3)'
+                ? '0 10px 25px -5px rgba(107, 29, 42, 0.3)'
                 : '0 8px 24px -4px rgba(0, 0, 0, 0.3)',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
@@ -454,9 +460,9 @@ export default function OrganizationCanvas({
                     fontSize: '10px',
                     fontWeight: 800,
                     textTransform: 'uppercase',
-                    color: 'var(--edge-primary)',
+                    color: 'var(--brand-primary)',
                     letterSpacing: '0.06em',
-                    background: 'rgba(255, 86, 34, 0.12)',
+                    background: 'rgba(107, 29, 42, 0.12)',
                     padding: '2px 8px',
                     borderRadius: '4px',
                   }}
@@ -498,14 +504,14 @@ export default function OrganizationCanvas({
                   width: '44px',
                   height: '44px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, var(--edge-primary) 0%, #B82B10 100%)',
+                  background: 'linear-gradient(135deg, var(--brand-primary) 0%, #4A131E 100%)',
                   color: 'white',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 800,
                   fontSize: '14px',
-                  boxShadow: '0 4px 10px rgba(255, 86, 34, 0.3)',
+                  boxShadow: '0 4px 10px rgba(107, 29, 42, 0.3)',
                   border: '2px solid rgba(255, 255, 255, 0.2)',
                   flexShrink: 0,
                 }}
@@ -516,11 +522,11 @@ export default function OrganizationCanvas({
                 <div style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                   {tree.director.name}
                 </div>
-                <div style={{ fontSize: '12px', color: 'var(--edge-primary)', fontWeight: 600 }}>
+                <div style={{ fontSize: '12px', color: 'var(--brand-primary)', fontWeight: 600 }}>
                   {tree.director.role} • {tree.director.entity}
                 </div>
               </div>
-              <span style={{ fontSize: '10px', color: 'var(--edge-primary)', fontWeight: 700, whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: '10px', color: 'var(--brand-primary)', fontWeight: 700, whiteSpace: 'nowrap' }}>
                 Profile →
               </span>
             </div>
@@ -550,7 +556,7 @@ export default function OrganizationCanvas({
                   transition: 'background 0.15s ease',
                 }}
                 className="hover-card"
-                title="Click to view Fatima Al Zaabi profile"
+                title="Click to view Fatima Al-Otaibi profile"
               >
                 <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 700 }}>
                   Delivery Lead
@@ -558,7 +564,7 @@ export default function OrganizationCanvas({
                 <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
                   {tree.deliveryLead.name}
                 </div>
-                <div style={{ fontSize: '10px', color: 'var(--edge-primary)', marginTop: '1px' }}>
+                <div style={{ fontSize: '10px', color: 'var(--brand-primary)', marginTop: '1px' }}>
                   Operational Command
                 </div>
               </div>
@@ -598,14 +604,14 @@ export default function OrganizationCanvas({
             style={{
               width: '2px',
               height: '32px',
-              background: 'var(--edge-primary)',
+              background: 'var(--brand-primary)',
               opacity: 0.6,
             }}
           />
         </div>
 
         {/* ════════════════════════════════════════════════════════════════
-            LEVEL 2: BUSINESS DOMAINS (Panoramic or Grid Flow)
+            LEVEL 2: SERVICE DOMAINS (Panoramic or Grid Flow)
             ════════════════════════════════════════════════════════════════ */}
         <div
           className={flowMode === 'grid' ? 'org-domains-grid-flow' : 'org-domains-rail'}
@@ -664,7 +670,7 @@ export default function OrganizationCanvas({
                       top: '-20px',
                       width: '2px',
                       height: '20px',
-                      background: isDomainMatched || isDomainSelected ? 'var(--edge-primary)' : 'var(--border-primary)',
+                      background: isDomainMatched || isDomainSelected ? 'var(--brand-primary)' : 'var(--border-primary)',
                     }}
                   />
                 )}
@@ -677,14 +683,14 @@ export default function OrganizationCanvas({
                     width: '260px',
                     background: 'var(--bg-card)',
                     border: isDomainSelected
-                      ? '2px solid var(--edge-primary)'
+                      ? '2px solid var(--brand-primary)'
                       : isDomainMatched
-                      ? '2px solid rgba(255, 86, 34, 0.6)'
+                      ? '2px solid rgba(107, 29, 42, 0.6)'
                       : '1px solid var(--border-primary)',
                     borderRadius: 'var(--radius-lg)',
                     padding: '14px 16px',
                     boxShadow: isDomainSelected
-                      ? '0 6px 20px rgba(255, 86, 34, 0.25)'
+                      ? '0 6px 20px rgba(107, 29, 42, 0.25)'
                       : 'var(--card-shadow)',
                     cursor: 'pointer',
                     transition: 'all 0.18s ease',
@@ -698,8 +704,8 @@ export default function OrganizationCanvas({
                         style={{
                           fontSize: '11px',
                           fontWeight: 800,
-                          color: 'var(--edge-primary)',
-                          background: 'rgba(255, 86, 34, 0.1)',
+                          color: 'var(--brand-primary)',
+                          background: 'rgba(107, 29, 42, 0.1)',
                           padding: '1px 6px',
                           borderRadius: '4px',
                         }}
@@ -787,7 +793,7 @@ export default function OrganizationCanvas({
                         {domain.lead ? domain.lead.name : 'Domain Lead'}
                       </div>
                     </div>
-                    <span style={{ fontSize: '10px', color: 'var(--edge-primary)', fontWeight: 600 }}>
+                    <span style={{ fontSize: '10px', color: 'var(--brand-primary)', fontWeight: 600 }}>
                       Profile →
                     </span>
                   </div>
@@ -814,7 +820,7 @@ export default function OrganizationCanvas({
                       gap: '4px',
                       fontSize: '11px',
                       fontWeight: 600,
-                      color: 'var(--edge-primary)',
+                      color: 'var(--brand-primary)',
                       cursor: 'pointer',
                     }}
                   >
@@ -848,7 +854,7 @@ export default function OrganizationCanvas({
                         transform: 'translateX(-50%)',
                         width: '2px',
                         height: '16px',
-                        background: 'var(--edge-primary)',
+                        background: 'var(--brand-primary)',
                         opacity: 0.5,
                       }}
                     />
@@ -880,9 +886,9 @@ export default function OrganizationCanvas({
                               width: '240px',
                               background: 'var(--bg-secondary)',
                               border: isTeamSelected
-                                ? '2px solid var(--edge-primary)'
+                                ? '2px solid var(--brand-primary)'
                                 : isTeamMatched
-                                ? '1.5px solid var(--edge-primary)'
+                                ? '1.5px solid var(--brand-primary)'
                                 : '1px solid var(--border-secondary)',
                               borderRadius: 'var(--radius-md)',
                               padding: '10px 12px',
@@ -981,7 +987,7 @@ export default function OrganizationCanvas({
                                 style={{
                                   background: 'none',
                                   border: 'none',
-                                  color: 'var(--edge-primary)',
+                                  color: 'var(--brand-primary)',
                                   fontWeight: 700,
                                   cursor: 'pointer',
                                   display: 'flex',
@@ -1052,15 +1058,15 @@ export default function OrganizationCanvas({
                                       position: 'relative',
                                       background: 'var(--bg-card)',
                                       border: isMemberSelected
-                                        ? '2px solid var(--edge-primary)'
+                                        ? '2px solid var(--brand-primary)'
                                         : isMemberMatched
-                                        ? '2px solid var(--edge-primary)'
+                                        ? '2px solid var(--brand-primary)'
                                         : '1.5px solid var(--border-primary)',
                                       borderRadius: 'var(--radius-sm)',
                                       padding: '8px 10px',
                                       cursor: 'pointer',
                                       transition: 'all 0.15s ease',
-                                      boxShadow: isMemberSelected ? '0 4px 12px rgba(255, 86, 34, 0.2)' : 'var(--card-shadow)',
+                                      boxShadow: isMemberSelected ? '0 4px 12px rgba(107, 29, 42, 0.2)' : 'var(--card-shadow)',
                                       opacity: memberDimmed ? 0.35 : 1,
                                     }}
                                     title={`Click to inspect specialist profile: ${member.name} (${member.id})`}
@@ -1073,9 +1079,9 @@ export default function OrganizationCanvas({
                                           position: 'absolute',
                                           top: '4px',
                                           right: '6px',
-                                          background: 'rgba(255, 86, 34, 0.12)',
-                                          color: 'var(--edge-primary)',
-                                          border: '1px solid rgba(255, 86, 34, 0.3)',
+                                          background: 'rgba(107, 29, 42, 0.12)',
+                                          color: 'var(--brand-primary)',
+                                          border: '1px solid rgba(107, 29, 42, 0.3)',
                                           borderRadius: '10px',
                                           fontSize: '9px',
                                           fontWeight: 700,

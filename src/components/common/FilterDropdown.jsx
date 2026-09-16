@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Custom Filter Dropdown Component
+﻿/**
+ * KaarTech ITMS Control Tower — Custom Filter Dropdown Component
  * Reusable enterprise dropdown replacing native <select> controls (Section 21).
  * Supports keyboard navigation (Up/Down/Enter/Esc), search filtering,
  * clean focus/active states, light/dark mode, and Arabic RTL.
@@ -141,11 +141,11 @@ export default function FilterDropdown({
           gap: '8px',
           height: '34px',
           padding: '0 10px',
-          background: isFiltered ? 'rgba(255, 86, 34, 0.05)' : 'var(--bg-primary)',
+          background: isFiltered ? 'rgba(107, 29, 42, 0.05)' : 'var(--bg-primary)',
           border: isFiltered
-            ? '1px solid var(--edge-primary)'
+            ? '1px solid var(--brand-primary)'
             : isOpen
-            ? '1px solid var(--edge-primary)'
+            ? '1px solid var(--brand-primary)'
             : '1px solid var(--border-primary)',
           borderRadius: 'var(--radius-md)',
           color: isFiltered ? 'var(--text-primary)' : 'var(--text-secondary)',
@@ -154,12 +154,12 @@ export default function FilterDropdown({
           cursor: disabled ? 'not-allowed' : 'pointer',
           outline: 'none',
           transition: 'all var(--transition-fast)',
-          boxShadow: isOpen ? '0 0 0 2px rgba(255, 86, 34, 0.15)' : 'none',
+          boxShadow: isOpen ? '0 0 0 2px rgba(107, 29, 42, 0.15)' : 'none',
           userSelect: 'none',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {Icon && <Icon size={13} color={isFiltered ? 'var(--edge-primary)' : 'var(--text-tertiary)'} />}
+          {Icon && <Icon size={13} color={isFiltered ? 'var(--brand-primary)' : 'var(--text-tertiary)'} />}
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {selectedOption?.label || placeholder}
           </span>
@@ -230,10 +230,10 @@ export default function FilterDropdown({
                   fontSize: 'var(--text-xs)',
                   fontWeight: isSelected ? 600 : 400,
                   color: isSelected
-                    ? 'var(--edge-primary)'
+                    ? 'var(--brand-primary)'
                     : 'var(--text-primary)',
                   background: isSelected
-                    ? 'var(--edge-primary-light)'
+                    ? 'var(--brand-primary-light)'
                     : isHighlighted
                     ? 'var(--bg-hover)'
                     : 'transparent',
@@ -245,7 +245,7 @@ export default function FilterDropdown({
                 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {opt.label}
                 </span>
-                {isSelected && <Check size={13} color="var(--edge-primary)" />}
+                {isSelected && <Check size={13} color="var(--brand-primary)" />}
               </div>
             );
           })}

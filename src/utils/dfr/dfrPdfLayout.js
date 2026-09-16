@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — DFR PDF 2-Page Landscape Layout Coordinator
+﻿/**
+ * KaarTech ITMS Control Tower — DFR PDF 2-Page Landscape Layout Coordinator
  * Assembles Page 1 and Page 2 with deterministic geometry, zero clipping,
  * and exact visual parity with DFR Format(1).pdf.
  */

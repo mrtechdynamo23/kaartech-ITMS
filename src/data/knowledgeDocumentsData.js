@@ -1,8 +1,8 @@
 /**
- * EDGE AMS Control Tower — Predefined Knowledge Documents & SOP Repository
+ * KaarTech ITMS Control Tower — Predefined Knowledge Documents & SOP Repository
  *
  * Provides a standardized document-oriented knowledge library across:
- * Business Streams: L2C, E2M, P2P, D2S, S2P, A2D, R2R, H2R
+ * Service Domains: Order to Cash, Estimate to Margin, Procure to Pay, Design to Ship, Source to Pay, Acquire to Dispose, Record to Report
  * Document Types: FAQ, User Manual, Operational Guide, Troubleshooting, SOP / Procedure, Reference
  *
  * Each document contains operational metadata, executive summaries, step-by-step procedures,
@@ -18,15 +18,14 @@ export const KNOWLEDGE_DOCUMENT_TYPES = [
   'Reference',
 ];
 
-export const KNOWLEDGE_BUSINESS_STREAMS = [
-  { key: 'L2C', label: 'L2C (Lead to Cash)' },
-  { key: 'E2M', label: 'E2M (Engineer to Manage)' },
-  { key: 'P2P', label: 'P2P (Procure to Pay)' },
-  { key: 'D2S', label: 'D2S (Demand to Supply)' },
-  { key: 'S2P', label: 'S2P (Source to Pay)' },
-  { key: 'A2D', label: 'A2D (Asset to Disposal)' },
-  { key: 'R2R', label: 'R2R (Record to Report)' },
-  { key: 'H2R', label: 'H2R (Hire to Retire)' },
+export const KNOWLEDGE_SERVICE_DOMAINS = [
+  'IT Helpdesk & End User Services',
+  'Infrastructure, Cloud, and Platform Services',
+  'Applications, Digital, and Integration',
+  'Data, Analytics, AI, and Automation',
+  'Architecture, Quality, and Testing',
+  'SAP ERP and SuccessFactors',
+  'Service Management, Governance, and Delivery',
 ];
 
 export const knowledgeDocuments = [
@@ -35,19 +34,19 @@ export const knowledgeDocuments = [
     id: 'KBA-FAQ-001',
     title: 'AMS Frequently Asked Questions',
     docType: 'FAQ',
-    businessStream: 'L2C',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Service Desk & Triage',
-    application: 'AdvantEDGE CRM / Portal',
+    application: 'KaarTech Enterprise CRM / Portal',
     owner: 'AMS Service Desk',
     lastUpdated: '2026-07-31',
     status: 'Published',
     version: 'v2.4',
     summary: 'Comprehensive overview of AMS operating windows, ticket logging channels, priority definitions, and escalation tiers.',
     content: `### 1. What are the standard AMS operational coverage windows?
-AMS Core runs 24/7 for P1/P2 critical business interruptions. P3 and P4 operational requests are processed Monday through Friday, 08:00 to 18:00 GST.
+AMS Core runs 24/7 for P1/P2 critical business interruptions. P3 and P4 operational requests are processed Monday through Friday, 08:00 to 18:00 AST.
 
 ### 2. How are tickets triaged upon creation?
-Incoming alerts and customer submissions undergo automatic classification based on impacted business domain, application service, and transaction urgency. Tickets without clear categorization are routed to the Central Triage Desk within 15 minutes.
+Incoming alerts and customer submissions undergo automatic classification based on impacted service domain, application service, and transaction urgency. Tickets without clear categorization are routed to the Central Triage Desk within 15 minutes.
 
 ### 3. What constitutes a P1 incident?
 A P1 represents a complete outage or severe operational halt affecting core financial settlement, plant operations, or corporate export licensing with no viable operational workaround.`,
@@ -59,16 +58,16 @@ A P1 represents a complete outage or severe operational halt affecting core fina
     id: 'KBA-FAQ-002',
     title: 'Application Access FAQ',
     docType: 'FAQ',
-    businessStream: 'L2C',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Customer Management',
-    application: 'AdvantEDGE CRM',
+    application: 'KaarTech Enterprise CRM',
     owner: 'AMS Service Desk',
     lastUpdated: '2026-07-31',
     status: 'Published',
     version: 'v3.1',
     summary: 'Frequently asked questions regarding CRM role authorizations, business partner access, and multi-factor authentication.',
-    content: `### 1. Who approves access to AdvantEDGE CRM?
-All customer and partner account access requests require dual sign-off from the respective Business Domain Lead and Corporate Security Coordinator.
+    content: `### 1. Who approves access to KaarTech Enterprise CRM?
+All customer and partner account access requests require dual sign-off from the respective Service Domain Lead and Corporate Security Coordinator.
 
 ### 2. Why is my CRM account showing 'Authorization Suspended'?
 Accounts inactive for more than 45 days are placed into dormant protection. Reactivation requires submitting an SR via the Portal with manager endorsement.
@@ -83,7 +82,7 @@ Elevated firecall access can be granted for a maximum 72-hour window through the
     id: 'KBA-FAQ-003',
     title: 'Incident Management FAQ',
     docType: 'FAQ',
-    businessStream: 'D2S',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Incident Management',
     application: 'SAP S/4HANA EWM',
     owner: 'Omar Bashar',
@@ -107,7 +106,7 @@ Stop-clock status (Awaiting Customer / Pending 3rd Party) requires timestamped j
     id: 'KBA-FAQ-004',
     title: 'Service Request FAQ',
     docType: 'FAQ',
-    businessStream: 'P2P',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Procurement & Sourcing',
     application: 'SAP Ariba',
     owner: 'Ravi Shankar',
@@ -119,7 +118,7 @@ Stop-clock status (Awaiting Customer / Pending 3rd Party) requires timestamped j
 Standard catalog updates have a 48-hour SLA. Custom PunchOut integrations require a 5-business-day testing cycle across staging environments.
 
 ### 2. How do I track PR approval bottlenecks?
-Open the PR in AdvantEDGE Procurement Console, select 'Workflow History', and view active approval queue nodes and designated delegates.`,
+Open the PR in KaarTech Enterprise Procurement Console, select 'Workflow History', and view active approval queue nodes and designated delegates.`,
     relatedTickets: ['SR-00002', 'SR-00021'],
     tags: ['Ariba', 'Procurement', 'Catalog', 'PR'],
     viewCount: 710,
@@ -128,7 +127,7 @@ Open the PR in AdvantEDGE Procurement Console, select 'Workflow History', and vi
     id: 'KBA-FAQ-005',
     title: 'Password / Access FAQ',
     docType: 'FAQ',
-    businessStream: 'H2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Identity & Access Management',
     application: 'SAP SuccessFactors',
     owner: 'Layla Al Qassimi',
@@ -137,7 +136,7 @@ Open the PR in AdvantEDGE Procurement Console, select 'Workflow History', and vi
     version: 'v2.2',
     summary: 'Self-service password reset procedures, SSO credential synchronization, and mobile authenticator onboarding.',
     content: `### 1. How do I reset my SuccessFactors enterprise password?
-Use the corporate Self-Service Password Reset (SSPR) portal at identity.edge.ae. Direct password changes inside the SF interface are disabled by policy.
+Use the corporate Self-Service Password Reset (SSPR) portal at identity.itms.sa. Direct password changes inside the SF interface are disabled by policy.
 
 ### 2. What should I do if my Microsoft Authenticator push is not triggering?
 Verify device date/time synchronization or choose 'Use verification code instead' to enter the 6-digit TOTP token manually.`,
@@ -149,7 +148,7 @@ Verify device date/time synchronization or choose 'Use verification code instead
     id: 'KBA-FAQ-006',
     title: 'Common Application Issues FAQ',
     docType: 'FAQ',
-    businessStream: 'E2M',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Manufacturing Operations',
     application: 'SAP MES/MII',
     owner: 'Priya Nair',
@@ -172,16 +171,16 @@ Inspect scanner firmware settings to disable automatic CR/LF suffixing on standa
     id: 'KBA-MAN-001',
     title: 'Application User Manual',
     docType: 'User Manual',
-    businessStream: 'L2C',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Customer Management',
-    application: 'AdvantEDGE CRM',
+    application: 'KaarTech Enterprise CRM',
     owner: 'Khalid Al Hashimi',
     lastUpdated: '2026-07-28',
     status: 'Published',
     version: 'v4.0',
     summary: 'End-to-end user manual for commercial opportunity management, customer quotation approval cycles, and billing dispatch.',
     content: `### Executive Overview
-This document guides sales coordinators and commercial operations teams through the AdvantEDGE CRM lifecycle.
+This document guides sales coordinators and commercial operations teams through the KaarTech Enterprise CRM lifecycle.
 
 ### Key Workflows
 1. **Quotation Generation:** Enter customer specification parameters, verify margin baselines, and initiate pricing compliance.
@@ -195,7 +194,7 @@ This document guides sales coordinators and commercial operations teams through 
     id: 'KBA-MAN-002',
     title: 'Service Request User Guide',
     docType: 'User Manual',
-    businessStream: 'P2P',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Procurement',
     application: 'SAP MM',
     owner: 'Abdulrahman Darwish',
@@ -219,7 +218,7 @@ This operational guide assists business superusers in correctly drafting and sub
     id: 'KBA-MAN-003',
     title: 'Incident Logging User Guide',
     docType: 'User Manual',
-    businessStream: 'D2S',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Warehouse Management',
     application: 'SAP TM',
     owner: 'Vikram Singh',
@@ -242,7 +241,7 @@ Clear and concise evidence collection accelerates initial troubleshooting by up 
     id: 'KBA-MAN-004',
     title: 'Change Request User Guide',
     docType: 'User Manual',
-    businessStream: 'E2M',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Engineering & Quality',
     application: 'SAP QM',
     owner: 'Sultan Al Dhahiri',
@@ -265,16 +264,16 @@ All functional modifications and technical enhancements must pass through formal
     id: 'KBA-MAN-005',
     title: 'AMS Portal User Manual',
     docType: 'User Manual',
-    businessStream: 'R2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Operations Command',
-    application: 'EDGE Control Tower',
-    owner: 'Fatima Al Zaabi',
+    application: 'KaarTech ITMS Control Tower',
+    owner: 'Fatima Al-Otaibi',
     lastUpdated: '2026-08-28',
     status: 'Published',
     version: 'v2.0',
-    summary: 'Complete guide to navigating the EDGE AMS Control Tower: Command Center, Executive Board, DFR reporting, and Customer Corner.',
+    summary: 'Complete guide to navigating the KaarTech ITMS Control Tower: Command Center, Executive Board, DFR reporting, and Customer Corner.',
     content: `### System Architecture
-The EDGE AMS Control Tower centralizes telemetry, ITSM data, and resource allocations into a single pane of glass.
+The KaarTech ITMS Control Tower centralizes telemetry, ITSM data, and resource allocations into a single pane of glass.
 
 ### Navigation Overview
 - **Executive Board:** High-level operational posture, contractual SLA trends, and budget health.
@@ -291,7 +290,7 @@ The EDGE AMS Control Tower centralizes telemetry, ITSM data, and resource alloca
     id: 'KBA-OPS-001',
     title: 'Incident Resolution Guide',
     docType: 'Operational Guide',
-    businessStream: 'R2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Financial Operations',
     application: 'SAP S/4HANA FI',
     owner: 'Mariam Al Suwaidi',
@@ -314,7 +313,7 @@ Check transaction SM21 and SM12 for persistent lock entries on table BSEG or ACD
     id: 'KBA-OPS-002',
     title: 'Service Request Handling Guide',
     docType: 'Operational Guide',
-    businessStream: 'S2P',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Sourcing & Contracting',
     application: 'SAP Ariba Sourcing',
     owner: 'Noura Al Shamsi',
@@ -323,7 +322,7 @@ Check transaction SM21 and SM12 for persistent lock entries on table BSEG or ACD
     version: 'v1.9',
     summary: 'Resolver procedures for handling sourcing event template updates, auction rule configuration, and supplier qualification workflows.',
     content: `### Standard Handling Procedure
-1. Verify that requested contract template changes comply with EDGE Procurement Policy 2026.
+1. Verify that requested contract template changes comply with KaarTech Procurement Policy 2026.
 2. Clone existing template in staging environment to apply rule changes.
 3. Perform dry-run RFQ simulation with test supplier accounts before promoting to production.`,
     relatedTickets: ['SR-00008'],
@@ -334,9 +333,9 @@ Check transaction SM21 and SM12 for persistent lock entries on table BSEG or ACD
     id: 'KBA-OPS-003',
     title: 'Escalation Procedure',
     docType: 'Operational Guide',
-    businessStream: 'R2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Service Management',
-    application: 'All Enterprise Applications',
+    application: 'Enterprise Business Platforms',
     owner: 'Sara Al Marzouqi',
     lastUpdated: '2026-08-22',
     status: 'Published',
@@ -344,7 +343,7 @@ Check transaction SM21 and SM12 for persistent lock entries on table BSEG or ACD
     summary: 'Hierarchical operational escalation matrix, notification triggers, and SteerCom executive engagement thresholds.',
     content: `### Escalation Hierarchy
 - **Tier 1 (T+30m on P1):** Primary Resolver to Domain Lead (e.g. Omar Bashar for D2S).
-- **Tier 2 (T+60m on P1):** Domain Lead to AMS Delivery Lead (Fatima Al Zaabi).
+- **Tier 2 (T+60m on P1):** Domain Lead to AMS Delivery Lead (Fatima Al-Otaibi).
 - **Tier 3 (T+120m on P1):** AMS Lead to Program Director (Dr. Tariq Al Nuaimi) and Steering Committee.
 
 ### Critical Escalation Triggers
@@ -358,10 +357,10 @@ Check transaction SM21 and SM12 for persistent lock entries on table BSEG or ACD
     id: 'KBA-OPS-004',
     title: 'SLA Management Guide',
     docType: 'Operational Guide',
-    businessStream: 'R2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Governance & Reporting',
-    application: 'EDGE Reporting Engine',
-    owner: 'Fatima Al Zaabi',
+    application: 'KaarTech ITMS Reporting Engine',
+    owner: 'Fatima Al-Otaibi',
     lastUpdated: '2026-08-08',
     status: 'Published',
     version: 'v2.8',
@@ -380,7 +379,7 @@ All SLA calculations are reconciled daily against master ITSM event tables and p
     id: 'KBA-OPS-005',
     title: 'Application Support Guide',
     docType: 'Operational Guide',
-    businessStream: 'A2D',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Plant & Asset Management',
     application: 'SAP PM/EAM',
     owner: 'Tariq Al Dhaheri',
@@ -400,7 +399,7 @@ Ensure monthly maintenance plans (transaction IP10 / IP30) are executed on the 1
     id: 'KBA-TRB-001',
     title: 'Application Login Troubleshooting',
     docType: 'Troubleshooting',
-    businessStream: 'H2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Authentication & SSO',
     application: 'SAP SuccessFactors',
     owner: 'Raj Malhotra',
@@ -411,7 +410,7 @@ Ensure monthly maintenance plans (transaction IP10 / IP30) are executed on the 1
     content: `### Symptom: SAML Error 'Signature Validation Failed'
 1. Check ADFS / Microsoft Entra token signing certificate expiry.
 2. Verify token audience URI matches SuccessFactors service provider entity ID.
-3. Clear browser session storage and re-initiate IdP-initiated login from office.edge.ae.`,
+3. Clear browser session storage and re-initiate IdP-initiated login from office.itms.sa.`,
     relatedTickets: ['INC-00016', 'SR-00028'],
     tags: ['Login', 'SAML', 'SSO', 'Identity'],
     viewCount: 1380,
@@ -420,7 +419,7 @@ Ensure monthly maintenance plans (transaction IP10 / IP30) are executed on the 1
     id: 'KBA-TRB-002',
     title: 'Integration Failure Troubleshooting',
     docType: 'Troubleshooting',
-    businessStream: 'E2M',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Middleware & CPI',
     application: 'SAP CPI Tenant',
     owner: 'Rakesh Kumar',
@@ -441,7 +440,7 @@ Ensure monthly maintenance plans (transaction IP10 / IP30) are executed on the 1
     id: 'KBA-TRB-003',
     title: 'Access Issue Troubleshooting',
     docType: 'Troubleshooting',
-    businessStream: 'L2C',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'User Authorization & GRC',
     application: 'SAP GRC Access Control',
     owner: 'Deepak Kumar',
@@ -461,7 +460,7 @@ Ensure monthly maintenance plans (transaction IP10 / IP30) are executed on the 1
     id: 'KBA-TRB-004',
     title: 'Common Application Error Guide',
     docType: 'Troubleshooting',
-    businessStream: 'P2P',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Vendor Invoice Processing',
     application: 'OpenText VIM',
     owner: 'Arjun Menon',
@@ -483,10 +482,10 @@ Ensure monthly maintenance plans (transaction IP10 / IP30) are executed on the 1
     id: 'KBA-SOP-001',
     title: 'Period-End Close Emergency Restoration SOP',
     docType: 'SOP / Procedure',
-    businessStream: 'R2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Financial Accounting',
     application: 'SAP S/4HANA Finance',
-    owner: 'Fatima Al Zaabi',
+    owner: 'Fatima Al-Otaibi',
     lastUpdated: '2026-08-27',
     status: 'Published',
     version: 'v3.5',
@@ -503,7 +502,7 @@ Ensure monthly maintenance plans (transaction IP10 / IP30) are executed on the 1
     id: 'KBA-SOP-002',
     title: 'CPI Interface Circuit-Breaker & Replay SOP',
     docType: 'SOP / Procedure',
-    businessStream: 'E2M',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Integration Services',
     application: 'SAP Cloud Integration',
     owner: 'Rakesh Kumar',
@@ -524,16 +523,16 @@ When external partner endpoints return HTTP 503 for more than 10 consecutive exe
     id: 'KBA-REF-001',
     title: 'Disaster Recovery Failover Procedure (RTO < 2h)',
     docType: 'Reference',
-    businessStream: 'A2D',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Infrastructure & DR',
     application: 'Enterprise HANA Multi-AZ',
     owner: 'Tariq Al Dhaheri',
     lastUpdated: '2026-07-20',
     status: 'Published',
     version: 'v4.2',
-    summary: 'Contractual disaster recovery reference manual, replication status verification, and DNS failover sequencing for Abu Dhabi secondary datacenter.',
+    summary: 'Contractual disaster recovery reference manual, replication status verification, and DNS failover sequencing for Riyadh secondary datacenter.',
     content: `### Disaster Declaration Protocol
-Only the EDGE Group CIO or designated Program Director may authorize DR invocation.
+Only the KaarTech Group CIO or designated Program Director may authorize DR invocation.
 
 ### Key Targets
 - **RTO (Recovery Time Objective):** < 2.0 Hours.

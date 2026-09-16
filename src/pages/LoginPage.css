@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════════════
-   EDGE AMS Control Tower — Login Page Styles
+﻿/* ---------------------------------------------------
+   KaarTech ITMS Control Tower � Login Page Styles
    Route: /login
    Aesthetic: Aerospace Defense Command & Enterprise Control
-   ═══════════════════════════════════════════════════ */
+   --------------------------------------------------- */
 
 .login-page {
   display: flex;
@@ -11,7 +11,7 @@
   overflow: hidden;
 }
 
-/* ── Left Panel (Aerospace Defense Command Aesthetics) ── */
+/* -- Left Panel (Aerospace Defense Command Aesthetics) -- */
 .login-left {
   flex: 1.15;
   display: flex;
@@ -90,10 +90,10 @@
 .login-accent-bar {
   width: 52px;
   height: 3px;
-  background: #FF5622;
+  background: #6B1D2A;
   border-radius: 2px;
   margin: 0 auto 16px auto;
-  box-shadow: 0 0 14px rgba(255, 86, 34, 0.65);
+  box-shadow: 0 0 14px rgba(107, 29, 42, 0.65);
 }
 
 .login-left-title {
@@ -141,7 +141,7 @@
 
 .login-highlight-pill:hover {
   background: rgba(255, 255, 255, 0.11);
-  border-color: rgba(255, 86, 34, 0.5);
+  border-color: rgba(107, 29, 42, 0.5);
   transform: translateY(-1px);
 }
 
@@ -149,8 +149,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #FF5622;
-  box-shadow: 0 0 8px #FF5622;
+  background: #6B1D2A;
+  box-shadow: 0 0 8px #6B1D2A;
   display: inline-block;
   animation: pulseGlow 2s infinite ease-in-out;
 }
@@ -186,7 +186,7 @@
   text-transform: uppercase;
 }
 
-/* ── Right Panel (Auth Card) ── */
+/* -- Right Panel (Auth Card) -- */
 .login-right {
   flex: 0.95;
   display: flex;
@@ -204,7 +204,7 @@
 }
 
 [data-theme="dark"] .login-right {
-  background: radial-gradient(ellipse at 80% 20%, rgba(255, 86, 34, 0.03) 0%, transparent 60%), #0A0E14;
+  background: radial-gradient(ellipse at 80% 20%, rgba(107, 29, 42, 0.03) 0%, transparent 60%), #0A0E14;
 }
 
 .login-right-topbar {
@@ -238,8 +238,8 @@
 }
 
 .login-util-btn:hover {
-  border-color: var(--edge-primary);
-  color: var(--edge-primary);
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
   background: var(--bg-hover);
 }
 
@@ -252,7 +252,7 @@
 .login-card {
   background: var(--bg-card);
   border: 2px solid var(--border-primary);
-  border-top: 3.5px solid var(--edge-primary, #FF5622);
+  border-top: 3.5px solid var(--brand-primary, #6B1D2A);
   border-radius: 14px;
   padding: 34px 32px 28px 32px;
   box-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.04);
@@ -312,8 +312,8 @@
 }
 
 .login-input:focus {
-  border-color: var(--edge-primary, #FF5622) !important;
-  box-shadow: 0 0 0 3px rgba(255, 86, 34, 0.16) !important;
+  border-color: var(--brand-primary, #6B1D2A) !important;
+  box-shadow: 0 0 0 3px rgba(107, 29, 42, 0.16) !important;
   outline: none;
 }
 
@@ -359,7 +359,7 @@
 
 .login-forgot {
   font-size: 13px;
-  color: var(--edge-primary, #FF5622);
+  color: var(--brand-primary, #6B1D2A);
   font-weight: 600;
   background: transparent;
   border: none;
@@ -392,21 +392,21 @@
   font-size: 15px !important;
   font-weight: 700 !important;
   border-radius: 8px !important;
-  background: var(--edge-primary, #FF5622) !important;
+  background: var(--brand-primary, #6B1D2A) !important;
   border: none !important;
   color: #FFFFFF !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 8px !important;
-  box-shadow: 0 4px 14px rgba(255, 86, 34, 0.35);
+  box-shadow: 0 4px 14px rgba(107, 29, 42, 0.35);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .login-submit:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(255, 86, 34, 0.45);
+  box-shadow: 0 6px 20px rgba(107, 29, 42, 0.45);
 }
 
 .login-submit:disabled {
@@ -422,8 +422,8 @@
   margin-top: 20px;
   padding: 10px 14px;
   border-radius: 8px;
-  background: rgba(255, 86, 34, 0.05);
-  border: 1px dashed rgba(255, 86, 34, 0.35);
+  background: rgba(107, 29, 42, 0.05);
+  border: 1px dashed rgba(107, 29, 42, 0.35);
   font-size: 12px;
   color: var(--text-secondary);
   font-family: var(--font-mono, monospace);
@@ -436,13 +436,13 @@
   color: var(--text-tertiary);
 }
 
-/* ── Keyframes ── */
+/* -- Keyframes -- */
 @keyframes pulseGlow {
   0%, 100% { transform: scale(1); opacity: 0.9; }
   50% { transform: scale(1.3); opacity: 1; }
 }
 
-/* ── Responsive ── */
+/* -- Responsive -- */
 @media (max-width: 1024px) {
   .login-page {
     flex-direction: column;

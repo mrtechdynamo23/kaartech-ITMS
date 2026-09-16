@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Enhancements & Change Requests
+ * KaarTech ITMS Control Tower — Enhancements & Change Requests
  * Route: /command-center/enhancements
  * Dedicated >32 person-hours workstream (ENH-OF-RUN) per Section 20 & 22.
  * Complete with all 4 required operational visual analytics:
@@ -25,11 +25,13 @@ import FilterBar from '../../components/common/FilterBar';
 import DataTable from '../../components/common/DataTable';
 import DetailModal from '../../components/common/DetailModal';
 import { getEnhancementAnalytics } from '../../data/analyticsSelectors';
+import { SERVICE_DOMAINS, getServiceDomainById } from '../../data/serviceDomains';
 
 export default function EnhancementsPage() {
   const [selectedEnh, setSelectedEnh] = useState(null);
   const [selectedScaleFilter, setSelectedScaleFilter] = useState(null);
   const [filters, setFilters] = useState({
+    serviceDomain: 'all',
     entity: 'all',
     domain: 'all',
     status: 'all',
@@ -42,11 +44,11 @@ export default function EnhancementsPage() {
 
   // Form State
   const [newTitle, setNewTitle] = useState('');
-  const [newDomain, setNewDomain] = useState('L2C');
+  const [newServiceDomain, setNewServiceDomain] = useState(SERVICE_DOMAINS[5].id); // TWR-06 SAP default
   const [newApp, setNewApp] = useState('SAP S/4HANA FI-CO');
   const [newHours, setNewHours] = useState(48);
   const [newPriority, setNewPriority] = useState('High');
-  const [newRequester, setNewRequester] = useState('Sarah Al Marzooqi');
+  const [newRequester, setNewRequester] = useState('KaarTech Enterprise Client');
   const [newDesc, setNewDesc] = useState('');
 
   const analytics = useMemo(() => {
@@ -70,13 +72,15 @@ export default function EnhancementsPage() {
     if (!newTitle.trim()) return;
 
     const newId = `CR-00${analytics.filteredList.length + customEnhancements.length + 1}`;
+    const sDomain = getServiceDomainById(newServiceDomain);
     const newRecord = {
       id: newId,
       title: newTitle.trim(),
       shortDescription: newTitle.trim(),
       description: newDesc.trim() || newTitle.trim(),
-      businessDomain: newDomain,
-      application: newApp,
+      serviceDomainId: sDomain.id,
+      serviceDomain: sDomain.name,
+application: newApp,
       timeCountHrs: Number(newHours) || 40,
       effortHours: Number(newHours) || 40,
       priority: newPriority,
@@ -86,7 +90,7 @@ export default function EnhancementsPage() {
       assignedTo: 'Offshore Enhancement Lead',
       createdDate: new Date().toISOString().split('T')[0],
       track: 'ENH-OF-RUN',
-      businessBenefit: newDesc.trim() || 'Automated operational process modification for AdvantEDGE landscape.',
+      businessBenefit: newDesc.trim() || 'Automated operational process modification for KaarTech Enterprise landscape.',
     };
 
     setCustomEnhancements(prev => [newRecord, ...prev]);
@@ -118,8 +122,28 @@ export default function EnhancementsPage() {
       )
     },
     { key: 'shortDescription', label: 'Enhancement Summary', wrap: true, render: (val, item) => val || item.title },
+    {
+      key: 'serviceDomain',
+      label: 'Service Domain',
+      width: '180px',
+      render: (val, item) => (
+        <span
+          className="badge"
+          style={{
+            fontSize: '11px',
+            fontWeight: 700,
+            background: 'rgba(107, 29, 42, 0.08)',
+            color: 'var(--brand-primary)',
+            border: '1px solid rgba(107, 29, 42, 0.2)',
+          }}
+          title={val || item.serviceDomainId}
+        >
+          {val || item.serviceDomainId || 'SAP ERP & SuccessFactors'}
+        </span>
+      ),
+    },
     { key: 'application', label: 'Application', width: '150px' },
-    { key: 'businessDomain', label: 'Domain', width: '80px' },
+    { key: 'serviceDomain', label: 'Stream', width: '80px' },
     { key: 'processGroup', label: 'Process Group', width: '120px' },
     { key: 'assignedTo', label: 'Lead Developer', width: '140px', render: (val, item) => val || item.leadDeveloper || 'Unassigned' },
     { key: 'status', label: 'Stage', type: 'status', width: '130px' },
@@ -188,10 +212,11 @@ export default function EnhancementsPage() {
         filters={filters}
         onChange={setFilters}
         onReset={() => {
-          setFilters({ entity: 'all', domain: 'all', status: 'all', app: 'all' });
+          setFilters({ serviceDomain: 'all', entity: 'all', domain: 'all', status: 'all', app: 'all' });
           setSelectedScaleFilter(null);
         }}
         statusOptions={['Requirements', 'Design', 'Build', 'Testing', 'UAT', 'Deployed', 'Closed']}
+        showServiceDomain={true}
         showEntity={true}
         showDomain={true}
         showPriority={false}
@@ -458,7 +483,7 @@ export default function EnhancementsPage() {
         columns={columns}
         data={displayList}
         onRowClick={(item) => setSelectedEnh(item)}
-        exportFilename="edge-enhancements.csv"
+        exportFilename="itms-enhancements.csv"
       />
 
       {/* Centered Record Detail Modal (Section 23) */}
@@ -519,7 +544,7 @@ export default function EnhancementsPage() {
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <Sparkles size={18} color="var(--edge-primary, #FF5622)" />
+                  <Sparkles size={18} color="var(--brand-primary, #6B1D2A)" />
                   <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                     Submit Enhancement Request
                   </h3>
@@ -538,7 +563,8 @@ export default function EnhancementsPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleCreateEnhancement} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleCreateEnhancement} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+              <div className="modal-form-scrollable-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
                   Enhancement Title / Objective *
@@ -546,7 +572,7 @@ export default function EnhancementsPage() {
                 <input
                   type="text"
                   required
-                  placeholder="e.g., Automated Cross-Entity Invoicing for EDGE Business Units"
+                  placeholder="e.g., Automated Cross-Entity Invoicing for KaarTech Business Units"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   style={{
@@ -561,34 +587,31 @@ export default function EnhancementsPage() {
                 />
               </div>
 
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                  Service Domain (7 RFP Domains) *
+                </label>
+                <select
+                  value={newServiceDomain}
+                  onChange={(e) => setNewServiceDomain(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: 'var(--radius-md, 8px)',
+                    border: '1px solid var(--border-primary, #cbd5e1)',
+                    background: 'var(--bg-input, #ffffff)',
+                    color: 'var(--text-primary)',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                  }}
+                >
+                  {SERVICE_DOMAINS.map(d => (
+                    <option key={d.id} value={d.id}>{d.name} ({d.shortCode})</option>
+                  ))}
+                </select>
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                    Business Domain
-                  </label>
-                  <select
-                    value={newDomain}
-                    onChange={(e) => setNewDomain(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: 'var(--radius-md, 8px)',
-                      border: '1px solid var(--border-primary, #cbd5e1)',
-                      background: 'var(--bg-input, #ffffff)',
-                      color: 'var(--text-primary)',
-                      fontSize: '13px',
-                    }}
-                  >
-                    <option value="L2C">L2C (Lead to Cash)</option>
-                    <option value="O2C">O2C (Order to Cash)</option>
-                    <option value="P2P">P2P (Procure to Pay)</option>
-                    <option value="R2R">R2R (Record to Report)</option>
-                    <option value="H2R">H2R (Hire to Retire)</option>
-                    <option value="S2P">S2P (Source to Pay)</option>
-                    <option value="MFG">MFG (Manufacturing)</option>
-                    <option value="CRM">CRM (Customer Mgmt)</option>
-                  </select>
-                </div>
 
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
@@ -711,16 +734,10 @@ export default function EnhancementsPage() {
                   }}
                 />
               </div>
+              </div>
 
-              {/* Action Buttons */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                marginTop: '12px',
-                paddingTop: '16px',
-                borderTop: '1px solid var(--border-primary, #e2e8f0)',
-              }}>
+              {/* Action Buttons — Sticky Footer */}
+              <div className="modal-form-sticky-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"

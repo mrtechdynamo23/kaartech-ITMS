@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Recent Organization Changes Drawer / Modal
+﻿/**
+ * KaarTech ITMS Control Tower — Recent Organization Changes Drawer / Modal
  * 
  * Implements Section 27 of specifications:
  * - Realignment history and personnel mobilization
@@ -60,8 +60,8 @@ export default function RecentChangesDrawer({ isOpen, onClose }) {
                 width: '36px',
                 height: '36px',
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(255, 86, 34, 0.1)',
-                color: 'var(--edge-primary)',
+                background: 'rgba(107, 29, 42, 0.1)',
+                color: 'var(--brand-primary)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -118,8 +118,8 @@ export default function RecentChangesDrawer({ isOpen, onClose }) {
                       textTransform: 'uppercase',
                       padding: '2px 6px',
                       borderRadius: '4px',
-                      background: 'rgba(255, 86, 34, 0.12)',
-                      color: 'var(--edge-primary)',
+                      background: 'rgba(107, 29, 42, 0.12)',
+                      color: 'var(--brand-primary)',
                     }}
                   >
                     {change.category}

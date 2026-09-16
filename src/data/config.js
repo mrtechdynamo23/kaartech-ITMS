@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Configuration
+ * KaarTech ITMS Control Tower — Configuration
  * 
  * Centralised configurable values, thresholds, and constants.
  * Per Section 2: implement sensible defaults, mark as configurable, note ambiguity.
@@ -87,7 +87,7 @@ export const ENHANCEMENT_THRESHOLD = {
  * CONFIGURABLE / DEMO — Minor vs Major Enhancement classification.
  * The source does NOT define a Minor vs Major classification rule.
  * This default rule is for demo purposes only and must NOT be presented
- * as an EDGE contractual rule.
+ * as an enterprise contractual rule.
  */
 export const ENHANCEMENT_CATEGORY_RULE = {
   // Demo default: <=80 hours = Minor, >80 hours = Major
@@ -159,11 +159,11 @@ export const STOP_CLOCK_STATES = [
 
 // SOURCE-CONFIRMED (RFP §3.8)
 export const RESOLVER_TIERS = [
-  { key: 'L1', label: 'L1', description: 'EDGE, basic helpdesk — captures/logs/dispatches', owner: 'EDGE' },
+  { key: 'L1', label: 'L1', description: 'Client IT, basic helpdesk — captures/logs/dispatches', owner: 'Client IT' },
   { key: 'L1.5', label: 'L1.5', description: 'Bidder, triage and simple how-to/user support', owner: 'Bidder' },
-  { key: 'L2', label: 'L2', description: 'Bidder or EDGE depending on issue type', owner: 'Mixed' },
+  { key: 'L2', label: 'L2', description: 'Bidder or Client IT depending on issue type', owner: 'Mixed' },
   { key: 'L3', label: 'L3', description: 'Bidder, corrective maintenance, RCA, SME-level troubleshooting', owner: 'Bidder' },
-  { key: 'L4', label: 'L4', description: 'OEM — SAP/Microsoft — via EDGE coordination', owner: 'OEM' },
+  { key: 'L4', label: 'L4', description: 'OEM — SAP/Microsoft — via Client IT coordination', owner: 'OEM' },
 ];
 
 // SOURCE-CONFIRMED (RFP §3.8, Level 2 row)
@@ -178,17 +178,17 @@ export const RESOLVER_GROUPS = [
     source: 'RFP §3.8',
   },
   {
-    key: 'edgeBasisSupport',
-    label: 'EDGE BASIS Support',
-    owner: 'EDGE',
+    key: 'enterpriseBasisSupport',
+    label: 'Enterprise BASIS Support',
+    owner: 'Client IT',
     description: 'Handles tickets related to technical infrastructure, system performance, and BASIS administration',
     classification: 'SOURCE-CONFIRMED',
     source: 'RFP §3.8',
   },
   {
-    key: 'edgeGrcSupport',
-    label: 'EDGE GRC Support',
-    owner: 'EDGE',
+    key: 'enterpriseGrcSupport',
+    label: 'Enterprise GRC Support',
+    owner: 'Client IT',
     description: 'Provides support for Governance, Risk, and Compliance (GRC)-related tickets',
     classification: 'SOURCE-CONFIRMED',
     source: 'RFP §3.8',
@@ -204,7 +204,7 @@ export const BUSINESS_CALENDARS = {
     days: [1, 2, 3, 4, 5],     // Mon-Fri
     startTime: '08:30',
     endTime: '17:30',
-    timezone: 'Asia/Dubai',
+    timezone: 'Asia/Riyadh',
     classification: 'SOURCE-CONFIRMED',
   },
   manufacturing: {
@@ -212,7 +212,7 @@ export const BUSINESS_CALENDARS = {
     days: [1, 2, 3, 4, 5, 6],  // Mon-Sat
     startTime: '07:00',
     endTime: '18:00',
-    timezone: 'Asia/Dubai',
+    timezone: 'Asia/Riyadh',
     classification: 'SOURCE-CONFIRMED',
   },
 };

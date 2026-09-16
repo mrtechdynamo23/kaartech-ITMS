@@ -1,11 +1,12 @@
 /**
- * EDGE AMS Control Tower — Dynamic Analytics & Data Selectors
+ * KaarTech ITMS Control Tower — Dynamic Analytics & Data Selectors
  * Derives operational analytics, distributions, time-series trends, ageing buckets,
  * and unified calendar events directly from master & demo datasets.
  */
 import { incidents, serviceRequests, enhancements, problems, RESOURCES, audits, findings, risks, ctas, licenses, knowledgeArticles, customerFeedback } from './demoData';
-import { ENTITIES, BUSINESS_DOMAINS, APPLICATIONS, TRACKS } from './masterData';
+import { ENTITIES, APPLICATIONS, TRACKS } from './masterData';
 import { SLA_POLICIES, OVERALL_MONTHLY_RESOLUTION_TARGET } from './config';
+import { SERVICE_DOMAINS, groupByServiceDomain } from './serviceDomains';
 
 // ── Period Scope Matcher (Month, Quarter, YTD) ──
 export function matchesPeriod(dateStr, period) {
@@ -40,7 +41,8 @@ export function matchesPeriod(dateStr, period) {
 export function getIncidentAnalytics(filter = {}) {
   const filtered = incidents.filter(item => {
     if (filter.entity && filter.entity !== 'all' && item.entity !== filter.entity) return false;
-    if (filter.domain && filter.domain !== 'all' && item.businessDomain !== filter.domain) return false;
+    if (filter.serviceDomain && filter.serviceDomain !== 'all' && item.serviceDomainId !== filter.serviceDomain && item.serviceDomain !== filter.serviceDomain) return false;
+    if (filter.domain && filter.domain !== 'all' && item.serviceDomain !== filter.domain) return false;
     if (filter.priority && filter.priority !== 'all' && item.priority !== filter.priority) return false;
     if (filter.status && filter.status !== 'all' && item.status !== filter.status) return false;
     if (filter.app && filter.app !== 'all' && item.application !== filter.app) return false;
@@ -109,6 +111,7 @@ export function getIncidentAnalytics(filter = {}) {
     ageingBuckets,
     slaComparison,
     exceptionQueue,
+    serviceDomainDistribution: groupByServiceDomain(filtered),
     filteredList: filtered,
   };
 }
@@ -119,7 +122,8 @@ export function getIncidentAnalytics(filter = {}) {
 export function getServiceRequestAnalytics(filter = {}) {
   const filtered = serviceRequests.filter(item => {
     if (filter.entity && filter.entity !== 'all' && item.entity !== filter.entity) return false;
-    if (filter.domain && filter.domain !== 'all' && item.businessDomain !== filter.domain) return false;
+    if (filter.serviceDomain && filter.serviceDomain !== 'all' && item.serviceDomainId !== filter.serviceDomain && item.serviceDomain !== filter.serviceDomain) return false;
+    if (filter.domain && filter.domain !== 'all' && item.serviceDomain !== filter.domain) return false;
     if (filter.status && filter.status !== 'all' && item.status !== filter.status) return false;
     if (filter.app && filter.app !== 'all' && item.application !== filter.app) return false;
     if (filter.period && !matchesPeriod(item.createdDate, filter.period)) return false;
@@ -135,7 +139,7 @@ export function getServiceRequestAnalytics(filter = {}) {
   // Classification Distribution (Standard vs Major)
   const classificationDistribution = [
     { name: 'Standard SR (<16h)', value: standard.length, color: '#2563EB' },
-    { name: 'Major SR (≥16h)', value: major.length, color: '#FF5622' },
+    { name: 'Major SR (≥16h)', value: major.length, color: '#6B1D2A' },
   ];
 
   // Category-wise Created vs Closed (4 Months)
@@ -174,6 +178,7 @@ export function getServiceRequestAnalytics(filter = {}) {
     categoryMonthly,
     monthlyTrend,
     ageingBuckets,
+    serviceDomainDistribution: groupByServiceDomain(filtered),
     filteredList: filtered,
   };
 }
@@ -184,7 +189,8 @@ export function getServiceRequestAnalytics(filter = {}) {
 export function getEnhancementAnalytics(filter = {}) {
   const filtered = enhancements.filter(item => {
     if (filter.entity && filter.entity !== 'all' && item.entity !== filter.entity) return false;
-    if (filter.domain && filter.domain !== 'all' && item.businessDomain !== filter.domain) return false;
+    if (filter.serviceDomain && filter.serviceDomain !== 'all' && item.serviceDomainId !== filter.serviceDomain && item.serviceDomain !== filter.serviceDomain) return false;
+    if (filter.domain && filter.domain !== 'all' && item.serviceDomain !== filter.domain) return false;
     if (filter.status && filter.status !== 'all' && item.status !== filter.status) return false;
     if (filter.app && filter.app !== 'all' && item.application !== filter.app) return false;
     if (filter.period && !matchesPeriod(item.createdDate, filter.period)) return false;
@@ -208,7 +214,7 @@ export function getEnhancementAnalytics(filter = {}) {
   const pipelineStages = [
     { stage: 'Requirements', count: filtered.filter(e => e.status === 'Requirements').length || 2, color: '#9CA3AB' },
     { stage: 'Design', count: filtered.filter(e => e.status === 'Design').length || 3, color: '#2563EB' },
-    { stage: 'Build', count: filtered.filter(e => e.status === 'Build' || e.status === 'In Progress').length || 5, color: '#FF5622' },
+    { stage: 'Build', count: filtered.filter(e => e.status === 'Build' || e.status === 'In Progress').length || 5, color: '#6B1D2A' },
     { stage: 'Testing / QA', count: filtered.filter(e => e.status === 'Testing').length || 3, color: '#D97706' },
     { stage: 'UAT', count: filtered.filter(e => e.status === 'UAT').length || 2, color: '#7C3AED' },
     { stage: 'Deployed', count: deployed.length || 6, color: '#0D9F6E' },
@@ -241,6 +247,25 @@ export function getEnhancementAnalytics(filter = {}) {
     pipelineStages,
     monthlyTrend,
     ageingBuckets,
+    serviceDomainDistribution: groupByServiceDomain(filtered),
+    filteredList: filtered,
+  };
+}
+
+export function getProblemAnalytics(filter = {}) {
+  const filtered = problems.filter(item => {
+    if (filter.serviceDomain && filter.serviceDomain !== 'all' && item.serviceDomainId !== filter.serviceDomain && item.serviceDomain !== filter.serviceDomain) return false;
+    if (filter.domain && filter.domain !== 'all' && item.serviceDomain !== filter.domain) return false;
+    if (filter.status && filter.status !== 'all' && item.status !== filter.status) return false;
+    if (filter.app && filter.app !== 'all' && item.application !== filter.app) return false;
+    return true;
+  });
+  return {
+    total: filtered.length,
+    open: filtered.filter(p => p.status === 'Open' || p.status === 'In Progress').length,
+    rcaPending: filtered.filter(p => p.rcaStatus === 'Pending' || p.rcaStatus === 'Not Started').length,
+    closed: filtered.filter(p => p.status === 'Closed').length,
+    serviceDomainDistribution: groupByServiceDomain(filtered),
     filteredList: filtered,
   };
 }
@@ -253,32 +278,32 @@ export function getGlobalCalendarEvents() {
   // 1. Audits & Compliance Assessments
   const auditEvents = [
     // June 2026
-    { id: 'CAL-AUD-001', title: 'ISO 27001 InfoSec Surveillance Audit', date: '2026-06-11', time: '09:00 – 17:00 GST', owner: 'Ahmad Al Zaabi', status: 'Completed', priority: 'High', typeLabel: 'InfoSec Audit', desc: 'Annual surveillance audit of cloud infrastructure and Abu Dhabi data center controls.' },
-    { id: 'CAL-AUD-002', title: 'Mid-Year SAP S/4HANA Compliance & SOD Audit', date: '2026-06-15', time: '10:00 – 16:30 GST', owner: 'Fatima Al Mansoori', status: 'Completed', priority: 'High', typeLabel: 'Financial Compliance', desc: 'Segregation of Duties (SOD) and GRC access control review across 34 entities.' },
-    { id: 'CAL-AUD-003', title: 'UAE FTA E-Invoicing Systems Readiness Review', date: '2026-06-26', time: '11:00 – 15:00 GST', owner: 'Tariq Al Dhaheri', status: 'Completed', priority: 'Medium', typeLabel: 'Tax Compliance', desc: 'Federal Tax Authority electronic invoicing interface and schema validation audit.' },
+    { id: 'CAL-AUD-001', title: 'ISO 27001 InfoSec Surveillance Audit', date: '2026-06-11', time: '09:00 – 17:00 AST', owner: 'Ahmad Al-Otaibi', status: 'Completed', priority: 'High', typeLabel: 'InfoSec Audit', desc: 'Annual surveillance audit of cloud infrastructure and Riyadh data center controls.' },
+    { id: 'CAL-AUD-002', title: 'Mid-Year SAP S/4HANA Compliance & SOD Audit', date: '2026-06-15', time: '10:00 – 16:30 AST', owner: 'Fatima Al Mansoori', status: 'Completed', priority: 'High', typeLabel: 'Financial Compliance', desc: 'Segregation of Duties (SOD) and GRC access control review across 34 entities.' },
+    { id: 'CAL-AUD-003', title: 'ZATCA E-Invoicing Systems Readiness Review', date: '2026-06-26', time: '11:00 – 15:00 AST', owner: 'Tariq Al Dhaheri', status: 'Completed', priority: 'Medium', typeLabel: 'Tax Compliance', desc: 'Zakat, Tax and Customs Authority (ZATCA) Phase 2 electronic invoicing interface and schema validation audit.' },
     // July 2026
-    { id: 'CAL-AUD-004', title: 'SOC 2 Type II Controls Walkthrough with KPMG', date: '2026-07-08', time: '09:30 – 18:00 GST', owner: 'KPMG Lead Auditor', status: 'Completed', priority: 'High', typeLabel: 'External Attestation', desc: 'Trust Services Criteria evaluation for security, availability, and processing integrity.' },
-    { id: 'CAL-AUD-005', title: 'SIA / NESA Defense Cyber Assurance Assessment', date: '2026-07-16', time: '09:00 – 16:00 GST', owner: 'SIA Inspector General', status: 'Completed', priority: 'Critical', typeLabel: 'Defense Assurance', desc: 'SIA critical defense systems classification and cryptographic enclave review.' },
-    { id: 'CAL-AUD-006', title: 'Disaster Recovery Readiness Simulation (DC1 to DC2)', date: '2026-07-22', time: '08:00 – 14:00 GST', owner: 'Rashid Al Dhaheri', status: 'Completed', priority: 'Critical', typeLabel: 'Business Continuity', desc: 'Total failover simulation from Abu Dhabi DC1 to Al Ain DR facility for S/4HANA & MES.' },
+    { id: 'CAL-AUD-004', title: 'SOC 2 Type II Controls Walkthrough with KPMG', date: '2026-07-08', time: '09:30 – 18:00 AST', owner: 'KPMG Lead Auditor', status: 'Completed', priority: 'High', typeLabel: 'External Attestation', desc: 'Trust Services Criteria evaluation for security, availability, and processing integrity.' },
+    { id: 'CAL-AUD-005', title: 'NCA ECC Enterprise Cyber Assurance Assessment', date: '2026-07-16', time: '09:00 – 16:00 AST', owner: 'NCA Lead Assessor', status: 'Completed', priority: 'Critical', typeLabel: 'Cyber Assurance', desc: 'National Cybersecurity Authority (NCA) critical enterprise systems classification and cryptographic enclave review.' },
+    { id: 'CAL-AUD-006', title: 'Disaster Recovery Readiness Simulation (DC1 to DC2)', date: '2026-07-22', time: '08:00 – 14:00 AST', owner: 'Rashid Al Dhaheri', status: 'Completed', priority: 'Critical', typeLabel: 'Business Continuity', desc: 'Total failover simulation from Riyadh DC1 to Jeddah DR facility for S/4HANA & MES.' },
     // August 2026
-    { id: 'CAL-AUD-007', title: 'ISO 20000 IT Service Management Audit', date: '2026-08-05', time: '09:00 – 17:00 GST', owner: 'SGS External Assessor', status: 'Completed', priority: 'High', typeLabel: 'ITSM Standards', desc: 'Verification of incident, problem, change, and SLA governance practices.' },
-    { id: 'CAL-AUD-008', title: 'SAP License Entitlement True-Up & Compliance Review', date: '2026-08-14', time: '11:00 – 15:00 GST', owner: 'SAP License Advisory', status: 'Completed', priority: 'Medium', typeLabel: 'Vendor Governance', desc: 'Annual user licensing verification across FUEs, Digital Access, and BTP consumption.' },
-    { id: 'CAL-AUD-009', title: 'ITIL Continuous Service Improvement Quality Gate', date: '2026-08-26', time: '14:00 – 17:00 GST', owner: 'Quality Assurance Board', status: 'Completed', priority: 'Medium', typeLabel: 'Process Audit', desc: 'Quarterly review of problem management root cause analysis and KEDB runbook quality.' },
+    { id: 'CAL-AUD-007', title: 'ISO 20000 IT Service Management Audit', date: '2026-08-05', time: '09:00 – 17:00 AST', owner: 'SGS External Assessor', status: 'Completed', priority: 'High', typeLabel: 'ITSM Standards', desc: 'Verification of incident, problem, change, and SLA governance practices.' },
+    { id: 'CAL-AUD-008', title: 'SAP License Entitlement True-Up & Compliance Review', date: '2026-08-14', time: '11:00 – 15:00 AST', owner: 'SAP License Advisory', status: 'Completed', priority: 'Medium', typeLabel: 'Vendor Governance', desc: 'Annual user licensing verification across FUEs, Digital Access, and BTP consumption.' },
+    { id: 'CAL-AUD-009', title: 'ITIL Continuous Service Improvement Quality Gate', date: '2026-08-26', time: '14:00 – 17:00 AST', owner: 'Quality Assurance Board', status: 'Completed', priority: 'Medium', typeLabel: 'Process Audit', desc: 'Quarterly review of problem management root cause analysis and KEDB runbook quality.' },
     // September 2026
-    { id: 'CAL-AUD-010', title: 'S/4HANA 2025 SP03 Core Upgrade Pre-Validation Audit', date: '2026-09-07', time: '10:00 – 16:00 GST', owner: 'Architecture Review Board', status: 'Scheduled', priority: 'High', typeLabel: 'Architecture Quality', desc: 'Pre-upgrade code quality scan, ABAP test cockpit, and HANA compatibility check.' },
-    { id: 'CAL-AUD-011', title: 'Third-Party Defense Supplier Risk Assessment', date: '2026-09-17', time: '09:00 – 15:00 GST', owner: 'Vendor Risk Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'Supply Chain Audit', desc: 'Security assessment of external defense contractors connecting to AdvantEDGE via VPN.' },
-    { id: 'CAL-AUD-012', title: 'Q3 Privileged Access (PAM) & Firefighter Audit', date: '2026-09-25', time: '13:00 – 17:00 GST', owner: 'InfoSec Governance', status: 'Scheduled', priority: 'High', typeLabel: 'Security Audit', desc: 'Quarterly audit of all elevated SAP basis permissions and production firefighter session logs.' },
+    { id: 'CAL-AUD-010', title: 'S/4HANA 2025 SP03 Core Upgrade Pre-Validation Audit', date: '2026-09-07', time: '10:00 – 16:00 AST', owner: 'Architecture Review Board', status: 'Scheduled', priority: 'High', typeLabel: 'Architecture Quality', desc: 'Pre-upgrade code quality scan, ABAP test cockpit, and HANA compatibility check.' },
+    { id: 'CAL-AUD-011', title: 'Third-Party Defense Supplier Risk Assessment', date: '2026-09-17', time: '09:00 – 15:00 AST', owner: 'Vendor Risk Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'Supply Chain Audit', desc: 'Security assessment of external defense contractors connecting to KaarTech Enterprise via VPN.' },
+    { id: 'CAL-AUD-012', title: 'Q3 Privileged Access (PAM) & Firefighter Audit', date: '2026-09-25', time: '13:00 – 17:00 AST', owner: 'InfoSec Governance', status: 'Scheduled', priority: 'High', typeLabel: 'Security Audit', desc: 'Quarterly audit of all elevated SAP basis permissions and production firefighter session logs.' },
     // October 2026
-    { id: 'CAL-AUD-013', title: 'Annual Red Team Penetration Testing Debrief', date: '2026-10-06', time: '10:00 – 16:00 GST', owner: 'Cyber Defense Command', status: 'Scheduled', priority: 'Critical', typeLabel: 'Cyber Assessment', desc: 'Debrief on external penetration drill results against BTP endpoints and mobile gateways.' },
-    { id: 'CAL-AUD-014', title: 'Defense Export Control (ITAR) S/4HANA Audit', date: '2026-10-15', time: '09:30 – 15:00 GST', owner: 'Legal & Export Compliance', status: 'Scheduled', priority: 'High', typeLabel: 'Export Compliance', desc: 'Verification of dual-use item classification and munitions inventory segregation in SAP.' },
-    { id: 'CAL-AUD-015', title: 'ISO 22301 Business Continuity Management Audit', date: '2026-10-27', time: '09:00 – 17:00 GST', owner: 'External Assessor (BSI)', status: 'Scheduled', priority: 'High', typeLabel: 'BCP Certification', desc: 'Formal external audit for ISO 22301 business continuity management certification.' },
+    { id: 'CAL-AUD-013', title: 'Annual Red Team Penetration Testing Debrief', date: '2026-10-06', time: '10:00 – 16:00 AST', owner: 'Cyber Defense Command', status: 'Scheduled', priority: 'Critical', typeLabel: 'Cyber Assessment', desc: 'Debrief on external penetration drill results against BTP endpoints and mobile gateways.' },
+    { id: 'CAL-AUD-014', title: 'Defense Export Control (ITAR) S/4HANA Audit', date: '2026-10-15', time: '09:30 – 15:00 AST', owner: 'Legal & Export Compliance', status: 'Scheduled', priority: 'High', typeLabel: 'Export Compliance', desc: 'Verification of dual-use item classification and munitions inventory segregation in SAP.' },
+    { id: 'CAL-AUD-015', title: 'ISO 22301 Business Continuity Management Audit', date: '2026-10-27', time: '09:00 – 17:00 AST', owner: 'External Assessor (BSI)', status: 'Scheduled', priority: 'High', typeLabel: 'BCP Certification', desc: 'Formal external audit for ISO 22301 business continuity management certification.' },
     // November 2026
-    { id: 'CAL-AUD-016', title: 'Defense Cloud Security & FedRAMP Alignment Review', date: '2026-11-09', time: '10:00 – 16:30 GST', owner: 'Cloud Architecture Board', status: 'Scheduled', priority: 'High', typeLabel: 'Cloud Compliance', desc: 'Assessment of Azure Government UAE and SAP RISE private cloud security configurations.' },
-    { id: 'CAL-AUD-017', title: 'Pre-Year-End GRC Firefighter Log & SOD Review', date: '2026-11-19', time: '11:00 – 16:00 GST', owner: 'Fatima Al Mansoori', status: 'Scheduled', priority: 'High', typeLabel: 'Financial Compliance', desc: 'Pre-audit clean-up of conflicting permissions and SOD violations across finance modules.' },
-    { id: 'CAL-AUD-018', title: 'Database Encryption & Key Vault Verification', date: '2026-11-25', time: '14:00 – 17:00 GST', owner: 'Security Architecture Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'Crypto Audit', desc: 'Verification of HSM encryption keys, TLS 1.3 enforcement, and database column-level salts.' },
+    { id: 'CAL-AUD-016', title: 'Enterprise Cloud Security & Sovereign Alignment Review', date: '2026-11-09', time: '10:00 – 16:30 AST', owner: 'Cloud Architecture Board', status: 'Scheduled', priority: 'High', typeLabel: 'Cloud Compliance', desc: 'Assessment of Azure Sovereign Cloud KSA and SAP RISE private cloud security configurations.' },
+    { id: 'CAL-AUD-017', title: 'Pre-Year-End GRC Firefighter Log & SOD Review', date: '2026-11-19', time: '11:00 – 16:00 AST', owner: 'Fatima Al Mansoori', status: 'Scheduled', priority: 'High', typeLabel: 'Financial Compliance', desc: 'Pre-audit clean-up of conflicting permissions and SOD violations across finance modules.' },
+    { id: 'CAL-AUD-018', title: 'Database Encryption & Key Vault Verification', date: '2026-11-25', time: '14:00 – 17:00 AST', owner: 'Security Architecture Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'Crypto Audit', desc: 'Verification of HSM encryption keys, TLS 1.3 enforcement, and database column-level salts.' },
     // December 2026
-    { id: 'CAL-AUD-019', title: 'Annual IT General Controls (ITGC) PwC Audit', date: '2026-12-07', time: '09:00 – 18:00 GST', owner: 'PwC External Audit Team', status: 'Scheduled', priority: 'Critical', typeLabel: 'External Financial Audit', desc: 'Mandatory statutory financial audit covering change management, access, and operations.' },
-    { id: 'CAL-AUD-020', title: 'Comprehensive Year-End AMS Service Quality Gate', date: '2026-12-14', time: '10:00 – 15:00 GST', owner: 'EDGE Group Internal Audit', status: 'Scheduled', priority: 'High', typeLabel: 'Contractual Audit', desc: 'Contractual verification of AMS delivery commitments, SLA scores, and penalty ledger.' },
+    { id: 'CAL-AUD-019', title: 'Annual IT General Controls (ITGC) PwC Audit', date: '2026-12-07', time: '09:00 – 18:00 AST', owner: 'PwC External Audit Team', status: 'Scheduled', priority: 'Critical', typeLabel: 'External Financial Audit', desc: 'Mandatory statutory financial audit covering change management, access, and operations.' },
+    { id: 'CAL-AUD-020', title: 'Comprehensive Year-End AMS Service Quality Gate', date: '2026-12-14', time: '10:00 – 15:00 AST', owner: 'KaarTech Group Internal Audit', status: 'Scheduled', priority: 'High', typeLabel: 'Contractual Audit', desc: 'Contractual verification of AMS delivery commitments, SLA scores, and penalty ledger.' },
   ];
 
   auditEvents.forEach(a => {
@@ -300,37 +325,37 @@ export function getGlobalCalendarEvents() {
   // 2. Production Releases & Deployments (CAB Approved)
   const releaseEvents = [
     // June 2026
-    { id: 'CAL-REL-001', title: 'S/4HANA Emergency Hotfix & Fiscal Tax Patch', date: '2026-06-08', time: '23:00 – 02:00 GST', owner: 'CAB Lead', status: 'Deployed', priority: 'High', typeLabel: 'Hotfix Deployment', desc: 'Corrective pricing condition update and UAE VAT reporting patch.' },
-    { id: 'CAL-REL-002', title: 'SuccessFactors Delta Integration Pack v4.2', date: '2026-06-17', time: '22:00 – 01:30 GST', owner: 'Integration Lead', status: 'Deployed', priority: 'Medium', typeLabel: 'Cloud Release', desc: 'Employee Central cost center mapping sync improvements.' },
-    { id: 'CAL-REL-003', title: 'Edge B2B Supplier Portal Security Patch', date: '2026-06-24', time: '23:00 – 01:00 GST', owner: 'Security Engineering', status: 'Deployed', priority: 'Medium', typeLabel: 'Portal Patch', desc: 'Multi-factor authentication session hardening for external defense suppliers.' },
-    { id: 'CAL-REL-004', title: 'AdvantEDGE June Sprint Major Release Cutover', date: '2026-06-30', time: '21:00 – 05:00 GST', owner: 'Release Management', status: 'Deployed', priority: 'P1', typeLabel: 'Major Release', desc: '22 approved change requests packaged for production rollout.' },
+    { id: 'CAL-REL-001', title: 'S/4HANA Emergency Hotfix & Fiscal Tax Patch', date: '2026-06-08', time: '23:00 – 02:00 AST', owner: 'CAB Lead', status: 'Deployed', priority: 'High', typeLabel: 'Hotfix Deployment', desc: 'Corrective pricing condition update and Saudi ZATCA VAT reporting patch.' },
+    { id: 'CAL-REL-002', title: 'SuccessFactors Delta Integration Pack v4.2', date: '2026-06-17', time: '22:00 – 01:30 AST', owner: 'Integration Lead', status: 'Deployed', priority: 'Medium', typeLabel: 'Cloud Release', desc: 'Employee Central cost center mapping sync improvements.' },
+    { id: 'CAL-REL-003', title: 'Enterprise B2B Supplier Portal Security Patch', date: '2026-06-24', time: '23:00 – 01:00 AST', owner: 'Security Engineering', status: 'Deployed', priority: 'Medium', typeLabel: 'Portal Patch', desc: 'Multi-factor authentication session hardening for external defense suppliers.' },
+    { id: 'CAL-REL-004', title: 'KaarTech Enterprise June Sprint Major Release Cutover', date: '2026-06-30', time: '21:00 – 05:00 AST', owner: 'Release Management', status: 'Deployed', priority: 'P1', typeLabel: 'Major Release', desc: '22 approved change requests packaged for production rollout.' },
     // July 2026
-    { id: 'CAL-REL-005', title: 'SAP CPI Integration Suite Flow Re-certification Release', date: '2026-07-10', time: '23:00 – 02:00 GST', owner: 'Integration Broker Lead', status: 'Deployed', priority: 'High', typeLabel: 'Middleware Patch', desc: 'Secure certificate rotation and OData pipe throughput optimization.' },
-    { id: 'CAL-REL-006', title: 'Mid-Year Tax Engine & E-Invoicing Regulatory Release', date: '2026-07-15', time: '22:00 – 03:00 GST', owner: 'Financial Systems Lead', status: 'Deployed', priority: 'High', typeLabel: 'Regulatory Release', desc: 'Mandatory FTA compliance update for automated VAT clearance.' },
-    { id: 'CAL-REL-007', title: 'Mobile Fiori Launchpad User Experience Patch', date: '2026-07-21', time: '22:30 – 01:00 GST', owner: 'UX Engineering', status: 'Deployed', priority: 'Low', typeLabel: 'UX Update', desc: 'Biometric login and push notification optimizations for executive approval workflows.' },
-    { id: 'CAL-REL-008', title: 'July AdvantEDGE Production Maintenance Release', date: '2026-07-31', time: '22:00 – 04:00 GST', owner: 'CAB Lead', status: 'Deployed', priority: 'High', typeLabel: 'Monthly Release', desc: 'Standard monthly maintenance sprint with 18 packaged enhancement fixes.' },
+    { id: 'CAL-REL-005', title: 'SAP CPI Integration Suite Flow Re-certification Release', date: '2026-07-10', time: '23:00 – 02:00 AST', owner: 'Integration Broker Lead', status: 'Deployed', priority: 'High', typeLabel: 'Middleware Patch', desc: 'Secure certificate rotation and OData pipe throughput optimization.' },
+    { id: 'CAL-REL-006', title: 'Mid-Year Tax Engine & E-Invoicing Regulatory Release', date: '2026-07-15', time: '22:00 – 03:00 AST', owner: 'Financial Systems Lead', status: 'Deployed', priority: 'High', typeLabel: 'Regulatory Release', desc: 'Mandatory ZATCA compliance update for automated VAT clearance.' },
+    { id: 'CAL-REL-007', title: 'Mobile Fiori Launchpad User Experience Patch', date: '2026-07-21', time: '22:30 – 01:00 AST', owner: 'UX Engineering', status: 'Deployed', priority: 'Low', typeLabel: 'UX Update', desc: 'Biometric login and push notification optimizations for executive approval workflows.' },
+    { id: 'CAL-REL-008', title: 'July KaarTech Enterprise Production Maintenance Release', date: '2026-07-31', time: '22:00 – 04:00 AST', owner: 'CAB Lead', status: 'Deployed', priority: 'High', typeLabel: 'Monthly Release', desc: 'Standard monthly maintenance sprint with 18 packaged enhancement fixes.' },
     // August 2026
-    { id: 'CAL-REL-009', title: 'Microsoft Dynamics 365 CRM Sprint Release', date: '2026-08-07', time: '23:00 – 02:00 GST', owner: 'CRM Tech Lead', status: 'Deployed', priority: 'Medium', typeLabel: 'Cloud Release', desc: 'Customer Connect field service dispatch and portal telemetry enhancements.' },
-    { id: 'CAL-REL-010', title: 'Edge MES Shopfloor Dispatch Connector v3.1', date: '2026-08-18', time: '22:00 – 01:30 GST', owner: 'Manufacturing IT Lead', status: 'Deployed', priority: 'High', typeLabel: 'MES Connector', desc: 'Real-time production order execution sync between HALCON shopfloor and S/4HANA.' },
-    { id: 'CAL-REL-011', title: 'AdvantEDGE August Maintenance Bundle Deployment', date: '2026-08-28', time: '22:00 – 04:00 GST', owner: 'CAB Release Manager', status: 'Deployed', priority: 'High', typeLabel: 'Major Release', desc: '14 approved CAB change requests packaged for production rollout.' },
+    { id: 'CAL-REL-009', title: 'Microsoft Dynamics 365 CRM Sprint Release', date: '2026-08-07', time: '23:00 – 02:00 AST', owner: 'CRM Tech Lead', status: 'Deployed', priority: 'Medium', typeLabel: 'Cloud Release', desc: 'Customer Connect field service dispatch and portal telemetry enhancements.' },
+    { id: 'CAL-REL-010', title: 'Enterprise MES Shopfloor Dispatch Connector v3.1', date: '2026-08-18', time: '22:00 – 01:30 AST', owner: 'Manufacturing IT Lead', status: 'Deployed', priority: 'High', typeLabel: 'MES Connector', desc: 'Real-time production order execution sync between manufacturing plant floor and S/4HANA.' },
+    { id: 'CAL-REL-011', title: 'KaarTech Enterprise August Maintenance Bundle Deployment', date: '2026-08-28', time: '22:00 – 04:00 AST', owner: 'CAB Release Manager', status: 'Deployed', priority: 'High', typeLabel: 'Major Release', desc: '14 approved CAB change requests packaged for production rollout.' },
     // September 2026
-    { id: 'CAL-REL-012', title: 'SAC Executive Boardroom Telemetry Optimization Patch', date: '2026-09-10', time: '22:00 – 01:00 GST', owner: 'Analytics Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'BI Analytics Patch', desc: 'Query performance tuning for SteerCom live widgets and mobile board access.' },
-    { id: 'CAL-REL-013', title: 'OpenText xECM Defense Document Metadata Sync', date: '2026-09-18', time: '23:00 – 02:00 GST', owner: 'Content Services Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'ECM Patch', desc: 'Automated engineering drawing classification and secure optical OCR index.' },
-    { id: 'CAL-REL-014', title: 'AdvantEDGE September Production Sprint Release', date: '2026-09-28', time: '21:00 – 04:00 GST', owner: 'CAB Release Manager', status: 'Scheduled', priority: 'P1', typeLabel: 'Major Release', desc: 'Q3 closeout release incorporating 26 approved enhancement packages.' },
+    { id: 'CAL-REL-012', title: 'SAC Executive Boardroom Telemetry Optimization Patch', date: '2026-09-10', time: '22:00 – 01:00 AST', owner: 'Analytics Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'BI Analytics Patch', desc: 'Query performance tuning for SteerCom live widgets and mobile board access.' },
+    { id: 'CAL-REL-013', title: 'OpenText xECM Enterprise Document Metadata Sync', date: '2026-09-18', time: '23:00 – 02:00 AST', owner: 'Content Services Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'ECM Patch', desc: 'Automated engineering drawing classification and secure optical OCR index.' },
+    { id: 'CAL-REL-014', title: 'KaarTech Enterprise September Production Sprint Release', date: '2026-09-28', time: '21:00 – 04:00 AST', owner: 'CAB Release Manager', status: 'Scheduled', priority: 'P1', typeLabel: 'Major Release', desc: 'Q3 closeout release incorporating 26 approved enhancement packages.' },
     // October 2026
-    { id: 'CAL-REL-015', title: 'S/4HANA Feature Pack 02 Application Rollout', date: '2026-10-09', time: '21:00 – 05:00 GST', owner: 'SAP Core Architecture', status: 'Approved', priority: 'P1', typeLabel: 'Feature Pack', desc: 'S/4HANA FP02 upgrade activating advanced variant configuration and serial tracking.' },
-    { id: 'CAL-REL-016', title: 'SAP BTP Event Mesh Enterprise Broker Upgrade', date: '2026-10-16', time: '23:00 – 02:30 GST', owner: 'Integration Architect', status: 'Scheduled', priority: 'High', typeLabel: 'Middleware Release', desc: 'Upgrading enterprise event mesh routing for low-latency telemetry between defense plants.' },
-    { id: 'CAL-REL-017', title: 'Edge Defense Logistics Track & Trace Release', date: '2026-10-23', time: '22:00 – 01:30 GST', owner: 'Supply Chain Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'Logistics Release', desc: 'RFID-enabled defense asset tracking integration with S/4HANA Extended Warehouse.' },
-    { id: 'CAL-REL-018', title: 'October AdvantEDGE Maintenance Bundle Release', date: '2026-10-30', time: '22:00 – 04:00 GST', owner: 'CAB Release Manager', status: 'Scheduled', priority: 'High', typeLabel: 'Monthly Release', desc: 'Standard monthly maintenance bundle with 16 functional enhancements.' },
+    { id: 'CAL-REL-015', title: 'S/4HANA Feature Pack 02 Application Rollout', date: '2026-10-09', time: '21:00 – 05:00 AST', owner: 'SAP Core Architecture', status: 'Approved', priority: 'P1', typeLabel: 'Feature Pack', desc: 'S/4HANA FP02 upgrade activating advanced variant configuration and serial tracking.' },
+    { id: 'CAL-REL-016', title: 'SAP BTP Event Mesh Enterprise Broker Upgrade', date: '2026-10-16', time: '23:00 – 02:30 AST', owner: 'Integration Architect', status: 'Scheduled', priority: 'High', typeLabel: 'Middleware Release', desc: 'Upgrading enterprise event mesh routing for low-latency telemetry between manufacturing plants.' },
+    { id: 'CAL-REL-017', title: 'Enterprise Logistics Track & Trace Release', date: '2026-10-23', time: '22:00 – 01:30 AST', owner: 'Supply Chain Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'Logistics Release', desc: 'RFID-enabled enterprise asset tracking integration with S/4HANA Extended Warehouse.' },
+    { id: 'CAL-REL-018', title: 'October KaarTech Enterprise Maintenance Bundle Release', date: '2026-10-30', time: '22:00 – 04:00 AST', owner: 'CAB Release Manager', status: 'Scheduled', priority: 'High', typeLabel: 'Monthly Release', desc: 'Standard monthly maintenance bundle with 16 functional enhancements.' },
     // November 2026
-    { id: 'CAL-REL-019', title: 'SuccessFactors Year-End Performance Module Patch', date: '2026-11-06', time: '22:00 – 01:00 GST', owner: 'HR Tech Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'HR Cloud Patch', desc: 'Year-end appraisal workflow configuration and bonus compensation calculation rules.' },
-    { id: 'CAL-REL-020', title: 'Ariba Network Supplier Guided Sourcing Release', date: '2026-11-13', time: '23:00 – 02:00 GST', owner: 'Procurement Systems Lead', status: 'Scheduled', priority: 'High', typeLabel: 'Procurement Release', desc: 'Ariba Guided Sourcing activation for strategic defense tier-1 subcontracting.' },
-    { id: 'CAL-REL-021', title: 'SAP Analytics Cloud Q4 Predictive Engine Release', date: '2026-11-20', time: '22:00 – 01:30 GST', owner: 'Data Analytics Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'Analytics Release', desc: 'Smart Discovery predictive algorithms for spare parts consumption forecasting.' },
-    { id: 'CAL-REL-022', title: 'November AdvantEDGE Production Sprint Release', date: '2026-11-27', time: '21:00 – 04:30 GST', owner: 'CAB Release Manager', status: 'Scheduled', priority: 'P1', typeLabel: 'Major Release', desc: 'Pre-freeze production release deploying 24 approved enterprise change packages.' },
+    { id: 'CAL-REL-019', title: 'SuccessFactors Year-End Performance Module Patch', date: '2026-11-06', time: '22:00 – 01:00 AST', owner: 'HR Tech Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'HR Cloud Patch', desc: 'Year-end appraisal workflow configuration and bonus compensation calculation rules.' },
+    { id: 'CAL-REL-020', title: 'Ariba Network Supplier Guided Sourcing Release', date: '2026-11-13', time: '23:00 – 02:00 AST', owner: 'Procurement Systems Lead', status: 'Scheduled', priority: 'High', typeLabel: 'Procurement Release', desc: 'Ariba Guided Sourcing activation for strategic industrial tier-1 subcontracting.' },
+    { id: 'CAL-REL-021', title: 'SAP Analytics Cloud Q4 Predictive Engine Release', date: '2026-11-20', time: '22:00 – 01:30 AST', owner: 'Data Analytics Lead', status: 'Scheduled', priority: 'Medium', typeLabel: 'Analytics Release', desc: 'Smart Discovery predictive algorithms for spare parts consumption forecasting.' },
+    { id: 'CAL-REL-022', title: 'November KaarTech Enterprise Production Sprint Release', date: '2026-11-27', time: '21:00 – 04:30 AST', owner: 'CAB Release Manager', status: 'Scheduled', priority: 'P1', typeLabel: 'Major Release', desc: 'Pre-freeze production release deploying 24 approved enterprise change packages.' },
     // December 2026
-    { id: 'CAL-REL-023', title: 'Year-End Statutory Payroll & UAE GPSSA Tax Update', date: '2026-12-04', time: '22:00 – 02:00 GST', owner: 'HR Operations Lead', status: 'Scheduled', priority: 'High', typeLabel: 'Payroll Patch', desc: 'Statutory pension contribution updates and UAE national social security tables.' },
-    { id: 'CAL-REL-024', title: 'Core S/4HANA Security Patch & Kernel Update', date: '2026-12-11', time: '22:00 – 03:00 GST', owner: 'BASIS Lead', status: 'Scheduled', priority: 'High', typeLabel: 'Kernel Update', desc: 'SAP NetWeaver 7.55 security kernel patch and OpenSSL cryptographic library refresh.' },
-    { id: 'CAL-REL-025', title: 'AdvantEDGE Q4 Pre-Freeze Stabilization Release', date: '2026-12-18', time: '21:00 – 04:00 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'P1', typeLabel: 'Major Release', desc: 'Final production deployment prior to annual financial close change moratorium.' },
+    { id: 'CAL-REL-023', title: 'Year-End Statutory Payroll & Saudi GOSI Tax Update', date: '2026-12-04', time: '22:00 – 02:00 AST', owner: 'HR Operations Lead', status: 'Scheduled', priority: 'High', typeLabel: 'Payroll Patch', desc: 'Statutory pension contribution updates and Saudi national social security tables.' },
+    { id: 'CAL-REL-024', title: 'Core S/4HANA Security Patch & Kernel Update', date: '2026-12-11', time: '22:00 – 03:00 AST', owner: 'BASIS Lead', status: 'Scheduled', priority: 'High', typeLabel: 'Kernel Update', desc: 'SAP NetWeaver 7.55 security kernel patch and OpenSSL cryptographic library refresh.' },
+    { id: 'CAL-REL-025', title: 'KaarTech Enterprise Q4 Pre-Freeze Stabilization Release', date: '2026-12-18', time: '21:00 – 04:00 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'P1', typeLabel: 'Major Release', desc: 'Final production deployment prior to annual financial close change moratorium.' },
   ];
 
   releaseEvents.forEach(r => {
@@ -352,24 +377,24 @@ export function getGlobalCalendarEvents() {
   // 3. Transformation Milestones & Program Gates
   const milestoneEvents = [
     // June 2026
-    { id: 'CAL-PRG-001', title: 'Wave 1 Final Stabilization & Warranty Handover', date: '2026-06-22', time: '10:00 GST', owner: 'Program Director', entity: 'All 34 EDGE Entities', status: 'Completed', priority: 'High', desc: 'Formal conclusion of post-go-live hypercare warranty phase for Wave 1 entities.' },
+    { id: 'CAL-PRG-001', title: 'Wave 1 Final Stabilization & Warranty Handover', date: '2026-06-22', time: '10:00 AST', owner: 'Program Director', entity: 'All 34 KaarTech Entities', status: 'Completed', priority: 'High', desc: 'Formal conclusion of post-go-live hypercare warranty phase for Wave 1 entities.' },
     // July 2026
-    { id: 'CAL-PRG-002', title: 'S/4HANA Manufacturing Phase 2 Blueprint Sign-Off', date: '2026-07-06', time: '11:00 GST', owner: 'Enterprise Architect', entity: 'HALCON, NIMR, LAHAB', status: 'Completed', priority: 'High', desc: 'Formal steering committee sign-off on detailed defense manufacturing functional design.' },
-    { id: 'CAL-PRG-003', title: 'Wave 2 SuccessFactors HXM Harmonization Go-Live', date: '2026-07-20', time: '10:00 GST', owner: 'Sara Al Marzouqi', entity: 'All 34 EDGE Entities', status: 'Completed', priority: 'High', desc: 'Global rollout of unified talent management and performance compensation.' },
+    { id: 'CAL-PRG-002', title: 'S/4HANA Manufacturing Phase 2 Blueprint Sign-Off', date: '2026-07-06', time: '11:00 AST', owner: 'Enterprise Architect', entity: 'KaarTech Advanced Manufacturing, Heavy Mobility', status: 'Completed', priority: 'High', desc: 'Formal steering committee sign-off on detailed industrial manufacturing functional design.' },
+    { id: 'CAL-PRG-003', title: 'Wave 2 SuccessFactors HXM Harmonization Go-Live', date: '2026-07-20', time: '10:00 AST', owner: 'Sara Al Marzouqi', entity: 'All 34 KaarTech Entities', status: 'Completed', priority: 'High', desc: 'Global rollout of unified talent management and performance compensation.' },
     // August 2026
-    { id: 'CAL-PRG-004', title: 'Ariba Supplier Network Wave 2 Activation (250 Suppliers)', date: '2026-08-10', time: '09:30 GST', owner: 'Procurement Transformation', entity: 'EDGE Group Procurement', status: 'Completed', priority: 'Medium', desc: 'Onboarding 250 local defense sub-tier suppliers onto automated digital purchase orders.' },
-    { id: 'CAL-PRG-005', title: 'Robotic Process Automation Bot 5 (P2P Reconciler) Pilot', date: '2026-08-20', time: '09:00 GST', owner: 'Innovation Lead', entity: 'EDGE HQ, HALCON', status: 'Completed', priority: 'Medium', desc: 'Autonomous OCR three-way match bot deployment into pilot entities.' },
+    { id: 'CAL-PRG-004', title: 'Ariba Supplier Network Wave 2 Activation (250 Suppliers)', date: '2026-08-10', time: '09:30 AST', owner: 'Procurement Transformation', entity: 'KaarTech Group Procurement', status: 'Completed', priority: 'Medium', desc: 'Onboarding 250 local industrial sub-tier suppliers onto automated digital purchase orders.' },
+    { id: 'CAL-PRG-005', title: 'Robotic Process Automation Bot 5 (P2P Reconciler) Pilot', date: '2026-08-20', time: '09:00 AST', owner: 'Innovation Lead', entity: 'KaarTech HQ, Advanced Manufacturing', status: 'Completed', priority: 'Medium', desc: 'Autonomous OCR three-way match bot deployment into pilot entities.' },
     // September 2026
-    { id: 'CAL-PRG-006', title: 'Edge Control Tower AI Incident Co-Pilot Pilot Launch', date: '2026-09-08', time: '08:30 GST', owner: 'AI Strategy Lead', entity: 'AMS General Shift CoE', status: 'Scheduled', priority: 'High', desc: 'Pilot rollout of generative resolution recommendation co-pilot for L2 engineers.' },
-    { id: 'CAL-PRG-007', title: 'Wave 3 S/4HANA Manufacturing Phase 2 Cutover Gate', date: '2026-09-20', time: '08:00 GST', owner: 'Fatima Al Zaabi', entity: 'HALCON, NIMR, LAHAB', status: 'Scheduled', priority: 'P1', desc: 'Pre-cutover dry run, inventory opening balance reconciliation, and plant validation.' },
+    { id: 'CAL-PRG-006', title: 'KaarTech ITMS AI Incident Co-Pilot Pilot Launch', date: '2026-09-08', time: '08:30 AST', owner: 'AI Strategy Lead', entity: 'AMS General Shift CoE', status: 'Scheduled', priority: 'High', desc: 'Pilot rollout of generative resolution recommendation co-pilot for L2 engineers.' },
+    { id: 'CAL-PRG-007', title: 'Wave 3 S/4HANA Manufacturing Phase 2 Cutover Gate', date: '2026-09-20', time: '08:00 AST', owner: 'Fatima Al-Otaibi', entity: 'KaarTech Advanced Manufacturing, Materials Tech', status: 'Scheduled', priority: 'P1', desc: 'Pre-cutover dry run, inventory opening balance reconciliation, and plant validation.' },
     // October 2026
-    { id: 'CAL-PRG-008', title: 'Plant MES to S/4HANA Shopfloor Go-Live Gate', date: '2026-10-12', time: '09:00 GST', owner: 'Manufacturing Systems Lead', entity: 'CARACAL, NIMR', status: 'Scheduled', priority: 'P1', desc: 'Live cutover of automated CNC machine work order feedback directly into S/4HANA.' },
-    { id: 'CAL-PRG-009', title: 'Edge Hybrid Defense Data Lake Milestone 3', date: '2026-10-26', time: '11:00 GST', owner: 'Data Lake Architect', entity: 'EDGE HQ', status: 'Scheduled', priority: 'High', desc: 'Consolidation of telemetry pipelines from 34 entities into Abu Dhabi sovereign lake.' },
+    { id: 'CAL-PRG-008', title: 'Plant MES to S/4HANA Shopfloor Go-Live Gate', date: '2026-10-12', time: '09:00 AST', owner: 'Manufacturing Systems Lead', entity: 'KaarTech Precision Works, Heavy Mobility', status: 'Scheduled', priority: 'P1', desc: 'Live cutover of automated CNC machine work order feedback directly into S/4HANA.' },
+    { id: 'CAL-PRG-009', title: 'Enterprise Hybrid Data Lake Milestone 3', date: '2026-10-26', time: '11:00 AST', owner: 'Data Lake Architect', entity: 'KaarTech HQ', status: 'Scheduled', priority: 'High', desc: 'Consolidation of telemetry pipelines from 34 entities into Riyadh sovereign lake.' },
     // November 2026
-    { id: 'CAL-PRG-010', title: 'Automated Self-Healing Runbook v2.0 Production Launch', date: '2026-11-16', time: '10:00 GST', owner: 'Automation Engineering', entity: 'All Entities', status: 'Scheduled', priority: 'High', desc: 'Production activation of 12 self-healing scripts for SAP lock clears and interface retries.' },
-    { id: 'CAL-PRG-011', title: 'AdvantEDGE Annual Program Architectural Gate Review', date: '2026-11-30', time: '14:00 GST', owner: 'Steering Committee', entity: 'All 34 EDGE Entities', status: 'Scheduled', priority: 'P1', desc: 'Yearly architectural health review and technology roadmap approval for 2027.' },
+    { id: 'CAL-PRG-010', title: 'Automated Self-Healing Runbook v2.0 Production Launch', date: '2026-11-16', time: '10:00 AST', owner: 'Automation Engineering', entity: 'All Entities', status: 'Scheduled', priority: 'High', desc: 'Production activation of 12 self-healing scripts for SAP lock clears and interface retries.' },
+    { id: 'CAL-PRG-011', title: 'KaarTech Enterprise Annual Program Architectural Gate Review', date: '2026-11-30', time: '14:00 AST', owner: 'Steering Committee', entity: 'All 34 KaarTech Entities', status: 'Scheduled', priority: 'P1', desc: 'Yearly architectural health review and technology roadmap approval for 2027.' },
     // December 2026
-    { id: 'CAL-PRG-012', title: '2027 AMS Strategy & Capacity Horizon Sign-Off', date: '2026-12-15', time: '10:00 GST', owner: 'Dr. Tariq Al Nuaimi', entity: 'EDGE Group Executive Board', status: 'Scheduled', priority: 'P1', desc: 'Executive sign-off on 2027 AMS staffing allocations, SLA targets, and innovation credits.' },
+    { id: 'CAL-PRG-012', title: '2027 AMS Strategy & Capacity Horizon Sign-Off', date: '2026-12-15', time: '10:00 AST', owner: 'Dr. Tariq Al Nuaimi', entity: 'KaarTech Group Executive Board', status: 'Scheduled', priority: 'P1', desc: 'Executive sign-off on 2027 AMS staffing allocations, SLA targets, and innovation credits.' },
   ];
 
   milestoneEvents.forEach(m => {
@@ -400,7 +425,7 @@ export function getGlobalCalendarEvents() {
     // September 2026
     { id: 'CAL-FRZ-004', title: 'Q3 Close System Stabilization Freeze Window', date: '2026-09-29', endDate: '2026-09-30', time: 'Full Day Freeze', owner: 'SteerCom Policy', status: 'Enforced', priority: 'P1', desc: 'Mandatory change freeze during Q3 quarterly financial closing.' },
     // October 2026
-    { id: 'CAL-FRZ-005', title: 'UAE Defense Exhibition (IDEX / UMEX) System Freeze', date: '2026-10-21', endDate: '2026-10-25', time: 'Moratorium Window', owner: 'Group Security Directive', status: 'Enforced', priority: 'P1', desc: 'High-alert system change freeze during major UAE national defense exhibition.' },
+    { id: 'CAL-FRZ-005', title: 'Saudi National Day & Year-End Stabilization Freeze', date: '2026-10-21', endDate: '2026-10-25', time: 'Moratorium Window', owner: 'Group Executive Directive', status: 'Enforced', priority: 'P1', desc: 'High-alert system change freeze during national holiday and operational stabilization.' },
     // November 2026
     { id: 'CAL-FRZ-006', title: 'Pre-Year-End Audit Stabilization Freeze', date: '2026-11-26', endDate: '2026-11-29', time: 'Full Weekend Freeze', owner: 'Finance & Audit Committee', status: 'Enforced', priority: 'P1', desc: 'Strict transport freeze prior to annual statutory financial ledger audit.' },
     // December 2026
@@ -427,77 +452,77 @@ export function getGlobalCalendarEvents() {
   // 5. SteerComs, Operational Reviews & Entity WSRs
   const meetingEvents = [
     // June 2026
-    { id: 'CAL-MTG-001', title: 'Monthly Executive SteerCom Review (MSR) - May Sign-Off', date: '2026-06-01', time: '14:00 – 16:00 GST', owner: 'Dr. Tariq Al Nuaimi', status: 'Completed', priority: 'High', desc: 'Monthly contractual SLA sign-off, penalty ledger review, and innovation credits.' },
-    { id: 'CAL-MTG-002', title: 'Weekly CAB Review & Change Triage Session', date: '2026-06-02', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-003', title: 'Weekly Service Review (WSR) with NIMR Defense', date: '2026-06-04', time: '10:00 – 11:30 GST', owner: 'Ravi Shankar', status: 'Completed', priority: 'Medium', desc: 'Review open tickets, shopfloor MES tickets, and RCA action items.' },
-    { id: 'CAL-MTG-004', title: 'Weekly CAB Review & Change Triage Session', date: '2026-06-09', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-005', title: 'Weekly Service Review (WSR) with HALCON', date: '2026-06-11', time: '10:00 – 11:30 GST', owner: 'Priya Nair', status: 'Completed', priority: 'Medium', desc: 'Triage batch job locking and shopfloor plant floor tickets with HALCON IT.' },
-    { id: 'CAL-MTG-006', title: 'Weekly CAB Review & Change Triage Session', date: '2026-06-16', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-007', title: 'Weekly Service Review (WSR) with CARACAL', date: '2026-06-18', time: '10:00 – 11:30 GST', owner: 'Ravi Shankar', status: 'Completed', priority: 'Medium', desc: 'Defense manufacturing Bill of Materials (BOM) sync and serial tracking.' },
-    { id: 'CAL-MTG-008', title: 'Weekly CAB Review & Change Triage Session', date: '2026-06-23', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-009', title: 'Weekly Service Review (WSR) with EDGE HQ', date: '2026-06-25', time: '14:00 – 15:30 GST', owner: 'Fatima Al Zaabi', status: 'Completed', priority: 'High', desc: 'Executive reporting, SLA score attainment, and upcoming release approvals.' },
-    { id: 'CAL-MTG-010', title: 'Weekly CAB Review & Change Triage Session', date: '2026-06-30', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-001', title: 'Monthly Executive SteerCom Review (MSR) - May Sign-Off', date: '2026-06-01', time: '14:00 – 16:00 AST', owner: 'Dr. Tariq Al Nuaimi', status: 'Completed', priority: 'High', desc: 'Monthly contractual SLA sign-off, penalty ledger review, and innovation credits.' },
+    { id: 'CAL-MTG-002', title: 'Weekly CAB Review & Change Triage Session', date: '2026-06-02', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-003', title: 'Weekly Service Review (WSR) with KaarTech Heavy Mobility', date: '2026-06-04', time: '10:00 – 11:30 AST', owner: 'Ravi Shankar', status: 'Completed', priority: 'Medium', desc: 'Review open tickets, shopfloor MES tickets, and RCA action items.' },
+    { id: 'CAL-MTG-004', title: 'Weekly CAB Review & Change Triage Session', date: '2026-06-09', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-005', title: 'Weekly Service Review (WSR) with KaarTech Advanced Manufacturing', date: '2026-06-11', time: '10:00 – 11:30 AST', owner: 'Priya Nair', status: 'Completed', priority: 'Medium', desc: 'Triage batch job locking and shopfloor plant floor tickets with manufacturing IT.' },
+    { id: 'CAL-MTG-006', title: 'Weekly CAB Review & Change Triage Session', date: '2026-06-16', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-007', title: 'Weekly Service Review (WSR) with KaarTech Precision Works', date: '2026-06-18', time: '10:00 – 11:30 AST', owner: 'Ravi Shankar', status: 'Completed', priority: 'Medium', desc: 'Precision manufacturing Bill of Materials (BOM) sync and serial tracking.' },
+    { id: 'CAL-MTG-008', title: 'Weekly CAB Review & Change Triage Session', date: '2026-06-23', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-009', title: 'Weekly Service Review (WSR) with KaarTech HQ', date: '2026-06-25', time: '14:00 – 15:30 AST', owner: 'Fatima Al-Otaibi', status: 'Completed', priority: 'High', desc: 'Executive reporting, SLA score attainment, and upcoming release approvals.' },
+    { id: 'CAL-MTG-010', title: 'Weekly CAB Review & Change Triage Session', date: '2026-06-30', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
     // July 2026
-    { id: 'CAL-MTG-011', title: 'Weekly Service Review (WSR) with ADASI Autonomous', date: '2026-07-02', time: '10:00 – 11:30 GST', owner: 'Noura Al Shamsi', status: 'Completed', priority: 'Medium', desc: 'UAV program spare parts supply chain tickets and Ariba supplier integration.' },
-    { id: 'CAL-MTG-012', title: 'Monthly Executive SteerCom Review (MSR) - June Sign-Off', date: '2026-07-06', time: '14:00 – 16:00 GST', owner: 'Dr. Tariq Al Nuaimi', status: 'Completed', priority: 'High', desc: 'Monthly contractual SLA sign-off, penalty ledger review, and innovation credits.' },
-    { id: 'CAL-MTG-013', title: 'Weekly CAB Review & Change Triage Session', date: '2026-07-07', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-014', title: 'Weekly Service Review (WSR) with LAHAB Munitions', date: '2026-07-09', time: '10:00 – 11:30 GST', owner: 'Tariq Al Dhaheri', status: 'Completed', priority: 'Medium', desc: 'Hazardous materials inventory tracking and plant maintenance work orders.' },
-    { id: 'CAL-MTG-015', title: 'Weekly CAB Review & Change Triage Session', date: '2026-07-14', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-016', title: 'Weekly Service Review (WSR) with EPI Precision', date: '2026-07-16', time: '10:00 – 11:30 GST', owner: 'Priya Nair', status: 'Completed', priority: 'Medium', desc: 'Aerospace machining work centers and Quality Management inspection lots.' },
-    { id: 'CAL-MTG-017', title: 'Weekly CAB Review & Change Triage Session', date: '2026-07-21', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-018', title: 'Weekly Service Review (WSR) with BEACON RED Cyber', date: '2026-07-23', time: '11:00 – 12:30 GST', owner: 'Deepak Kumar', status: 'Completed', priority: 'Medium', desc: 'Cyber training academy student invoicing and SuccessFactors learning integration.' },
-    { id: 'CAL-MTG-019', title: 'Weekly CAB Review & Change Triage Session', date: '2026-07-28', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-020', title: 'Weekly Service Review (WSR) with KATIM Secure Comms', date: '2026-07-30', time: '10:00 – 11:30 GST', owner: 'Noura Al Shamsi', status: 'Completed', priority: 'Medium', desc: 'Secure phone manufacturing supply chain and hardware serialization.' },
+    { id: 'CAL-MTG-011', title: 'Weekly Service Review (WSR) with KaarTech Autonomous Systems', date: '2026-07-02', time: '10:00 – 11:30 AST', owner: 'Noura Al Shamsi', status: 'Completed', priority: 'Medium', desc: 'Autonomous systems spare parts supply chain tickets and Ariba supplier integration.' },
+    { id: 'CAL-MTG-012', title: 'Monthly Executive SteerCom Review (MSR) - June Sign-Off', date: '2026-07-06', time: '14:00 – 16:00 AST', owner: 'Dr. Tariq Al Nuaimi', status: 'Completed', priority: 'High', desc: 'Monthly contractual SLA sign-off, penalty ledger review, and innovation credits.' },
+    { id: 'CAL-MTG-013', title: 'Weekly CAB Review & Change Triage Session', date: '2026-07-07', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-014', title: 'Weekly Service Review (WSR) with KaarTech Materials Technology', date: '2026-07-09', time: '10:00 – 11:30 AST', owner: 'Tariq Al Dhaheri', status: 'Completed', priority: 'Medium', desc: 'Industrial materials inventory tracking and plant maintenance work orders.' },
+    { id: 'CAL-MTG-015', title: 'Weekly CAB Review & Change Triage Session', date: '2026-07-14', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-016', title: 'Weekly Service Review (WSR) with KaarTech Engineering Industries', date: '2026-07-16', time: '10:00 – 11:30 AST', owner: 'Priya Nair', status: 'Completed', priority: 'Medium', desc: 'Industrial machining work centers and Quality Management inspection lots.' },
+    { id: 'CAL-MTG-017', title: 'Weekly CAB Review & Change Triage Session', date: '2026-07-21', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-018', title: 'Weekly Service Review (WSR) with KaarTech Cyber Defense', date: '2026-07-23', time: '11:00 – 12:30 AST', owner: 'Deepak Kumar', status: 'Completed', priority: 'Medium', desc: 'Cyber academy student invoicing and SuccessFactors learning integration.' },
+    { id: 'CAL-MTG-019', title: 'Weekly CAB Review & Change Triage Session', date: '2026-07-28', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-020', title: 'Weekly Service Review (WSR) with KaarTech Secure Comms', date: '2026-07-30', time: '10:00 – 11:30 AST', owner: 'Noura Al Shamsi', status: 'Completed', priority: 'Medium', desc: 'Secure telecom equipment supply chain and hardware serialization.' },
     // August 2026
-    { id: 'CAL-MTG-021', title: 'Monthly Executive SteerCom Review (MSR) - July Sign-Off', date: '2026-08-03', time: '14:00 – 16:00 GST', owner: 'Dr. Tariq Al Nuaimi', status: 'Completed', priority: 'High', desc: 'H2 service level performance audit, SLA compliance, and staffing metrics.' },
-    { id: 'CAL-MTG-022', title: 'Weekly CAB Review & Change Triage Session', date: '2026-08-04', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-023', title: 'Weekly Service Review (WSR) with JAHEZIYA Emergency', date: '2026-08-06', time: '10:00 – 11:30 GST', owner: 'Tariq Al Dhaheri', status: 'Completed', priority: 'Medium', desc: 'Safety training simulator maintenance and procurement workflows.' },
-    { id: 'CAL-MTG-024', title: 'Weekly CAB Review & Change Triage Session', date: '2026-08-11', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-025', title: 'Weekly Service Review (WSR) with HORIZON Flight Academy', date: '2026-08-13', time: '10:00 – 11:30 GST', owner: 'Priya Nair', status: 'Completed', priority: 'Medium', desc: 'Helicopter pilot flight hours billing and asset depreciation schedules.' },
-    { id: 'CAL-MTG-026', title: 'Weekly CAB Review & Change Triage Session', date: '2026-08-18', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-027', title: 'Weekly Service Review (WSR) with ADSB Naval', date: '2026-08-20', time: '10:00 – 11:30 GST', owner: 'Ravi Shankar', status: 'Completed', priority: 'Medium', desc: 'Corvette vessel retrofit project accounting and subcontractor milestones.' },
-    { id: 'CAL-MTG-028', title: 'Weekly CAB Review & Change Triage Session', date: '2026-08-25', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-029', title: 'Quarterly Customer Satisfaction (CSAT) Entity Review', date: '2026-08-27', time: '14:00 – 16:00 GST', owner: 'Customer Connect Lead', status: 'Completed', priority: 'High', desc: 'Cross-entity customer sentiment analysis, verbatim review, and action plans.' },
+    { id: 'CAL-MTG-021', title: 'Monthly Executive SteerCom Review (MSR) - July Sign-Off', date: '2026-08-03', time: '14:00 – 16:00 AST', owner: 'Dr. Tariq Al Nuaimi', status: 'Completed', priority: 'High', desc: 'H2 service level performance audit, SLA compliance, and staffing metrics.' },
+    { id: 'CAL-MTG-022', title: 'Weekly CAB Review & Change Triage Session', date: '2026-08-04', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-023', title: 'Weekly Service Review (WSR) with KaarTech Support Services', date: '2026-08-06', time: '10:00 – 11:30 AST', owner: 'Tariq Al Dhaheri', status: 'Completed', priority: 'Medium', desc: 'Field service simulator maintenance and procurement workflows.' },
+    { id: 'CAL-MTG-024', title: 'Weekly CAB Review & Change Triage Session', date: '2026-08-11', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-025', title: 'Weekly Service Review (WSR) with KaarTech Aerospace', date: '2026-08-13', time: '10:00 – 11:30 AST', owner: 'Priya Nair', status: 'Completed', priority: 'Medium', desc: 'Aviation service flight hours billing and asset depreciation schedules.' },
+    { id: 'CAL-MTG-026', title: 'Weekly CAB Review & Change Triage Session', date: '2026-08-18', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-027', title: 'Weekly Service Review (WSR) with KaarTech Marine Systems', date: '2026-08-20', time: '10:00 – 11:30 AST', owner: 'Ravi Shankar', status: 'Completed', priority: 'Medium', desc: 'Marine vessel retrofit project accounting and subcontractor milestones.' },
+    { id: 'CAL-MTG-028', title: 'Weekly CAB Review & Change Triage Session', date: '2026-08-25', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Completed', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-029', title: 'Quarterly Customer Satisfaction (CSAT) Entity Review', date: '2026-08-27', time: '14:00 – 16:00 AST', owner: 'Customer Connect Lead', status: 'Completed', priority: 'High', desc: 'Cross-entity customer sentiment analysis, verbatim review, and action plans.' },
     // September 2026
-    { id: 'CAL-MTG-030', title: 'Weekly CAB Review & Change Triage Session', date: '2026-09-01', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-031', title: 'Monthly Executive SteerCom Review (MSR) - August Sign-Off', date: '2026-09-02', time: '14:00 – 16:00 GST', owner: 'Dr. Tariq Al Nuaimi', status: 'Scheduled', priority: 'High', desc: 'SteerCom review of August availability, incident deflection, and capacity.' },
-    { id: 'CAL-MTG-032', title: 'Weekly Service Review (WSR) with NIMR Defense', date: '2026-09-03', time: '10:00 – 11:30 GST', owner: 'Ravi Shankar', status: 'Scheduled', priority: 'Medium', desc: 'Armored vehicle production batch traceability and plant inventory sync.' },
-    { id: 'CAL-MTG-033', title: 'Weekly CAB Review & Change Triage Session', date: '2026-09-08', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-034', title: 'Weekly Service Review (WSR) with HALCON Precision', date: '2026-09-10', time: '10:00 – 11:30 GST', owner: 'Priya Nair', status: 'Scheduled', priority: 'Medium', desc: 'Review of shopfloor scrap logging tickets and batch master changes.' },
-    { id: 'CAL-MTG-035', title: 'Weekly CAB Review & Change Triage Session', date: '2026-09-15', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-036', title: 'Weekly Service Review (WSR) with ADASI Autonomous', date: '2026-09-17', time: '10:00 – 11:30 GST', owner: 'Noura Al Shamsi', status: 'Scheduled', priority: 'Medium', desc: 'UAV drone telemetry integration and maintenance order scheduling.' },
-    { id: 'CAL-MTG-037', title: 'Weekly CAB Review & Change Triage Session', date: '2026-09-22', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-038', title: 'Weekly Service Review (WSR) with EDGE HQ Executive', date: '2026-09-24', time: '14:00 – 15:30 GST', owner: 'Fatima Al Zaabi', status: 'Scheduled', priority: 'High', desc: 'Quarterly SLA review, scorecard analysis, and upcoming release sign-offs.' },
-    { id: 'CAL-MTG-039', title: 'Weekly CAB Review & Change Triage Session', date: '2026-09-29', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-030', title: 'Weekly CAB Review & Change Triage Session', date: '2026-09-01', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-031', title: 'Monthly Executive SteerCom Review (MSR) - August Sign-Off', date: '2026-09-02', time: '14:00 – 16:00 AST', owner: 'Dr. Tariq Al Nuaimi', status: 'Scheduled', priority: 'High', desc: 'SteerCom review of August availability, incident deflection, and capacity.' },
+    { id: 'CAL-MTG-032', title: 'Weekly Service Review (WSR) with KaarTech Heavy Mobility', date: '2026-09-03', time: '10:00 – 11:30 AST', owner: 'Ravi Shankar', status: 'Scheduled', priority: 'Medium', desc: 'Heavy mobility production batch traceability and plant inventory sync.' },
+    { id: 'CAL-MTG-033', title: 'Weekly CAB Review & Change Triage Session', date: '2026-09-08', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-034', title: 'Weekly Service Review (WSR) with KaarTech Advanced Manufacturing', date: '2026-09-10', time: '10:00 – 11:30 AST', owner: 'Priya Nair', status: 'Scheduled', priority: 'Medium', desc: 'Review of shopfloor scrap logging tickets and batch master changes.' },
+    { id: 'CAL-MTG-035', title: 'Weekly CAB Review & Change Triage Session', date: '2026-09-15', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-036', title: 'Weekly Service Review (WSR) with KaarTech Autonomous Systems', date: '2026-09-17', time: '10:00 – 11:30 AST', owner: 'Noura Al Shamsi', status: 'Scheduled', priority: 'Medium', desc: 'Autonomous vehicle telemetry integration and maintenance order scheduling.' },
+    { id: 'CAL-MTG-037', title: 'Weekly CAB Review & Change Triage Session', date: '2026-09-22', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-038', title: 'Weekly Service Review (WSR) with KaarTech HQ Executive', date: '2026-09-24', time: '14:00 – 15:30 AST', owner: 'Fatima Al-Otaibi', status: 'Scheduled', priority: 'High', desc: 'Quarterly SLA review, scorecard analysis, and upcoming release sign-offs.' },
+    { id: 'CAL-MTG-039', title: 'Weekly CAB Review & Change Triage Session', date: '2026-09-29', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
     // October 2026
-    { id: 'CAL-MTG-040', title: 'Weekly Service Review (WSR) with CARACAL Defense', date: '2026-10-01', time: '10:00 – 11:30 GST', owner: 'Ravi Shankar', status: 'Scheduled', priority: 'Medium', desc: 'Small arms manufacturing plant orders and serial barcode scanning.' },
-    { id: 'CAL-MTG-041', title: 'Monthly Executive SteerCom Review (MSR) - September Sign-Off', date: '2026-10-05', time: '14:00 – 16:00 GST', owner: 'Dr. Tariq Al Nuaimi', status: 'Scheduled', priority: 'High', desc: 'Q3 formal contractual sign-off, penalty performance credits, and budget review.' },
-    { id: 'CAL-MTG-042', title: 'Weekly CAB Review & Change Triage Session', date: '2026-10-06', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-043', title: 'Weekly Service Review (WSR) with LAHAB Defense', date: '2026-10-08', time: '10:00 – 11:30 GST', owner: 'Tariq Al Dhaheri', status: 'Scheduled', priority: 'Medium', desc: 'Ammunition raw chemical inventory receipts and hazardous transport docs.' },
-    { id: 'CAL-MTG-044', title: 'Weekly CAB Review & Change Triage Session', date: '2026-10-13', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-045', title: 'Weekly Service Review (WSR) with EPI Machining', date: '2026-10-15', time: '10:00 – 11:30 GST', owner: 'Priya Nair', status: 'Scheduled', priority: 'Medium', desc: 'Precision CNC tool life tracking and equipment maintenance work centers.' },
-    { id: 'CAL-MTG-046', title: 'Weekly CAB Review & Change Triage Session', date: '2026-10-20', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-047', title: 'Weekly Service Review (WSR) with KATIM Telecom', date: '2026-10-22', time: '10:00 – 11:30 GST', owner: 'Noura Al Shamsi', status: 'Scheduled', priority: 'Medium', desc: 'Cryptographic phone hardware supply chain and customer warranty portal.' },
-    { id: 'CAL-MTG-048', title: 'Weekly CAB Review & Change Triage Session', date: '2026-10-27', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-049', title: 'Weekly Service Review (WSR) with BEACON RED Security', date: '2026-10-29', time: '11:00 – 12:30 GST', owner: 'Deepak Kumar', status: 'Scheduled', priority: 'Medium', desc: 'Cyber training course billing, LMS integration, and student portal access.' },
+    { id: 'CAL-MTG-040', title: 'Weekly Service Review (WSR) with KaarTech Precision Works', date: '2026-10-01', time: '10:00 – 11:30 AST', owner: 'Ravi Shankar', status: 'Scheduled', priority: 'Medium', desc: 'Precision manufacturing plant orders and serial barcode scanning.' },
+    { id: 'CAL-MTG-041', title: 'Monthly Executive SteerCom Review (MSR) - September Sign-Off', date: '2026-10-05', time: '14:00 – 16:00 AST', owner: 'Dr. Tariq Al Nuaimi', status: 'Scheduled', priority: 'High', desc: 'Q3 formal contractual sign-off, penalty performance credits, and budget review.' },
+    { id: 'CAL-MTG-042', title: 'Weekly CAB Review & Change Triage Session', date: '2026-10-06', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-043', title: 'Weekly Service Review (WSR) with KaarTech Materials Technology', date: '2026-10-08', time: '10:00 – 11:30 AST', owner: 'Tariq Al Dhaheri', status: 'Scheduled', priority: 'Medium', desc: 'Materials chemical inventory receipts and hazardous transport docs.' },
+    { id: 'CAL-MTG-044', title: 'Weekly CAB Review & Change Triage Session', date: '2026-10-13', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-045', title: 'Weekly Service Review (WSR) with KaarTech Engineering Industries', date: '2026-10-15', time: '10:00 – 11:30 AST', owner: 'Priya Nair', status: 'Scheduled', priority: 'Medium', desc: 'Precision CNC tool life tracking and equipment maintenance work centers.' },
+    { id: 'CAL-MTG-046', title: 'Weekly CAB Review & Change Triage Session', date: '2026-10-20', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-047', title: 'Weekly Service Review (WSR) with KaarTech Secure Comms', date: '2026-10-22', time: '10:00 – 11:30 AST', owner: 'Noura Al Shamsi', status: 'Scheduled', priority: 'Medium', desc: 'Secure telecom hardware supply chain and customer warranty portal.' },
+    { id: 'CAL-MTG-048', title: 'Weekly CAB Review & Change Triage Session', date: '2026-10-27', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-049', title: 'Weekly Service Review (WSR) with KaarTech Cyber Defense', date: '2026-10-29', time: '11:00 – 12:30 AST', owner: 'Deepak Kumar', status: 'Scheduled', priority: 'Medium', desc: 'Cyber training course billing, LMS integration, and student portal access.' },
     // November 2026
-    { id: 'CAL-MTG-050', title: 'Monthly Executive SteerCom Review (MSR) - October Sign-Off', date: '2026-11-02', time: '14:00 – 16:00 GST', owner: 'Dr. Tariq Al Nuaimi', status: 'Scheduled', priority: 'High', desc: 'Executive SteerCom sign-off on October service levels and capacity plans.' },
-    { id: 'CAL-MTG-051', title: 'Weekly CAB Review & Change Triage Session', date: '2026-11-03', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-052', title: 'Weekly Service Review (WSR) with JAHEZIYA Academy', date: '2026-11-05', time: '10:00 – 11:30 GST', owner: 'Tariq Al Dhaheri', status: 'Scheduled', priority: 'Medium', desc: 'Safety academy instructor scheduling and procurement asset management.' },
-    { id: 'CAL-MTG-053', title: 'Weekly CAB Review & Change Triage Session', date: '2026-11-10', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-054', title: 'Weekly Service Review (WSR) with HORIZON Aviation', date: '2026-11-12', time: '10:00 – 11:30 GST', owner: 'Priya Nair', status: 'Scheduled', priority: 'Medium', desc: 'Flight simulator flight log reconciliation and student pilot training records.' },
-    { id: 'CAL-MTG-055', title: 'Weekly CAB Review & Change Triage Session', date: '2026-11-17', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-056', title: 'Weekly Service Review (WSR) with ADSB Shipyards', date: '2026-11-19', time: '10:00 – 11:30 GST', owner: 'Ravi Shankar', status: 'Scheduled', priority: 'Medium', desc: 'Naval vessel overhaul project milestones and supplier billing reconciliations.' },
-    { id: 'CAL-MTG-057', title: 'Weekly CAB Review & Change Triage Session', date: '2026-11-24', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-058', title: 'Quarterly Customer Satisfaction (CSAT) Entity Review', date: '2026-11-26', time: '14:00 – 16:00 GST', owner: 'Customer Connect Lead', status: 'Scheduled', priority: 'High', desc: 'Entity-by-entity CSAT sentiment scorecards and resolution feedback.' },
+    { id: 'CAL-MTG-050', title: 'Monthly Executive SteerCom Review (MSR) - October Sign-Off', date: '2026-11-02', time: '14:00 – 16:00 AST', owner: 'Dr. Tariq Al Nuaimi', status: 'Scheduled', priority: 'High', desc: 'Executive SteerCom sign-off on October service levels and capacity plans.' },
+    { id: 'CAL-MTG-051', title: 'Weekly CAB Review & Change Triage Session', date: '2026-11-03', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-052', title: 'Weekly Service Review (WSR) with KaarTech Support Services', date: '2026-11-05', time: '10:00 – 11:30 AST', owner: 'Tariq Al Dhaheri', status: 'Scheduled', priority: 'Medium', desc: 'Field service academy instructor scheduling and procurement asset management.' },
+    { id: 'CAL-MTG-053', title: 'Weekly CAB Review & Change Triage Session', date: '2026-11-10', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-054', title: 'Weekly Service Review (WSR) with KaarTech Aerospace', date: '2026-11-12', time: '10:00 – 11:30 AST', owner: 'Priya Nair', status: 'Scheduled', priority: 'Medium', desc: 'Flight simulator flight log reconciliation and student pilot training records.' },
+    { id: 'CAL-MTG-055', title: 'Weekly CAB Review & Change Triage Session', date: '2026-11-17', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-056', title: 'Weekly Service Review (WSR) with KaarTech Marine Systems', date: '2026-11-19', time: '10:00 – 11:30 AST', owner: 'Ravi Shankar', status: 'Scheduled', priority: 'Medium', desc: 'Marine vessel overhaul project milestones and supplier billing reconciliations.' },
+    { id: 'CAL-MTG-057', title: 'Weekly CAB Review & Change Triage Session', date: '2026-11-24', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-058', title: 'Quarterly Customer Satisfaction (CSAT) Entity Review', date: '2026-11-26', time: '14:00 – 16:00 AST', owner: 'Customer Connect Lead', status: 'Scheduled', priority: 'High', desc: 'Entity-by-entity CSAT sentiment scorecards and resolution feedback.' },
     // December 2026
-    { id: 'CAL-MTG-059', title: 'Weekly CAB Review & Change Triage Session', date: '2026-12-01', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-060', title: 'Monthly Executive SteerCom Review (MSR) - November Sign-Off', date: '2026-12-02', time: '14:00 – 16:00 GST', owner: 'Dr. Tariq Al Nuaimi', status: 'Scheduled', priority: 'High', desc: 'Monthly review of November operations, SLA scorecards, and year-end outlook.' },
-    { id: 'CAL-MTG-061', title: 'Weekly Service Review (WSR) with NIMR Defense', date: '2026-12-03', time: '10:00 – 11:30 GST', owner: 'Ravi Shankar', status: 'Scheduled', priority: 'Medium', desc: 'Year-end inventory count preparation and shopfloor manufacturing reconciliation.' },
-    { id: 'CAL-MTG-062', title: 'Weekly CAB Review & Change Triage Session', date: '2026-12-08', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
-    { id: 'CAL-MTG-063', title: 'Weekly Service Review (WSR) with HALCON Precision', date: '2026-12-10', time: '10:00 – 11:30 GST', owner: 'Priya Nair', status: 'Scheduled', priority: 'Medium', desc: 'Annual plant inventory freeze coordination and financial WIP valuation.' },
-    { id: 'CAL-MTG-064', title: 'Weekly CAB Review & Change Triage Session', date: '2026-12-15', time: '11:00 – 12:30 GST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Final pre-moratorium Change Advisory Board meeting.' },
-    { id: 'CAL-MTG-065', title: 'Weekly Service Review (WSR) with EDGE HQ Finance', date: '2026-12-17', time: '14:00 – 15:30 GST', owner: 'Fatima Al Zaabi', status: 'Scheduled', priority: 'High', desc: 'Annual closing operational support plan, 24/7 financial close coverage roster.' },
+    { id: 'CAL-MTG-059', title: 'Weekly CAB Review & Change Triage Session', date: '2026-12-01', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-060', title: 'Monthly Executive SteerCom Review (MSR) - November Sign-Off', date: '2026-12-02', time: '14:00 – 16:00 AST', owner: 'Dr. Tariq Al Nuaimi', status: 'Scheduled', priority: 'High', desc: 'Monthly review of November operations, SLA scorecards, and year-end outlook.' },
+    { id: 'CAL-MTG-061', title: 'Weekly Service Review (WSR) with KaarTech Heavy Mobility', date: '2026-12-03', time: '10:00 – 11:30 AST', owner: 'Ravi Shankar', status: 'Scheduled', priority: 'Medium', desc: 'Year-end inventory count preparation and shopfloor manufacturing reconciliation.' },
+    { id: 'CAL-MTG-062', title: 'Weekly CAB Review & Change Triage Session', date: '2026-12-08', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Weekly Change Advisory Board review of production transports.' },
+    { id: 'CAL-MTG-063', title: 'Weekly Service Review (WSR) with KaarTech Advanced Manufacturing', date: '2026-12-10', time: '10:00 – 11:30 AST', owner: 'Priya Nair', status: 'Scheduled', priority: 'Medium', desc: 'Annual plant inventory freeze coordination and financial WIP valuation.' },
+    { id: 'CAL-MTG-064', title: 'Weekly CAB Review & Change Triage Session', date: '2026-12-15', time: '11:00 – 12:30 AST', owner: 'CAB Lead', status: 'Scheduled', priority: 'Medium', desc: 'Final pre-moratorium Change Advisory Board meeting.' },
+    { id: 'CAL-MTG-065', title: 'Weekly Service Review (WSR) with KaarTech HQ Finance', date: '2026-12-17', time: '14:00 – 15:30 AST', owner: 'Fatima Al-Otaibi', status: 'Scheduled', priority: 'High', desc: 'Annual closing operational support plan, 24/7 financial close coverage roster.' },
   ];
 
   meetingEvents.forEach(m => {
@@ -519,26 +544,26 @@ export function getGlobalCalendarEvents() {
   // 6. Knowledge, SOPs & User Enablement Workshops
   const trainingEvents = [
     // June 2026
-    { id: 'CAL-TRN-001', title: 'S/4HANA Sales Order Pricing & Lock Optimization Masterclass', date: '2026-06-16', time: '11:00 – 13:00 GST', owner: 'Khalid Al Hashimi', status: 'Completed', priority: 'Medium', desc: 'Interactive workshop for end-users on sales order batch lock avoidance.' },
-    { id: 'CAL-TRN-002', title: 'Ariba Guided Sourcing Punchout Optimization Clinic', date: '2026-06-28', time: '14:00 – 16:00 GST', owner: 'Noura Al Shamsi', status: 'Completed', priority: 'Medium', desc: 'Procurement training on catalog punchout carts and supplier approval chains.' },
+    { id: 'CAL-TRN-001', title: 'S/4HANA Sales Order Pricing & Lock Optimization Masterclass', date: '2026-06-16', time: '11:00 – 13:00 AST', owner: 'Khalid Al Hashimi', status: 'Completed', priority: 'Medium', desc: 'Interactive workshop for end-users on sales order batch lock avoidance.' },
+    { id: 'CAL-TRN-002', title: 'Ariba Guided Sourcing Punchout Optimization Clinic', date: '2026-06-28', time: '14:00 – 16:00 AST', owner: 'Noura Al Shamsi', status: 'Completed', priority: 'Medium', desc: 'Procurement training on catalog punchout carts and supplier approval chains.' },
     // July 2026
-    { id: 'CAL-TRN-003', title: 'Plant Floor MES Work Order Reconciliation Clinic', date: '2026-07-13', time: '10:00 – 12:00 GST', owner: 'Priya Nair', status: 'Completed', priority: 'Medium', desc: 'Shopfloor supervisor training on scrap yield recording and batch confirmation.' },
-    { id: 'CAL-TRN-004', title: 'OpenText xECM ArchiveLink Configuration Workshop', date: '2026-07-29', time: '14:00 – 15:30 GST', owner: 'Opentext Lead', status: 'Completed', priority: 'Low', desc: 'Defense document retention policies and automated PDF archiving.' },
+    { id: 'CAL-TRN-003', title: 'Plant Floor MES Work Order Reconciliation Clinic', date: '2026-07-13', time: '10:00 – 12:00 AST', owner: 'Priya Nair', status: 'Completed', priority: 'Medium', desc: 'Shopfloor supervisor training on scrap yield recording and batch confirmation.' },
+    { id: 'CAL-TRN-004', title: 'OpenText xECM ArchiveLink Configuration Workshop', date: '2026-07-29', time: '14:00 – 15:30 AST', owner: 'Opentext Lead', status: 'Completed', priority: 'Low', desc: 'Defense document retention policies and automated PDF archiving.' },
     // August 2026
-    { id: 'CAL-TRN-005', title: 'Enterprise KEDB Runbook Authoring & Shift-Left Session', date: '2026-08-12', time: '10:00 – 12:00 GST', owner: 'Knowledge Lead', status: 'Completed', priority: 'Medium', desc: 'Training resolvers to document L1/L2 repeatable solutions into the KEDB.' },
-    { id: 'CAL-TRN-006', title: 'S/4HANA HANA 2.0 Database SPS07 Patch Dry Run', date: '2026-08-25', time: '14:00 – 17:00 GST', owner: 'BASIS Lead', status: 'Completed', priority: 'High', desc: 'Technical BASIS team dry run for database patch script sequencing.' },
+    { id: 'CAL-TRN-005', title: 'Enterprise KEDB Runbook Authoring & Shift-Left Session', date: '2026-08-12', time: '10:00 – 12:00 AST', owner: 'Knowledge Lead', status: 'Completed', priority: 'Medium', desc: 'Training resolvers to document L1/L2 repeatable solutions into the KEDB.' },
+    { id: 'CAL-TRN-006', title: 'S/4HANA HANA 2.0 Database SPS07 Patch Dry Run', date: '2026-08-25', time: '14:00 – 17:00 AST', owner: 'BASIS Lead', status: 'Completed', priority: 'High', desc: 'Technical BASIS team dry run for database patch script sequencing.' },
     // September 2026
-    { id: 'CAL-TRN-007', title: 'Shift Handover & Escalation Governance Refresh', date: '2026-09-14', time: '11:00 – 12:30 GST', owner: 'General Shift Commander', status: 'Scheduled', priority: 'Medium', desc: 'Standard operating procedures for seamless General Shift incident handover.' },
-    { id: 'CAL-TRN-008', title: 'SAC Executive Predictive Analytics & Story Boarding Clinic', date: '2026-09-23', time: '14:00 – 16:00 GST', owner: 'Analytics Lead', status: 'Scheduled', priority: 'Medium', desc: 'Training business analysts on creating custom drill-down tiles in SAC.' },
+    { id: 'CAL-TRN-007', title: 'Shift Handover & Escalation Governance Refresh', date: '2026-09-14', time: '11:00 – 12:30 AST', owner: 'General Shift Commander', status: 'Scheduled', priority: 'Medium', desc: 'Standard operating procedures for seamless General Shift incident handover.' },
+    { id: 'CAL-TRN-008', title: 'SAC Executive Predictive Analytics & Story Boarding Clinic', date: '2026-09-23', time: '14:00 – 16:00 AST', owner: 'Analytics Lead', status: 'Scheduled', priority: 'Medium', desc: 'Training business analysts on creating custom drill-down tiles in SAC.' },
     // October 2026
-    { id: 'CAL-TRN-009', title: 'Zero-Trust Network Access & IAM MFA Protocol Workshop', date: '2026-10-14', time: '10:00 – 12:00 GST', owner: 'Cybersecurity Trainer', status: 'Scheduled', priority: 'Medium', desc: 'Defense contractor security protocols and passwordless access token handling.' },
-    { id: 'CAL-TRN-010', title: 'Advanced Production Planning & Detailed Scheduling (PP-DS)', date: '2026-10-28', time: '13:00 – 16:00 GST', owner: 'Supply Chain Architect', status: 'Scheduled', priority: 'High', desc: 'Masterclass for factory planners on automated capacity constraint scheduling.' },
+    { id: 'CAL-TRN-009', title: 'Zero-Trust Network Access & IAM MFA Protocol Workshop', date: '2026-10-14', time: '10:00 – 12:00 AST', owner: 'Cybersecurity Trainer', status: 'Scheduled', priority: 'Medium', desc: 'Defense contractor security protocols and passwordless access token handling.' },
+    { id: 'CAL-TRN-010', title: 'Advanced Production Planning & Detailed Scheduling (PP-DS)', date: '2026-10-28', time: '13:00 – 16:00 AST', owner: 'Supply Chain Architect', status: 'Scheduled', priority: 'High', desc: 'Masterclass for factory planners on automated capacity constraint scheduling.' },
     // November 2026
-    { id: 'CAL-TRN-011', title: 'Defense Munitions Material Master Best Practices', date: '2026-11-11', time: '10:00 – 12:00 GST', owner: 'Materials Management Lead', status: 'Scheduled', priority: 'Medium', desc: 'Strict serialization and batch tracking configuration for ordnance items.' },
-    { id: 'CAL-TRN-012', title: 'Ariba Contract Workspace & Milestone Invoicing Clinic', date: '2026-11-23', time: '14:00 – 16:00 GST', owner: 'Ariba Lead', status: 'Scheduled', priority: 'Medium', desc: 'Training procurement specialists on milestone payment releases and compliance gates.' },
+    { id: 'CAL-TRN-011', title: 'Defense Munitions Material Master Best Practices', date: '2026-11-11', time: '10:00 – 12:00 AST', owner: 'Materials Management Lead', status: 'Scheduled', priority: 'Medium', desc: 'Strict serialization and batch tracking configuration for ordnance items.' },
+    { id: 'CAL-TRN-012', title: 'Ariba Contract Workspace & Milestone Invoicing Clinic', date: '2026-11-23', time: '14:00 – 16:00 AST', owner: 'Ariba Lead', status: 'Scheduled', priority: 'Medium', desc: 'Training procurement specialists on milestone payment releases and compliance gates.' },
     // December 2026
-    { id: 'CAL-TRN-013', title: 'Year-End Financial Closing Playbook & Runbook Walkthrough', date: '2026-12-09', time: '10:00 – 13:00 GST', owner: 'Financial Systems Lead', status: 'Scheduled', priority: 'High', desc: 'Step-by-step walkthrough of automated foreign currency revaluation and ledger balance carryforward.' },
-    { id: 'CAL-TRN-014', title: '2027 Operational Readiness & Disaster Recovery Clinic', date: '2026-12-16', time: '14:00 – 16:30 GST', owner: 'Disaster Recovery Lead', status: 'Scheduled', priority: 'Medium', desc: 'Review of emergency call trees, satellite failover communications, and DC2 hot-standby readiness.' },
+    { id: 'CAL-TRN-013', title: 'Year-End Financial Closing Playbook & Runbook Walkthrough', date: '2026-12-09', time: '10:00 – 13:00 AST', owner: 'Financial Systems Lead', status: 'Scheduled', priority: 'High', desc: 'Step-by-step walkthrough of automated foreign currency revaluation and ledger balance carryforward.' },
+    { id: 'CAL-TRN-014', title: '2027 Operational Readiness & Disaster Recovery Clinic', date: '2026-12-16', time: '14:00 – 16:30 AST', owner: 'Disaster Recovery Lead', status: 'Scheduled', priority: 'Medium', desc: 'Review of emergency call trees, satellite failover communications, and DC2 hot-standby readiness.' },
   ];
 
   trainingEvents.forEach(t => {
@@ -597,7 +622,7 @@ export function getExecutiveBoardData(filter = {}) {
 
   // Overall Ticket Mix (Incidents, SRs, Enhancements, Problems)
   const ticketMix = [
-    { name: 'Incidents', value: incAnalytics.total, color: '#FF5622' },
+    { name: 'Incidents', value: incAnalytics.total, color: '#6B1D2A' },
     { name: 'Service Requests', value: srAnalytics.total, color: '#2563EB' },
     { name: 'Enhancements', value: enhAnalytics.total, color: '#7C3AED' },
     { name: 'Problem RCAs', value: Math.max(1, Math.round(problems.length * (filter.period?.startsWith('m_') ? 0.35 : 1))), color: '#0D9F6E' },

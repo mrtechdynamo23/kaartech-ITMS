@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Language & i18n Context
+ * KaarTech ITMS Control Tower — Language & i18n Context
  * Modular i18n with EN/AR, true RTL layout mirroring.
  * Namespaces per Section 85.
  */
@@ -64,12 +64,12 @@ const translations = {
       rememberMe: 'Remember Me',
       forgotPassword: 'Forgot Password?',
       authorizedOnly: 'AUTHORIZED USERS ONLY',
-      amsEnvironment: 'AMS OPERATIONS ENVIRONMENT',
+      amsEnvironment: 'ITMS OPERATIONS ENVIRONMENT',
       invalidCredentials: 'Invalid credentials. Please try again.',
       signingIn: 'Signing in...',
     },
     landing: {
-      title: 'KAARTECH AMS CONTROL TOWER',
+      title: 'KAARTECH ITMS Control Tower',
       subtitle: 'One operational view across applications, services, people, and performance.',
       enterCta: 'ENTER CONTROL TOWER',
       viewIntegrated: 'View the integrated operational picture.',
@@ -131,13 +131,21 @@ const translations = {
       riskResponseCategory: 'Risk Response Category',
     },
     resource: {
-      title: 'Resource & Capability',
-      directory: 'Resource',
+      title: 'Resource Management',
+      directory: 'Resource Directory',
+      requests: 'Resource Requests',
+      assignments: 'Resource Assignments',
       organization: 'Organization Structure',
       time: 'Time Management',
       contact: 'Contact',
       skills: 'Skills & Knowledge',
       coverage: 'Onsite Coverage Compliance',
+    },
+    leaveTimesheet: {
+      title: 'Leave & Timesheet',
+    },
+    slaGovernance: {
+      title: 'Resource SLA Governance',
     },
     technology: {
       title: 'Application & Technology Estate',
@@ -184,6 +192,9 @@ const translations = {
       title: 'Notifications',
       markAllRead: 'Mark all as read',
       noNotifications: 'No new notifications',
+    },
+    settings: {
+      title: 'Settings',
     },
   },
   ar: {
@@ -308,13 +319,21 @@ const translations = {
       riskResponseCategory: 'فئة الاستجابة للمخاطر',
     },
     resource: {
-      title: 'الموارد والقدرات',
-      directory: 'الموارد',
+      title: 'إدارة الموارد',
+      directory: 'دليل الموارد',
+      requests: 'طلبات الموارد',
+      assignments: 'تعيينات الموارد',
       organization: 'الهيكل التنظيمي',
       time: 'إدارة الوقت',
       contact: 'جهات الاتصال',
       skills: 'المهارات والمعرفة',
       coverage: 'امتثال التغطية الميدانية',
+    },
+    leaveTimesheet: {
+      title: 'الإجازات والجداول الزمنية',
+    },
+    slaGovernance: {
+      title: 'حوكمة اتفاقية مستوى الخدمة',
     },
     technology: {
       title: 'محفظة التطبيقات والتقنية',
@@ -362,13 +381,16 @@ const translations = {
       markAllRead: 'تعليم الكل كمقروء',
       noNotifications: 'لا توجد إشعارات جديدة',
     },
+    settings: {
+      title: 'الإعدادات',
+    },
   },
 };
 
 export function LanguageProvider({ children }) {
   const [language, setLanguageState] = useState(() => {
     try {
-      const stored = localStorage.getItem('edge-ams-language');
+      const stored = localStorage.getItem('kaartech-itms-language');
       if (stored === 'ar' || stored === 'en') return stored;
     } catch {}
     return 'en';
@@ -379,7 +401,7 @@ export function LanguageProvider({ children }) {
   useEffect(() => {
     document.documentElement.setAttribute('dir', dir);
     document.documentElement.setAttribute('lang', language);
-    try { localStorage.setItem('edge-ams-language', language); } catch {}
+    try { localStorage.setItem('kaartech-itms-language', language); } catch {}
   }, [language, dir]);
 
   const setLanguage = useCallback((lang) => {

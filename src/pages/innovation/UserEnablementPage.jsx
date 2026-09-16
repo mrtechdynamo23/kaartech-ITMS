@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — User Enablement & Self-Service
+ * KaarTech ITMS Control Tower — User Enablement & Self-Service
  * Route: /service-innovation/user-enablement
  */
 import React from 'react';
@@ -8,10 +8,11 @@ import KPICard from '../../components/common/KPICard';
 
 export default function UserEnablementPage() {
   const courses = [
-    { title: 'S/4HANA Sales Order Creation & Pricing Best Practices', domain: 'L2C', enrolled: 420, completed: 395, score: '96%' },
-    { title: 'Ariba Guided Sourcing for Procurement Officers', domain: 'S2P', enrolled: 280, completed: 260, score: '94%' },
-    { title: 'SuccessFactors Performance & Goals Self-Service', domain: 'H2R', enrolled: 1250, completed: 1180, score: '98%' },
-    { title: 'Plant Maintenance Mobile Work Orders for Technicians', domain: 'A2D', enrolled: 180, completed: 165, score: '92%' },
+    { title: 'S/4HANA Sales Order Creation & Pricing Best Practices', serviceDomain: 'SAP ERP and SuccessFactors', enrolled: 420, completed: 395, score: '96%' },
+    { title: 'Ariba Guided Sourcing for Procurement Officers', serviceDomain: 'SAP ERP and SuccessFactors', enrolled: 280, completed: 260, score: '94%' },
+    { title: 'SuccessFactors Performance & Goals Self-Service', serviceDomain: 'SAP ERP and SuccessFactors', enrolled: 1250, completed: 1180, score: '98%' },
+    { title: 'Microsoft 365 Copilot & Power Automate Workflows', serviceDomain: 'Data, Analytics, AI, and Automation', enrolled: 310, completed: 290, score: '95%' },
+    { title: 'ServiceNow Self-Service Portal & Incident Dispatch', serviceDomain: 'IT Helpdesk & End User Services', enrolled: 680, completed: 640, score: '97%' },
   ];
 
   return (
@@ -68,7 +69,7 @@ export default function UserEnablementPage() {
             <thead>
               <tr style={{ background: 'var(--bg-tertiary)' }}>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>Course Title / Learning Track</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left' }}>Domain</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left' }}>Service Domain</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>Enrolled Users</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>Completions</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>Pass Score</th>
@@ -79,7 +80,7 @@ export default function UserEnablementPage() {
                 <tr key={idx} style={{ borderBottom: '1px solid var(--border-secondary)' }}>
                   <td style={{ padding: '12px 16px', fontWeight: 600, color: 'var(--text-primary)' }}>{c.title}</td>
                   <td style={{ padding: '12px 16px' }}>
-                    <span className="badge badge-neutral">{c.domain}</span>
+                    <span className="badge badge-neutral">{c.serviceDomain}</span>
                   </td>
                   <td style={{ padding: '12px 16px', color: 'var(--text-primary)' }}>{c.enrolled} Users</td>
                   <td style={{ padding: '12px 16px', color: 'var(--color-emerald)', fontWeight: 600 }}>{c.completed} ({Math.round((c.completed/c.enrolled)*100)}%)</td>

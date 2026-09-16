@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Organization Summary KPI Strip
+ * KaarTech ITMS Control Tower — Organization Summary KPI Strip
  * 
  * Restrained enterprise operational summary implementing Section 13 of specifications:
  * - Compact horizontal KPI strip
@@ -39,7 +39,7 @@ export default function OrganizationSummaryStrip({ onFilterClick }) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-tertiary)', letterSpacing: '0.05em' }}>
-          <Users size={12} style={{ color: 'var(--edge-primary)' }} />
+          <Users size={12} style={{ color: 'var(--brand-primary)' }} />
           <span>Total Workforce</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '2px' }}>
@@ -64,7 +64,7 @@ export default function OrganizationSummaryStrip({ onFilterClick }) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-tertiary)', letterSpacing: '0.05em' }}>
-          <Shield size={12} style={{ color: 'var(--edge-primary)' }} />
+          <Shield size={12} style={{ color: 'var(--brand-primary)' }} />
           <span>Managers & Leads</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '2px' }}>
@@ -78,7 +78,7 @@ export default function OrganizationSummaryStrip({ onFilterClick }) {
         </div>
       </div>
 
-      {/* 3. Onsite (Abu Dhabi HQ) */}
+      {/* 3. Onsite (Riyadh HQ) */}
       <div
         className="summary-item"
         style={{
@@ -89,11 +89,11 @@ export default function OrganizationSummaryStrip({ onFilterClick }) {
           cursor: onFilterClick ? 'pointer' : 'default',
         }}
         onClick={() => onFilterClick && onFilterClick({ location: 'Onsite' })}
-        title="Filter by Onsite (Abu Dhabi)"
+        title="Filter by Onsite (Riyadh)"
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-tertiary)', letterSpacing: '0.05em' }}>
           <MapPin size={12} style={{ color: 'var(--color-green)' }} />
-          <span>Onsite (Abu Dhabi)</span>
+          <span>Onsite (Riyadh)</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '2px' }}>
           <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-green)', lineHeight: 1.1 }}>
@@ -149,7 +149,7 @@ export default function OrganizationSummaryStrip({ onFilterClick }) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-tertiary)', letterSpacing: '0.05em' }}>
-          <Layers size={12} style={{ color: 'var(--edge-primary)' }} />
+          <Layers size={12} style={{ color: 'var(--brand-primary)' }} />
           <span>Active Teams</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '2px' }}>
@@ -159,7 +159,7 @@ export default function OrganizationSummaryStrip({ onFilterClick }) {
           <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Teams</span>
         </div>
         <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', marginTop: '2px' }}>
-          Across 8 Business Domains
+          Across 8 Service Domains
         </div>
       </div>
 
@@ -182,7 +182,7 @@ export default function OrganizationSummaryStrip({ onFilterClick }) {
           <span style={{ fontSize: '11px', color: 'var(--color-green)', fontWeight: 600 }}>Fulfilled</span>
         </div>
         <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', marginTop: '2px' }}>
-          {metrics.emiratizationRate}% UAE National representation
+          {metrics.saudizationRate}% Saudi National representation (Saudization)
         </div>
       </div>
     </div>

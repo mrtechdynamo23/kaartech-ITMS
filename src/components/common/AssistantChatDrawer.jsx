@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — AI Assistant Drawer (Section 62)
+ * KaarTech ITMS Control Tower — AI Assistant Drawer (Section 62)
  * Deterministic operational assistant with prompt chips, deep data querying, and live links.
  */
 import React, { useState, useRef, useEffect } from 'react';
@@ -12,7 +12,7 @@ import { incidents, serviceRequests, risks, licenses, getIncidentStats } from '.
 
 const DEFAULT_QUESTIONS = [
   { text: 'What is our current P1 resolution SLA status?', query: 'p1_sla' },
-  { text: 'Show all open tickets for Halcon', query: 'halcon_tickets' },
+  { text: 'Show all open tickets for KaarTech Advanced Manufacturing', query: 'manufacturing_tickets' },
   { text: 'Which applications have license renewals in 30 days?', query: 'license_risk' },
   { text: 'Generate DFR Executive Summary', query: 'dfr_summary' },
   { text: 'What is our current onshore vs offshore ratio?', query: 'resource_ratio' },
@@ -57,12 +57,12 @@ export default function AssistantChatDrawer({ isOpen, onClose }) {
       };
     }
 
-    if (q.includes('halcon')) {
-      const halconIncs = incidents.filter(i => i.entity?.toLowerCase() === 'halcon');
-      const openCount = halconIncs.filter(i => !['Closed', 'Resolved'].includes(i.status)).length;
+    if (q.includes('manufacturing') || q.includes('precision')) {
+      const entityIncs = incidents.filter(i => i.entity?.toLowerCase().includes('manufacturing') || i.entity?.toLowerCase().includes('precision'));
+      const openCount = entityIncs.filter(i => !['Closed', 'Resolved'].includes(i.status)).length;
       return {
-        text: `Found **${halconIncs.length} incidents** associated with Halcon (Manufacturing entity). Currently **${openCount} are active/open**, primarily in S/4HANA Manufacturing (E2M).`,
-        actionLabel: 'Filter Halcon in Incidents',
+        text: `Found **${entityIncs.length} incidents** associated with KaarTech Advanced Manufacturing & Precision clusters. Currently **${openCount} are active/open**, primarily in S/4HANA Manufacturing (E2M).`,
+        actionLabel: 'Filter Manufacturing in Incidents',
         actionPath: '/command-center/incidents',
       };
     }
@@ -87,7 +87,7 @@ export default function AssistantChatDrawer({ isOpen, onClose }) {
 
     if (q.includes('resource') || q.includes('ratio') || q.includes('onshore')) {
       return {
-        text: `The AMS delivery team comprises **30 key consultants**: 14 Onsite (Abu Dhabi HQ & Plants) and 16 Offshore (Dedicated & Flex), maintaining a balanced 47% Onsite / 53% Offshore ratio with 43% UAE National representation.`,
+        text: `The AMS delivery team comprises **30 key consultants**: 14 Onsite (Riyadh HQ & Plants) and 16 Offshore (Dedicated & Flex), maintaining a balanced 47% Onsite / 53% Offshore ratio with 43% Saudi National representation (Saudization).`,
         actionLabel: 'View Resource Directory',
         actionPath: '/resources/directory',
       };
@@ -156,11 +156,11 @@ export default function AssistantChatDrawer({ isOpen, onClose }) {
         {/* Header */}
         <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-secondary)', background: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'var(--edge-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'var(--brand-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Bot size={18} />
             </div>
             <div>
-              <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>AMS Assistant</div>
+              <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>ITMS Assistant</div>
               <div style={{ fontSize: '11px', color: 'var(--color-emerald)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-emerald)' }} />
                 Operational Intelligence Online
@@ -180,7 +180,7 @@ export default function AssistantChatDrawer({ isOpen, onClose }) {
               <div key={msg.id} style={{ display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
                 <div style={{
                   maxWidth: '85%',
-                  background: isUser ? 'var(--edge-primary)' : 'var(--bg-secondary)',
+                  background: isUser ? 'var(--brand-primary)' : 'var(--bg-secondary)',
                   color: isUser ? 'white' : 'var(--text-primary)',
                   padding: '12px 14px',
                   borderRadius: isUser ? '14px 14px 2px 14px' : '14px 14px 14px 2px',

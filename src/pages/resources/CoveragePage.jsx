@@ -1,7 +1,7 @@
 /**
- * EDGE AMS Control Tower — Shift & Coverage Roster
+ * KaarTech ITMS Control Tower — Shift & Coverage Roster
  * Route: /resources/coverage
- * 24/7 Shift operations, UAE business day calendars, and shift handovers.
+ * 24/7 Shift operations, Saudi business day calendars, and shift handovers.
  */
 import React, { useState, useEffect, useMemo } from 'react';
 import { Clock, Shield, Calendar, Users, CheckCircle2, ArrowRight, AlertTriangle } from 'lucide-react';
@@ -23,7 +23,7 @@ export default function CoveragePage() {
   }, [storeVersion]);
 
   const shifts = [
-    { name: 'General Shift: Operational Delivery (UAE Core)', time: '08:00 – 17:00 GST', commander: 'Khalid Al Hashimi', staff: `${coverageCompliance.filled} Specialists Active Onsite`, status: 'Active (Current)' },
+    { name: 'General Shift: Operational Delivery (Saudi Core)', time: '08:00 – 17:00 AST', commander: 'Khalid Al Hashimi', staff: `${coverageCompliance.filled} Specialists Active Onsite`, status: 'Active (Current)' },
   ];
 
   return (
@@ -52,7 +52,7 @@ export default function CoveragePage() {
         <KPICard
           title="Current Active Shift"
           value="General Shift"
-          subtitle="UAE Core (08:00 – 17:00 GST)"
+          subtitle="Saudi Core (08:00 – 17:00 AST)"
           icon={Clock}
           status="success"
         />
@@ -65,8 +65,8 @@ export default function CoveragePage() {
         />
         <KPICard
           title="Calendar Profile"
-          value="UAE Standard"
-          subtitle="HQ (Mon-Fri) / Mfg (Mon-Sat)"
+          value="Saudi Enterprise Standard"
+          subtitle="HQ (Sun-Thu) / Mfg (Sun-Thu)"
           icon={Calendar}
         />
       </div>
@@ -125,7 +125,7 @@ export default function CoveragePage() {
                   <div>
                     <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '13px' }}>{r.name}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>
-                      {r.businessDomain} • {r.processGroup || 'AMS Operations'}
+                      {r.serviceDomain} • {r.processGroup || 'AMS Operations'}
                     </div>
                   </div>
                   <span className="badge badge-warning" style={{ fontSize: '11px' }}>
@@ -156,7 +156,7 @@ export default function CoveragePage() {
 
               <div style={{ fontSize: 'var(--text-xs)', textAlign: 'right' }}>
                 <span style={{ color: 'var(--text-tertiary)' }}>Shift Lead: </span>
-                <strong style={{ color: 'var(--edge-primary)' }}>{s.commander}</strong>
+                <strong style={{ color: 'var(--brand-primary)' }}>{s.commander}</strong>
               </div>
             </div>
           ))}

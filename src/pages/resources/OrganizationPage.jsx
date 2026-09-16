@@ -1,10 +1,10 @@
 /**
- * EDGE AMS Control Tower — Organization Structure
+ * KaarTech ITMS Control Tower — Organization Structure
  * Route: /resources/organization
  * 
  * Enterprise Command & Control Organization Structure Page
  * Implements all specifications from ANTIGRAVITY MASTER IMPLEMENTATION PROMPT:
- * - EDGE Resource Master is the source of truth
+ * - KaarTech Resource Master is the source of truth
  * - 4-tier functional organization hierarchy (SteerCom -> Domains -> Teams -> Resources)
  * - Three synchronized view modes:
  *     1. Structure View: Interactive organization canvas with zoom, pan, expand/collapse, active path illumination
@@ -50,7 +50,7 @@ export default function OrganizationPage() {
   const metrics = useMemo(() => getOrganizationMetrics(), []);
 
   // ── Node Expansion State ──
-  // Initially expand all 8 business domains for immediate visual clarity
+  // Initially expand all 7 service domains for immediate visual clarity
   const initialExpanded = useMemo(() => {
     const set = new Set();
     orgTree.children.forEach(domain => {

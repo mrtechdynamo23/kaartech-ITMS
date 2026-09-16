@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Problem Management & KEDB
+ * KaarTech ITMS Control Tower — Problem Management & KEDB
  * Route: /command-center/problems
  * Root Cause Analysis (RCA) and Known Error Database (KEDB).
  * Implements Section 17, 21, 27, 28 of Master Build Specification:
@@ -26,10 +26,12 @@ import FilterBar from '../../components/common/FilterBar';
 import DataTable from '../../components/common/DataTable';
 import DetailModal from '../../components/common/DetailModal';
 import { problems } from '../../data/demoData';
+import { SERVICE_DOMAINS, getServiceDomainById, groupByServiceDomain } from '../../data/serviceDomains';
 
 export default function ProblemsPage() {
   const [selectedProblem, setSelectedProblem] = useState(null);
   const [filters, setFilters] = useState({
+    serviceDomain: 'all',
     entity: 'all',
     domain: 'all',
     status: 'all',
@@ -42,10 +44,10 @@ export default function ProblemsPage() {
 
   // Form State
   const [problemTitle, setProblemTitle] = useState('');
-  const [problemDomain, setProblemDomain] = useState('L2C');
+  const [problemServiceDomain, setProblemServiceDomain] = useState(SERVICE_DOMAINS[5].id); // TWR-06 SAP default
   const [problemApp, setProblemApp] = useState('SAP S/4HANA FI-CO');
   const [problemPriority, setProblemPriority] = useState('P2 - High');
-  const [problemLead, setProblemLead] = useState('Omar Farooq');
+  const [problemLead, setProblemLead] = useState('KaarTech Problem Manager');
   const [problemIncidents, setProblemIncidents] = useState('INC-44912, INC-44988');
   const [problemDescription, setProblemDescription] = useState('');
 
@@ -55,7 +57,10 @@ export default function ProblemsPage() {
 
   const filteredProblems = useMemo(() => {
     return allProblems.filter((item) => {
-      if (filters.domain !== 'all' && item.businessDomain !== filters.domain) return false;
+      if (filters.serviceDomain && filters.serviceDomain !== 'all') {
+        if (item.serviceDomainId !== filters.serviceDomain && item.serviceDomain !== filters.serviceDomain) return false;
+      }
+      if (filters.domain !== 'all' && item.serviceDomain !== filters.domain) return false;
       if (filters.status !== 'all' && item.status !== filters.status) return false;
       if (filters.app !== 'all' && item.application !== filters.app) return false;
       return true;
@@ -68,13 +73,15 @@ export default function ProblemsPage() {
 
     const newId = `PRB-00${allProblems.length + 1}`;
     const incArray = problemIncidents.split(',').map(s => s.trim()).filter(Boolean);
+    const sDomain = getServiceDomainById(problemServiceDomain);
     const newRecord = {
       id: newId,
       shortDescription: problemTitle.trim(),
       description: problemDescription.trim() || problemTitle.trim(),
+      serviceDomainId: sDomain.id,
+      serviceDomain: sDomain.name,
       application: problemApp,
-      businessDomain: problemDomain,
-      assignedTo: problemLead.trim() || 'Problem Management Lead',
+assignedTo: problemLead.trim() || 'Problem Management Lead',
       status: 'Open',
       rcaStatus: 'Pending',
       incidentIds: incArray.length > 0 ? incArray : ['INC-44912'],
@@ -114,12 +121,47 @@ export default function ProblemsPage() {
     { status: 'Closed', count: closedCount, color: '#159A6A' },
   ];
 
+  // 7 Service Domains Aggregation per Section 9
+  const problemDomainData = useMemo(() => {
+    return groupByServiceDomain(filteredProblems).map(d => ({
+      name: d.name,
+      shortCode: d.shortCode,
+      count: d.count,
+      color: d.color || '#6B1D2A'
+    }));
+  }, [filteredProblems]);
+
   // Table columns strictly matching generator fields (Section 17)
   const columns = [
     { key: 'id', label: 'Problem ID', width: '110px' },
     { key: 'shortDescription', label: 'Problem Statement / Defect', wrap: true },
+    {
+      key: 'serviceDomain',
+      label: 'Service Domain',
+      width: '180px',
+      render: (val, item) => (
+        <span
+          className="badge"
+          style={{
+            background: 'var(--bg-secondary)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border-secondary)',
+            fontWeight: 600,
+            fontSize: '11px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            maxWidth: '170px',
+            display: 'inline-block'
+          }}
+          title={val || item.serviceDomainId}
+        >
+          {val || item.serviceDomainId || 'SAP ERP and SuccessFactors'}
+        </span>
+      ),
+    },
     { key: 'application', label: 'Application', width: '150px' },
-    { key: 'businessDomain', label: 'Domain', width: '90px' },
+    { key: 'serviceDomain', label: 'Domain', width: '90px' },
     { key: 'assignedTo', label: 'Problem Lead', width: '150px' },
     { key: 'status', label: 'Status', type: 'status', width: '150px' },
     {
@@ -148,7 +190,7 @@ export default function ProblemsPage() {
       width: '120px',
       render: (val) =>
         val ? (
-          <span style={{ color: 'var(--edge-primary)', fontWeight: 700, fontSize: 'var(--text-xs)' }}>
+          <span style={{ color: 'var(--brand-primary)', fontWeight: 700, fontSize: 'var(--text-xs)' }}>
             {val}
           </span>
         ) : (
@@ -176,7 +218,7 @@ export default function ProblemsPage() {
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
             className="btn btn-secondary"
-            onClick={() => setFilters({ entity: 'all', domain: 'all', status: 'all', app: 'all' })}
+            onClick={() => setFilters({ serviceDomain: 'all', entity: 'all', domain: 'all', status: 'all', app: 'all' })}
             style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
           >
             <RefreshCw size={14} />
@@ -231,7 +273,7 @@ export default function ProblemsPage() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-card)', padding: '6px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
-            <span style={{ color: 'var(--edge-primary)' }}>1. Incident</span>
+            <span style={{ color: 'var(--brand-primary)' }}>1. Incident</span>
             <span style={{ color: 'var(--text-tertiary)', fontSize: '11px' }}>(Recurring Inflow)</span>
           </div>
           <ArrowRight size={14} color="var(--text-tertiary)" />
@@ -309,11 +351,11 @@ export default function ProblemsPage() {
         />
       </div>
 
-      {/* Purposeful Visual Analytics per Section 28 (RCA Health + Problem Backlog) */}
+      {/* Purposeful Visual Analytics per Section 28 (RCA Health + Problem Backlog + 7 Service Domains) */}
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
           gap: '16px',
         }}
       >
@@ -396,15 +438,44 @@ export default function ProblemsPage() {
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
+
+        {/* Visual 3: Problems by Service Domain (7 RFP Domains) */}
+        <ChartCard
+          title="Problems by Service Domain"
+          subtitle="7 KaarTech RFP Canonical Service Domains distribution"
+          badge="7 RFP Domains"
+          height={240}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={problemDomainData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-secondary)" opacity={0.6} />
+              <XAxis dataKey="shortCode" tick={{ fill: 'var(--text-tertiary)', fontSize: 11 }} />
+              <YAxis tick={{ fill: 'var(--text-tertiary)', fontSize: 11 }} />
+              <Tooltip
+                contentStyle={{
+                  background: 'var(--bg-card)',
+                  borderColor: 'var(--border-primary)',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: 'var(--text-xs)',
+                  color: 'var(--text-primary)',
+                  boxShadow: 'var(--shadow-lg)',
+                }}
+                formatter={(val, name, props) => [val, props.payload.name]}
+              />
+              <Bar dataKey="count" name="Problems" fill="var(--brand-primary, #6B1D2A)" radius={[4, 4, 0, 0]} barSize={28} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
       </div>
 
       {/* Filter Bar */}
       <FilterBar
         filters={filters}
         onChange={setFilters}
-        onReset={() => setFilters({ entity: 'all', domain: 'all', status: 'all', app: 'all' })}
+        onReset={() => setFilters({ serviceDomain: 'all', entity: 'all', domain: 'all', status: 'all', app: 'all' })}
         statusOptions={['Open', 'In Progress', 'Root Cause Identified', 'Corrective Action', 'Closed']}
         showEntity={false}
+        showServiceDomain={true}
         showDomain={true}
         showPriority={false}
         showStatus={true}
@@ -418,7 +489,7 @@ export default function ProblemsPage() {
         columns={columns}
         data={filteredProblems}
         onRowClick={(item) => setSelectedProblem(item)}
-        exportFilename="edge-problem-register.csv"
+        exportFilename="itms-problem-register.csv"
       />
 
       {/* Centered Record Detail Modal (Section 23, 27) */}
@@ -457,8 +528,8 @@ export default function ProblemsPage() {
               boxShadow: 'var(--shadow-2xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25))',
               maxWidth: '640px',
               width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              maxHeight: '88vh',
+              overflow: 'hidden',
               margin: 'auto',
               alignSelf: 'center',
               display: 'flex',
@@ -476,10 +547,11 @@ export default function ProblemsPage() {
               justifyContent: 'space-between',
               background: 'var(--bg-secondary, #f8fafc)',
               borderRadius: '16px 16px 0 0',
+              flexShrink: 0,
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <AlertOctagon size={18} color="var(--edge-primary, #FF5622)" />
+                  <AlertOctagon size={18} color="var(--brand-primary, #6B1D2A)" />
                   <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                     Open Problem Investigation
                   </h3>
@@ -498,7 +570,8 @@ export default function ProblemsPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleCreateProblem} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleCreateProblem} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+              <div className="modal-form-scrollable-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
                   Problem Statement / Recurring Defect *
@@ -521,34 +594,31 @@ export default function ProblemsPage() {
                 />
               </div>
 
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                  Service Domain (7 RFP Domains) *
+                </label>
+                <select
+                  value={problemServiceDomain}
+                  onChange={(e) => setProblemServiceDomain(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: 'var(--radius-md, 8px)',
+                    border: '1px solid var(--border-primary, #cbd5e1)',
+                    background: 'var(--bg-input, #ffffff)',
+                    color: 'var(--text-primary)',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                  }}
+                >
+                  {SERVICE_DOMAINS.map(d => (
+                    <option key={d.id} value={d.id}>{d.name} ({d.shortCode})</option>
+                  ))}
+                </select>
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                    Business Domain
-                  </label>
-                  <select
-                    value={problemDomain}
-                    onChange={(e) => setProblemDomain(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: 'var(--radius-md, 8px)',
-                      border: '1px solid var(--border-primary, #cbd5e1)',
-                      background: 'var(--bg-input, #ffffff)',
-                      color: 'var(--text-primary)',
-                      fontSize: '13px',
-                    }}
-                  >
-                    <option value="L2C">L2C (Lead to Cash)</option>
-                    <option value="O2C">O2C (Order to Cash)</option>
-                    <option value="P2P">P2P (Procure to Pay)</option>
-                    <option value="R2R">R2R (Record to Report)</option>
-                    <option value="H2R">H2R (Hire to Retire)</option>
-                    <option value="S2P">S2P (Source to Pay)</option>
-                    <option value="MFG">MFG (Manufacturing)</option>
-                    <option value="CRM">CRM (Customer Mgmt)</option>
-                  </select>
-                </div>
 
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
@@ -667,16 +737,10 @@ export default function ProblemsPage() {
                   }}
                 />
               </div>
+              </div>
 
-              {/* Action Buttons */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                marginTop: '12px',
-                paddingTop: '16px',
-                borderTop: '1px solid var(--border-primary, #e2e8f0)',
-              }}>
+              {/* Action Buttons — Sticky Footer */}
+              <div className="modal-form-sticky-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"

@@ -1,9 +1,9 @@
 /**
- * EDGE AMS Control Tower — Customer Feedback & CSAT Dashboard
+ * KaarTech ITMS Control Tower — Customer Feedback & CSAT Dashboard
  * Route: /customer/feedback
  *
  * Executive-grade analytical CSAT score visualization and survey registry.
- * Aligned with EDGE enterprise design system, high-contrast light mode,
+ * Aligned with KaarTech enterprise design system, high-contrast light mode,
  * restrained semantic colors, and live data-driven metrics.
  */
 import React, { useState, useMemo } from 'react';
@@ -64,7 +64,7 @@ export default function FeedbackPage() {
       key: 'ticketId',
       label: 'Ticket Ref',
       width: '120px',
-      render: (v) => <span style={{ color: 'var(--edge-primary)', fontWeight: 700 }}>{v}</span>
+      render: (v) => <span style={{ color: 'var(--brand-primary)', fontWeight: 700 }}>{v}</span>
     },
     { key: 'entity', label: 'Entity', width: '160px' },
     {
@@ -123,8 +123,8 @@ export default function FeedbackPage() {
                 width: 36,
                 height: 36,
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(255, 86, 34, 0.12)',
-                color: 'var(--edge-primary)',
+                background: 'rgba(107, 29, 42, 0.12)',
+                color: 'var(--brand-primary)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -202,7 +202,7 @@ export default function FeedbackPage() {
               <span style={{ fontSize: '3.5rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
                 {stats.csatScore}%
               </span>
-              <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--edge-primary)' }}>
+              <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--brand-primary)' }}>
                 CSAT
               </span>
             </div>
@@ -237,7 +237,7 @@ export default function FeedbackPage() {
                   padding: '5px 8px',
                   borderRadius: '6px',
                   background: selectedRatingFilter === d.key ? 'var(--bg-active)' : 'transparent',
-                  border: selectedRatingFilter === d.key ? '1px solid var(--edge-primary)' : '1px solid transparent',
+                  border: selectedRatingFilter === d.key ? '1px solid var(--brand-primary)' : '1px solid transparent',
                   transition: 'all 0.15s ease',
                 }}
                 title={`Click to filter by ${d.label}`}
@@ -398,8 +398,8 @@ export default function FeedbackPage() {
               fontSize: '0.75rem',
               fontWeight: 600,
               cursor: 'pointer',
-              border: selectedRatingFilter === tag ? '1.5px solid var(--edge-primary)' : '1px solid var(--border-primary)',
-              background: selectedRatingFilter === tag ? 'var(--edge-primary)' : 'var(--bg-card)',
+              border: selectedRatingFilter === tag ? '1.5px solid var(--brand-primary)' : '1px solid var(--border-primary)',
+              background: selectedRatingFilter === tag ? 'var(--brand-primary)' : 'var(--bg-card)',
               color: selectedRatingFilter === tag ? '#FFFFFF' : 'var(--text-secondary)',
               transition: 'all 0.15s ease',
             }}
@@ -415,7 +415,7 @@ export default function FeedbackPage() {
               background: 'none',
               border: 'none',
               fontSize: '0.75rem',
-              color: 'var(--edge-primary)',
+              color: 'var(--brand-primary)',
               cursor: 'pointer',
               textDecoration: 'underline',
               padding: 0,
@@ -429,10 +429,10 @@ export default function FeedbackPage() {
       {/* Response Table */}
       <DataTable
         title={`Customer Survey Responses ${selectedRatingFilter !== 'All' ? `(${selectedRatingFilter})` : ''}`}
-        subtitle="Individual ticket feedback logged by end-users and process owners across EDGE business streams."
+        subtitle="Individual ticket feedback logged by end-users and process owners across KaarTech service domains."
         columns={columns}
         data={filteredData}
-        exportFilename="edge-customer-feedback.csv"
+        exportFilename="kaartech-customer-feedback.csv"
       />
     </div>
   );

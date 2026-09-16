@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Canonical Time Management Store
+ * KaarTech ITMS Control Tower — Canonical Time Management Store
  * Single Source of Truth for Leave, Remote Work, Availability, and Timesheets.
  * 
  * Interconnections:
@@ -20,9 +20,9 @@
 
 import { RESOURCES } from './demoData';
 
-const LEAVE_STORAGE_KEY = 'edge-time-management-leave';
-const REMOTE_WORK_STORAGE_KEY = 'edge-time-management-remote-work';
-const TIMESHEET_STORAGE_KEY = 'edge-time-management-timesheet';
+const LEAVE_STORAGE_KEY = 'kaartech-itms-time-leave';
+const REMOTE_WORK_STORAGE_KEY = 'kaartech-itms-time-remote-work';
+const TIMESHEET_STORAGE_KEY = 'kaartech-itms-time-timesheet';
 
 // ── Working Days Calculation (Excluding Saturday & Sunday) ──
 export function calculateWorkingDays(startDateStr, endDateStr) {
@@ -51,7 +51,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-005',
     resourceName: 'Priya Nair',
     role: 'Functional Consultant',
-    businessDomain: 'E2M',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Production Planning',
     location: 'Offshore',
     leaveType: 'Annual Leave',
@@ -59,19 +59,19 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-12',
     days: 3,
     reason: 'Annual family leave and relocation assistance.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-013',
     backupResourceName: 'Hassan Al Nuaimi',
-    backupResourceDomain: 'E2M',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Approved',
     submittedDate: '2026-08-28',
     approvedDate: '2026-08-29',
     coverageNotes: 'E2M plant floor ticket queue delegated to Hassan Al Nuaimi. Primary escalation to General Shift.',
     workflow: [
       { step: 'Submitted', date: '2026-08-28', by: 'Priya Nair', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-08-28', by: 'Fatima Al Zaabi', status: 'Completed' },
-      { step: 'Approved', date: '2026-08-29', by: 'Fatima Al Zaabi', status: 'Completed' },
+      { step: 'Pending Approval', date: '2026-08-28', by: 'Fatima Al-Otaibi', status: 'Completed' },
+      { step: 'Approved', date: '2026-08-29', by: 'Fatima Al-Otaibi', status: 'Completed' },
       { step: 'Calendar Updated', date: '2026-08-29', by: 'System', status: 'Completed' },
       { step: 'Availability Updated', date: '2026-08-29', by: 'System', status: 'Completed' }
     ]
@@ -81,7 +81,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-007',
     resourceName: 'Deepak Kumar',
     role: 'Functional Consultant',
-    businessDomain: 'R2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Management Accounting',
     location: 'Offshore',
     leaveType: 'Training Leave',
@@ -89,17 +89,17 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-16',
     days: 3,
     reason: 'Advanced SAP S/4HANA Group Reporting certification course.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-025',
     backupResourceName: 'Mansour Al Hosani',
-    backupResourceDomain: 'R2R',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Pending Approval',
     submittedDate: '2026-09-02',
     coverageNotes: 'Financial controlling escalation handover to Mansour Al Hosani.',
     workflow: [
       { step: 'Submitted', date: '2026-09-02', by: 'Deepak Kumar', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-09-02', by: 'Fatima Al Zaabi', status: 'Active' },
+      { step: 'Pending Approval', date: '2026-09-02', by: 'Fatima Al-Otaibi', status: 'Active' },
       { step: 'Approved', status: 'Pending' },
       { step: 'Calendar Updated', status: 'Pending' },
       { step: 'Availability Updated', status: 'Pending' }
@@ -110,7 +110,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-004',
     resourceName: 'Sara Al Marzouqi',
     role: 'Functional Consultant',
-    businessDomain: 'H2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Talent Management',
     location: 'Onsite',
     leaveType: 'Annual Leave',
@@ -118,17 +118,17 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-24',
     days: 5,
     reason: 'Annual vacation during non-payroll freeze window.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-016',
     backupResourceName: 'Raj Malhotra',
-    backupResourceDomain: 'H2R',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Pending Approval',
     submittedDate: '2026-09-03',
     coverageNotes: 'SuccessFactors HXM queue monitored by Raj Malhotra and Layla Al Qassimi.',
     workflow: [
       { step: 'Submitted', date: '2026-09-03', by: 'Sara Al Marzouqi', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-09-03', by: 'Fatima Al Zaabi', status: 'Active' },
+      { step: 'Pending Approval', date: '2026-09-03', by: 'Fatima Al-Otaibi', status: 'Active' },
       { step: 'Approved', status: 'Pending' },
       { step: 'Calendar Updated', status: 'Pending' },
       { step: 'Availability Updated', status: 'Pending' }
@@ -139,7 +139,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-006',
     resourceName: 'Omar Bashar',
     role: 'Functional Consultant',
-    businessDomain: 'D2S',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Warehouse Management',
     location: 'Onsite',
     leaveType: 'Annual Leave',
@@ -147,19 +147,19 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-11',
     days: 5,
     reason: 'Scheduled annual leave.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-018',
     backupResourceName: 'Vikram Singh',
-    backupResourceDomain: 'D2S',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Approved',
     submittedDate: '2026-08-20',
     approvedDate: '2026-08-21',
     coverageNotes: 'EWM warehouse dispatch on-call covered by Vikram Singh.',
     workflow: [
       { step: 'Submitted', date: '2026-08-20', by: 'Omar Bashar', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-08-20', by: 'Fatima Al Zaabi', status: 'Completed' },
-      { step: 'Approved', date: '2026-08-21', by: 'Fatima Al Zaabi', status: 'Completed' },
+      { step: 'Pending Approval', date: '2026-08-20', by: 'Fatima Al-Otaibi', status: 'Completed' },
+      { step: 'Approved', date: '2026-08-21', by: 'Fatima Al-Otaibi', status: 'Completed' },
       { step: 'Calendar Updated', date: '2026-08-21', by: 'System', status: 'Completed' },
       { step: 'Availability Updated', date: '2026-08-21', by: 'System', status: 'Completed' }
     ]
@@ -169,7 +169,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-001',
     resourceName: 'Khalid Al Hashimi',
     role: 'Functional Consultant',
-    businessDomain: 'L2C',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Sales & Distribution',
     location: 'Onsite',
     leaveType: 'Annual Leave',
@@ -177,17 +177,17 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-25',
     days: 5,
     reason: 'Personal leave and annual rest.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-019',
     backupResourceName: 'Hind Al Mazrouei',
-    backupResourceDomain: 'L2C',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Pending Approval',
     submittedDate: '2026-09-04',
     coverageNotes: 'Sales order and billing queues delegated to Hind Al Mazrouei.',
     workflow: [
       { step: 'Submitted', date: '2026-09-04', by: 'Khalid Al Hashimi', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-09-04', by: 'Fatima Al Zaabi', status: 'Active' },
+      { step: 'Pending Approval', date: '2026-09-04', by: 'Fatima Al-Otaibi', status: 'Active' },
       { step: 'Approved', status: 'Pending' },
       { step: 'Calendar Updated', status: 'Pending' },
       { step: 'Availability Updated', status: 'Pending' }
@@ -198,7 +198,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-028',
     resourceName: 'Amira Hassan',
     role: 'Functional Consultant',
-    businessDomain: 'D2S',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Warehouse Management',
     location: 'Offshore',
     leaveType: 'Emergency Leave',
@@ -206,11 +206,11 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-10',
     days: 3,
     reason: 'Unplanned medical recovery and short-notice leave.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-006',
     backupResourceName: 'Omar Bashar',
-    backupResourceDomain: 'D2S',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Pending Approval',
     submittedDate: '2026-09-05',
     coverageNotes: 'Conflict warning: Omar Bashar is already scheduled on approved leave (LV-00004: Sep 07–11). Backup re-allocation required.',
@@ -218,7 +218,7 @@ const INITIAL_LEAVE_RECORDS = [
     backupConflictDetails: 'Omar Bashar is unavailable during this leave period (Approved Leave LV-00004: 2026-09-07 to 2026-09-11).',
     workflow: [
       { step: 'Submitted', date: '2026-09-05', by: 'Amira Hassan', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-09-05', by: 'Fatima Al Zaabi', status: 'Active' },
+      { step: 'Pending Approval', date: '2026-09-05', by: 'Fatima Al-Otaibi', status: 'Active' },
       { step: 'Approved', status: 'Pending' },
       { step: 'Calendar Updated', status: 'Pending' },
       { step: 'Availability Updated', status: 'Pending' }
@@ -229,7 +229,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-003',
     resourceName: 'Ravi Shankar',
     role: 'Functional Consultant',
-    businessDomain: 'P2P',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Procurement',
     location: 'Offshore',
     leaveType: 'Sick Leave',
@@ -237,19 +237,19 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-03',
     days: 3,
     reason: 'Medical appointment and recovery rest.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-021',
     backupResourceName: 'Abdulrahman Darwish',
-    backupResourceDomain: 'P2P',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Approved',
     submittedDate: '2026-08-31',
     approvedDate: '2026-08-31',
     coverageNotes: 'Procurement PO approvals routed to Abdulrahman Darwish.',
     workflow: [
       { step: 'Submitted', date: '2026-08-31', by: 'Ravi Shankar', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-08-31', by: 'Fatima Al Zaabi', status: 'Completed' },
-      { step: 'Approved', date: '2026-08-31', by: 'Fatima Al Zaabi', status: 'Completed' },
+      { step: 'Pending Approval', date: '2026-08-31', by: 'Fatima Al-Otaibi', status: 'Completed' },
+      { step: 'Approved', date: '2026-08-31', by: 'Fatima Al-Otaibi', status: 'Completed' },
       { step: 'Calendar Updated', date: '2026-08-31', by: 'System', status: 'Completed' },
       { step: 'Availability Updated', date: '2026-08-31', by: 'System', status: 'Completed' }
     ]
@@ -259,7 +259,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-008',
     resourceName: 'Noura Al Shamsi',
     role: 'Functional Consultant',
-    businessDomain: 'S2P',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Strategic Sourcing',
     location: 'Onsite',
     leaveType: 'Exam / Certification',
@@ -267,19 +267,19 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-29',
     days: 2,
     reason: 'SAP Ariba Guided Sourcing Certification Board examination.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-010',
     backupResourceName: 'Aisha Khalfan',
-    backupResourceDomain: 'S2P',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Approved',
     submittedDate: '2026-09-01',
     approvedDate: '2026-09-02',
     coverageNotes: 'Sourcing contract workspaces monitored by Aisha Khalfan.',
     workflow: [
       { step: 'Submitted', date: '2026-09-01', by: 'Noura Al Shamsi', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-09-01', by: 'Fatima Al Zaabi', status: 'Completed' },
-      { step: 'Approved', date: '2026-09-02', by: 'Fatima Al Zaabi', status: 'Completed' },
+      { step: 'Pending Approval', date: '2026-09-01', by: 'Fatima Al-Otaibi', status: 'Completed' },
+      { step: 'Approved', date: '2026-09-02', by: 'Fatima Al-Otaibi', status: 'Completed' },
       { step: 'Calendar Updated', date: '2026-09-02', by: 'System', status: 'Completed' },
       { step: 'Availability Updated', date: '2026-09-02', by: 'System', status: 'Completed' }
     ]
@@ -289,7 +289,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-015',
     resourceName: 'Tariq Al Dhaheri',
     role: 'Functional Consultant',
-    businessDomain: 'A2D',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Asset Management',
     location: 'Onsite',
     leaveType: 'Training Leave',
@@ -297,19 +297,19 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-17',
     days: 3,
     reason: 'SAP EAM mobile work manager inspection training.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-023',
     backupResourceName: 'Yousuf Al Kaabi',
-    backupResourceDomain: 'A2D',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Approved',
     submittedDate: '2026-08-25',
     approvedDate: '2026-08-26',
     coverageNotes: 'Plant maintenance emergency dispatch transferred to Yousuf Al Kaabi.',
     workflow: [
       { step: 'Submitted', date: '2026-08-25', by: 'Tariq Al Dhaheri', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-08-25', by: 'Fatima Al Zaabi', status: 'Completed' },
-      { step: 'Approved', date: '2026-08-26', by: 'Fatima Al Zaabi', status: 'Completed' },
+      { step: 'Pending Approval', date: '2026-08-25', by: 'Fatima Al-Otaibi', status: 'Completed' },
+      { step: 'Approved', date: '2026-08-26', by: 'Fatima Al-Otaibi', status: 'Completed' },
       { step: 'Calendar Updated', date: '2026-08-26', by: 'System', status: 'Completed' },
       { step: 'Availability Updated', date: '2026-08-26', by: 'System', status: 'Completed' }
     ]
@@ -319,7 +319,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-011',
     resourceName: 'Mohammed Al Kindi',
     role: 'Functional Consultant',
-    businessDomain: 'L2C',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Billing & Invoicing',
     location: 'Offshore',
     leaveType: 'Annual Leave',
@@ -331,7 +331,7 @@ const INITIAL_LEAVE_RECORDS = [
     approverId: 'RES-001',
     backupResourceId: 'RES-024',
     backupResourceName: 'Pooja Sharma',
-    backupResourceDomain: 'L2C',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Approved',
     submittedDate: '2026-08-22',
     approvedDate: '2026-08-23',
@@ -349,7 +349,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-020',
     resourceName: 'Suresh Krishnan',
     role: 'BASIS Consultant',
-    businessDomain: 'E2M',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Production Planning',
     location: 'Offshore',
     leaveType: 'Annual Leave',
@@ -357,19 +357,19 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-04',
     days: 3,
     reason: 'Annual leave.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-009',
     backupResourceName: 'Ankit Patel',
-    backupResourceDomain: 'E2M',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Approved',
     submittedDate: '2026-08-15',
     approvedDate: '2026-08-16',
     coverageNotes: 'HANA memory dumps and batch locks escalated to Ankit Patel.',
     workflow: [
       { step: 'Submitted', date: '2026-08-15', by: 'Suresh Krishnan', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-08-15', by: 'Fatima Al Zaabi', status: 'Completed' },
-      { step: 'Approved', date: '2026-08-16', by: 'Fatima Al Zaabi', status: 'Completed' },
+      { step: 'Pending Approval', date: '2026-08-15', by: 'Fatima Al-Otaibi', status: 'Completed' },
+      { step: 'Approved', date: '2026-08-16', by: 'Fatima Al-Otaibi', status: 'Completed' },
       { step: 'Calendar Updated', date: '2026-08-16', by: 'System', status: 'Completed' },
       { step: 'Availability Updated', date: '2026-08-16', by: 'System', status: 'Completed' }
     ]
@@ -379,7 +379,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-017',
     resourceName: 'Mariam Al Suwaidi',
     role: 'Senior Consultant',
-    businessDomain: 'R2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Financial Accounting',
     location: 'Onsite',
     leaveType: 'Emergency Leave',
@@ -387,19 +387,19 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-09-09',
     days: 2,
     reason: 'Urgent family obligation.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-002',
-    backupResourceName: 'Fatima Al Zaabi',
-    backupResourceDomain: 'R2R',
+    backupResourceName: 'Fatima Al-Otaibi',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Approved',
     submittedDate: '2026-09-07',
     approvedDate: '2026-09-07',
-    coverageNotes: 'General ledger journal vouchers reviewed directly by Fatima Al Zaabi.',
+    coverageNotes: 'General ledger journal vouchers reviewed directly by Fatima Al-Otaibi.',
     workflow: [
       { step: 'Submitted', date: '2026-09-07', by: 'Mariam Al Suwaidi', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-09-07', by: 'Fatima Al Zaabi', status: 'Completed' },
-      { step: 'Approved', date: '2026-09-07', by: 'Fatima Al Zaabi', status: 'Completed' },
+      { step: 'Pending Approval', date: '2026-09-07', by: 'Fatima Al-Otaibi', status: 'Completed' },
+      { step: 'Approved', date: '2026-09-07', by: 'Fatima Al-Otaibi', status: 'Completed' },
       { step: 'Calendar Updated', date: '2026-09-07', by: 'System', status: 'Completed' },
       { step: 'Availability Updated', date: '2026-09-07', by: 'System', status: 'Completed' }
     ]
@@ -409,7 +409,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-027',
     resourceName: 'Sultan Al Dhahiri',
     role: 'Functional Consultant',
-    businessDomain: 'E2M',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Quality Management',
     location: 'Onsite',
     leaveType: 'Annual Leave',
@@ -417,20 +417,20 @@ const INITIAL_LEAVE_RECORDS = [
     endDate: '2026-10-02',
     days: 5,
     reason: 'Planned annual leave during manufacturing maintenance.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     approverId: 'RES-002',
     backupResourceId: 'RES-013',
     backupResourceName: 'Hassan Al Nuaimi',
-    backupResourceDomain: 'E2M',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Rejected',
-    rejectionReason: 'Operational coverage requirement during HALCON shopfloor audit window.',
+    rejectionReason: 'Operational coverage requirement during manufacturing shopfloor audit window.',
     submittedDate: '2026-09-01',
     rejectedDate: '2026-09-02',
     coverageNotes: 'Rejection retained in operational audit history.',
     workflow: [
       { step: 'Submitted', date: '2026-09-01', by: 'Sultan Al Dhahiri', status: 'Completed' },
-      { step: 'Pending Approval', date: '2026-09-01', by: 'Fatima Al Zaabi', status: 'Completed' },
-      { step: 'Rejected', date: '2026-09-02', by: 'Fatima Al Zaabi', status: 'Completed' }
+      { step: 'Pending Approval', date: '2026-09-01', by: 'Fatima Al-Otaibi', status: 'Completed' },
+      { step: 'Rejected', date: '2026-09-02', by: 'Fatima Al-Otaibi', status: 'Completed' }
     ]
   },
   {
@@ -438,7 +438,7 @@ const INITIAL_LEAVE_RECORDS = [
     resourceId: 'RES-014',
     resourceName: 'Sunita Reddy',
     role: 'ABAP Developer',
-    businessDomain: 'P2P',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     processGroup: 'Invoice Processing',
     location: 'Offshore',
     leaveType: 'Annual Leave',
@@ -450,7 +450,7 @@ const INITIAL_LEAVE_RECORDS = [
     approverId: 'RES-003',
     backupResourceId: 'RES-026',
     backupResourceName: 'Nisha Varma',
-    backupResourceDomain: 'S2P',
+    backupResourceDomain: 'SAP ERP and SuccessFactors',
     status: 'Cancelled',
     submittedDate: '2026-08-30',
     cancelledDate: '2026-09-02',
@@ -468,11 +468,11 @@ const INITIAL_REMOTE_WORK_RECORDS = [
     id: 'RW-00001',
     resourceId: 'RES-001',
     resourceName: 'Khalid Al Hashimi',
-    businessDomain: 'L2C',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     date: '2026-09-08',
-    location: 'Remote (Abu Dhabi Residence)',
+    location: 'Remote (Riyadh Residence)',
     reason: 'Client system cutover night shift alignment.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     status: 'Approved',
     submittedDate: '2026-09-05'
   },
@@ -480,11 +480,11 @@ const INITIAL_REMOTE_WORK_RECORDS = [
     id: 'RW-00002',
     resourceId: 'RES-004',
     resourceName: 'Sara Al Marzouqi',
-    businessDomain: 'H2R',
+    serviceDomain: 'SAP ERP and SuccessFactors',
     date: '2026-09-09',
-    location: 'Remote (Dubai Hub)',
+    location: 'Remote (Jeddah Hub)',
     reason: 'Cross-entity recruitment interview coordination.',
-    approver: 'Fatima Al Zaabi',
+    approver: 'Fatima Al-Otaibi',
     status: 'Approved',
     submittedDate: '2026-09-06'
   }
@@ -704,14 +704,15 @@ export function applyLeave({
 
   // Determine manager
   const mgrRes = res.reportingManager ? RESOURCES.find(r => r.id === res.reportingManager) : null;
-  const approver = mgrRes ? mgrRes.name : 'Fatima Al Zaabi';
+  const approver = mgrRes ? mgrRes.name : 'Fatima Al-Otaibi';
 
   const newRecord = {
     id: nextId,
     resourceId: res.id,
     resourceName: res.name,
     role: res.role || 'Consultant',
-    businessDomain: res.businessDomain,
+    serviceDomain: res.serviceDomain,
+    serviceDomainId: res.serviceDomainId,
     processGroup: res.processGroup || 'AMS Operations',
     location: res.location || 'Onsite',
     leaveType: leaveType || 'Annual Leave',
@@ -723,11 +724,11 @@ export function applyLeave({
     approverId: mgrRes ? mgrRes.id : 'RES-002',
     backupResourceId: backup ? backup.id : null,
     backupResourceName: backup ? backup.name : 'N/A',
-    backupResourceDomain: backup ? backup.businessDomain : 'N/A',
+    backupResourceDomain: backup ? (backup.serviceDomain || 'N/A') : 'N/A',
     status: 'Pending Approval',
     submittedDate: today,
     coverageNotes: backup
-      ? `Operational coverage assigned to ${backup.name} (${backup.businessDomain}).`
+      ? `Operational coverage assigned to ${backup.name} (${backup.serviceDomain || 'Operations'}).`
       : 'No dedicated backup specified.',
     backupConflict: conflictCheck?.hasConflict || false,
     backupConflictDetails: conflictCheck?.message || null,
@@ -746,7 +747,7 @@ export function applyLeave({
 }
 
 // ── Approve Leave ──
-export function approveLeave(leaveId, approverName = 'Fatima Al Zaabi', decisionNotes = '') {
+export function approveLeave(leaveId, approverName = 'Fatima Al-Otaibi', decisionNotes = '') {
   const leaves = loadLeaves();
   const today = '2026-09-06';
   let target = null;
@@ -778,7 +779,7 @@ export function approveLeave(leaveId, approverName = 'Fatima Al Zaabi', decision
 }
 
 // ── Reject Leave ──
-export function rejectLeave(leaveId, approverName = 'Fatima Al Zaabi', rejectionReason = 'Operational coverage requirement.') {
+export function rejectLeave(leaveId, approverName = 'Fatima Al-Otaibi', rejectionReason = 'Operational coverage requirement.') {
   if (!rejectionReason || !rejectionReason.trim()) {
     throw new Error('Rejection reason is mandatory.');
   }
@@ -857,11 +858,12 @@ export function applyRemoteWork({ resourceId, date, location, reason }) {
     id: nextId,
     resourceId: res.id,
     resourceName: res.name,
-    businessDomain: res.businessDomain,
+    serviceDomain: res.serviceDomain,
+    serviceDomainId: res.serviceDomainId,
     date: date || '2026-09-08',
-    location: location || 'Remote (Abu Dhabi)',
+    location: location || 'Remote (Riyadh)',
     reason: reason || 'Operational remote work.',
-    approver: mgrRes ? mgrRes.name : 'Fatima Al Zaabi',
+    approver: mgrRes ? mgrRes.name : 'Fatima Al-Otaibi',
     status: 'Approved',
     submittedDate: '2026-09-06'
   };
@@ -993,8 +995,253 @@ export function getOnsiteCoverageCompliance(dateStr = '2026-09-08') {
     absentResources: onsiteOnLeave.map(r => ({
       id: r.id,
       name: r.name,
-      businessDomain: r.businessDomain,
+      serviceDomain: r.serviceDomain,
+      serviceDomainId: r.serviceDomainId,
       processGroup: r.processGroup,
     }))
+  };
+}
+
+// ── Canonical Initial Timesheet Records ──
+const INITIAL_TIMESHEET_RECORDS = [
+  {
+    id: 'TS-202609-001',
+    resourceId: 'RES-001',
+    resourceName: 'Khalid Al Hashimi',
+    role: 'Lead Enterprise Solutions Architect',
+    month: 8,
+    year: 2026,
+    assignment: 'L2C AMS Operations',
+    regularHours: 168,
+    overtimeHours: 6,
+    leaveDays: 0,
+    totalDays: 22,
+    status: 'Approved',
+    approver: 'Fatima Al-Otaibi',
+    approvedDate: '2026-09-05',
+    approvedBy: 'Fatima Al-Otaibi',
+  },
+  {
+    id: 'TS-202609-002',
+    resourceId: 'RES-002',
+    resourceName: 'Fatima Al-Otaibi',
+    role: 'Service Delivery Manager',
+    month: 8,
+    year: 2026,
+    assignment: 'R2R AMS Operations',
+    regularHours: 160,
+    overtimeHours: 0,
+    leaveDays: 0,
+    totalDays: 22,
+    status: 'Approved',
+    approver: 'Dr. Tariq Al Nuaimi',
+    approvedDate: '2026-09-05',
+    approvedBy: 'Dr. Tariq Al Nuaimi',
+  },
+  {
+    id: 'TS-202609-003',
+    resourceId: 'RES-003',
+    resourceName: 'Sultan Al Dhaheri',
+    role: 'Lead Technical Architect',
+    month: 8,
+    year: 2026,
+    assignment: 'Cross-Domain AMS Operations',
+    regularHours: 160,
+    overtimeHours: 8,
+    leaveDays: 0,
+    totalDays: 22,
+    status: 'Approved',
+    approver: 'Fatima Al-Otaibi',
+    approvedDate: '2026-09-06',
+    approvedBy: 'Fatima Al-Otaibi',
+  },
+  {
+    id: 'TS-202609-004',
+    resourceId: 'RES-004',
+    resourceName: 'Sara Al Marzouqi',
+    role: 'Senior Functional Consultant',
+    month: 8,
+    year: 2026,
+    assignment: 'H2R AMS Operations',
+    regularHours: 152,
+    overtimeHours: 0,
+    leaveDays: 1,
+    totalDays: 22,
+    status: 'Submitted',
+    approver: 'Fatima Al-Otaibi',
+    approvedDate: null,
+    approvedBy: null,
+  },
+  {
+    id: 'TS-202609-005',
+    resourceId: 'RES-005',
+    resourceName: 'Priya Nair',
+    role: 'Functional Consultant',
+    month: 8,
+    year: 2026,
+    assignment: 'E2M AMS Operations',
+    regularHours: 136,
+    overtimeHours: 4,
+    leaveDays: 3,
+    totalDays: 22,
+    status: 'Pending',
+    approver: 'Fatima Al-Otaibi',
+    approvedDate: null,
+    approvedBy: null,
+  },
+  {
+    id: 'TS-202609-006',
+    resourceId: 'RES-006',
+    resourceName: 'Ankit Patel',
+    role: 'Senior ABAP / Integration Specialist',
+    month: 8,
+    year: 2026,
+    assignment: 'Integration AMS Operations',
+    regularHours: 168,
+    overtimeHours: 10,
+    leaveDays: 0,
+    totalDays: 22,
+    status: 'Approved',
+    approver: 'Fatima Al-Otaibi',
+    approvedDate: '2026-09-05',
+    approvedBy: 'Fatima Al-Otaibi',
+  },
+  {
+    id: 'TS-202609-007',
+    resourceId: 'RES-007',
+    resourceName: 'Deepak Kumar',
+    role: 'Functional Consultant',
+    month: 8,
+    year: 2026,
+    assignment: 'R2R AMS Operations',
+    regularHours: 136,
+    overtimeHours: 0,
+    leaveDays: 3,
+    totalDays: 22,
+    status: 'Submitted',
+    approver: 'Fatima Al-Otaibi',
+    approvedDate: null,
+    approvedBy: null,
+  },
+  {
+    id: 'TS-202609-008',
+    resourceId: 'RES-008',
+    resourceName: 'Noura Al Shamsi',
+    role: 'Functional Consultant',
+    month: 8,
+    year: 2026,
+    assignment: 'S2P AMS Operations',
+    regularHours: 144,
+    overtimeHours: 0,
+    leaveDays: 2,
+    totalDays: 22,
+    status: 'Approved',
+    approver: 'Fatima Al-Otaibi',
+    approvedDate: '2026-09-05',
+    approvedBy: 'Fatima Al-Otaibi',
+  },
+  {
+    id: 'TS-202609-009',
+    resourceId: 'RES-009',
+    resourceName: 'Ravi Shankar',
+    role: 'Senior Functional Consultant',
+    month: 8,
+    year: 2026,
+    assignment: 'S2P AMS Operations',
+    regularHours: 160,
+    overtimeHours: 4,
+    leaveDays: 1,
+    totalDays: 22,
+    status: 'Pending',
+    approver: 'Fatima Al-Otaibi',
+    approvedDate: null,
+    approvedBy: null,
+  },
+  {
+    id: 'TS-202609-010',
+    resourceId: 'RES-010',
+    resourceName: 'Aisha Khalfan',
+    role: 'Junior Functional Consultant',
+    month: 8,
+    year: 2026,
+    assignment: 'S2P AMS Operations',
+    regularHours: 160,
+    overtimeHours: 0,
+    leaveDays: 0,
+    totalDays: 22,
+    status: 'Approved',
+    approver: 'Fatima Al-Otaibi',
+    approvedDate: '2026-09-04',
+    approvedBy: 'Fatima Al-Otaibi',
+  }
+];
+
+function loadTimesheets() {
+  try {
+    const raw = localStorage.getItem(TIMESHEET_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.warn('Could not read timesheet data', e);
+  }
+  return [...INITIAL_TIMESHEET_RECORDS];
+}
+
+function saveTimesheets(records) {
+  try {
+    localStorage.setItem(TIMESHEET_STORAGE_KEY, JSON.stringify(records));
+  } catch (e) {
+    console.warn('Could not save timesheet data', e);
+  }
+  notifyListeners();
+}
+
+export function getTimesheetRecords() {
+  return loadTimesheets();
+}
+
+export function approveTimesheet(tsId, approver = 'Fatima Al-Otaibi') {
+  const records = loadTimesheets();
+  const index = records.findIndex(r => r.id === tsId);
+  if (index !== -1) {
+    records[index] = {
+      ...records[index],
+      status: 'Approved',
+      approvedBy: approver,
+      approver: approver,
+      approvedDate: new Date().toISOString().split('T')[0],
+    };
+    saveTimesheets(records);
+    return records[index];
+  }
+  return null;
+}
+
+export function rejectTimesheet(tsId, approver = 'Fatima Al-Otaibi') {
+  const records = loadTimesheets();
+  const index = records.findIndex(r => r.id === tsId);
+  if (index !== -1) {
+    records[index] = {
+      ...records[index],
+      status: 'Rejected',
+      approvedBy: approver,
+      approver: approver,
+      approvedDate: new Date().toISOString().split('T')[0],
+    };
+    saveTimesheets(records);
+    return records[index];
+  }
+  return null;
+}
+
+export function getTimesheetKPIs() {
+  const records = loadTimesheets();
+  return {
+    total: records.length,
+    approved: records.filter(r => r.status === 'Approved').length,
+    pending: records.filter(r => r.status === 'Pending' || r.status === 'Submitted').length,
+    rejected: records.filter(r => r.status === 'Rejected').length,
   };
 }

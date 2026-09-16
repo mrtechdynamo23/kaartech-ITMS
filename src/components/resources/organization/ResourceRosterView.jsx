@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Resource Roster View
+﻿/**
+ * KaarTech ITMS Control Tower — Resource Roster View
  * 
  * Inspired by NOC ResourceRoster.tsx:
  * - Master personnel table linked directly to hierarchy and filters
@@ -20,7 +20,7 @@ export default function ResourceRosterView({
 
   // Filter based on search and filters
   const filteredList = enriched.filter(res => {
-    if (filters.domain && filters.domain !== 'all' && res.businessDomain !== filters.domain) {
+    if (filters.domain && filters.domain !== 'all' && res.serviceDomain !== filters.domain) {
       return false;
     }
     if (filters.location && filters.location !== 'all' && res.location !== filters.location) {
@@ -36,7 +36,7 @@ export default function ResourceRosterView({
         res.id,
         res.positionId,
         res.role,
-        res.businessDomain,
+        res.serviceDomain,
         res.processGroup,
         res.skill,
         res.certification,
@@ -137,14 +137,14 @@ export default function ResourceRosterView({
                         style={{
                           fontSize: '10px',
                           fontWeight: 700,
-                          color: 'var(--edge-primary)',
-                          background: 'rgba(255, 86, 34, 0.1)',
+                          color: 'var(--brand-primary)',
+                          background: 'rgba(107, 29, 42, 0.1)',
                           padding: '1px 5px',
                           borderRadius: '3px',
                           marginRight: '6px',
                         }}
                       >
-                        {res.businessDomain}
+                        {res.serviceDomain}
                       </span>
                       <span style={{ color: 'var(--text-secondary)' }}>{res.processGroup}</span>
                     </td>

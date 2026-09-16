@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Ticket Reduction & Value Conversion
+﻿/**
+ * KaarTech ITMS Control Tower — Ticket Reduction & Value Conversion
  * Route: /service-innovation/ticket-reduction
  * Visual waterfall model: Baseline → Knowledge Deflection → Automation → RCA Fixes → Net Volume (Section 31).
  */
@@ -22,7 +22,7 @@ export default function TicketReductionPage() {
     { stage: '2. KEDB Self-Service', count: -298, color: '#0D9F6E', desc: 'Shift-left self-service deflection' },
     { stage: '3. RPA Auto-Healing', count: -184, color: '#2563EB', desc: 'Automated script recovery' },
     { stage: '4. Permanent RCA Fixes', count: -140, color: '#7C3AED', desc: 'Zero-recurrence code remedies' },
-    { stage: '5. Net Managed Volume', count: 578, color: '#FF5622', desc: 'Optimized operational workload (-51.8%)' },
+    { stage: '5. Net Managed Volume', count: 578, color: '#6B1D2A', desc: 'Optimized operational workload (-51.8%)' },
   ];
 
   // Mechanism Cards
@@ -148,7 +148,7 @@ export default function TicketReductionPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
               <div style={{ flex: 1, minWidth: '280px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary)' }}>{m.tag}</span>
+                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary)' }}>{m.tag}</span>
                   <span className="badge badge-success">{m.status}</span>
                 </div>
                 <h4 style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--text-primary)', margin: '4px 0 6px' }}>{m.name}</h4>

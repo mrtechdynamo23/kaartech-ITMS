@@ -1,8 +1,8 @@
 /**
- * EDGE AMS Control Tower — Knowledge Document Centered Detail Modal
+ * KaarTech ITMS Control Tower — Knowledge Document Centered Detail Modal
  *
  * Implements full document inspection per Head Feedback requirement:
- * - Title, Type, Business Stream, Process Group, Application, Owner, Last Updated, Status
+ * - Title, Type, Service Domain, Process Group, Application, Owner, Last Updated, Status
  * - Executive Summary
  * - Document Content / Knowledge Article with formatted procedure sections
  * - Related Application & Related Incident/SR ticket lineage
@@ -85,7 +85,7 @@ export default function KnowledgeDocumentModal({ isOpen, document: doc, onClose 
         <div
           style={{
             padding: '20px 24px',
-            background: 'linear-gradient(135deg, rgba(255, 86, 34, 0.10) 0%, rgba(20, 24, 30, 0.95) 100%)',
+            background: 'linear-gradient(135deg, rgba(107, 29, 42, 0.10) 0%, rgba(20, 24, 30, 0.95) 100%)',
             borderBottom: '1.5px solid var(--border-primary)',
             position: 'relative',
           }}
@@ -103,13 +103,13 @@ export default function KnowledgeDocumentModal({ isOpen, document: doc, onClose 
                     fontWeight: 700,
                     padding: '2px 8px',
                     borderRadius: '4px',
-                    background: 'rgba(255, 86, 34, 0.15)',
-                    color: 'var(--edge-primary)',
-                    border: '1px solid rgba(255, 86, 34, 0.3)',
+                    background: 'rgba(107, 29, 42, 0.15)',
+                    color: 'var(--brand-primary)',
+                    border: '1px solid rgba(107, 29, 42, 0.3)',
                     fontFamily: 'var(--font-mono)',
                   }}
                 >
-                  Stream: {doc.businessStream}
+                  Stream: {doc.serviceDomain}
                 </span>
                 <span className="badge badge-success">
                   <CheckCircle2 size={11} style={{ marginRight: 3 }} /> {doc.status}
@@ -169,7 +169,7 @@ export default function KnowledgeDocumentModal({ isOpen, document: doc, onClose 
             <div style={{ color: 'var(--text-tertiary)', textTransform: 'uppercase', fontSize: '0.6875rem', fontWeight: 700 }}>
               Application
             </div>
-            <div style={{ fontWeight: 600, color: 'var(--edge-primary)', marginTop: 2 }}>
+            <div style={{ fontWeight: 600, color: 'var(--brand-primary)', marginTop: 2 }}>
               {doc.application}
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function KnowledgeDocumentModal({ isOpen, document: doc, onClose 
           {/* Full Operational Procedure / Content */}
           <div>
             <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.04em', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <BookOpen size={14} style={{ color: 'var(--edge-primary)' }} /> Knowledge Article & Procedures
+              <BookOpen size={14} style={{ color: 'var(--brand-primary)' }} /> Knowledge Article & Procedures
             </div>
 
             <div
@@ -260,7 +260,7 @@ export default function KnowledgeDocumentModal({ isOpen, document: doc, onClose 
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Ticket size={16} style={{ color: 'var(--edge-primary)' }} />
+                <Ticket size={16} style={{ color: 'var(--brand-primary)' }} />
                 <div>
                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                     Linked Tickets & Historical Lineage
@@ -279,9 +279,9 @@ export default function KnowledgeDocumentModal({ isOpen, document: doc, onClose 
                       fontFamily: 'var(--font-mono)',
                       fontSize: '0.75rem',
                       fontWeight: 700,
-                      color: 'var(--edge-primary)',
-                      background: 'rgba(255, 86, 34, 0.10)',
-                      border: '1px solid rgba(255, 86, 34, 0.25)',
+                      color: 'var(--brand-primary)',
+                      background: 'rgba(107, 29, 42, 0.10)',
+                      border: '1px solid rgba(107, 29, 42, 0.25)',
                       padding: '2px 8px',
                       borderRadius: '4px',
                     }}
@@ -320,6 +320,7 @@ export default function KnowledgeDocumentModal({ isOpen, document: doc, onClose 
 
         {/* Footer */}
         <div
+          className="modal-form-sticky-footer"
           style={{
             padding: '14px 24px',
             background: 'var(--bg-secondary)',
@@ -328,6 +329,7 @@ export default function KnowledgeDocumentModal({ isOpen, document: doc, onClose 
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: 12,
+            flexShrink: 0,
           }}
         >
           <span style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)' }}>

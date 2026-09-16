@@ -1,7 +1,7 @@
 /**
- * EDGE AMS Control Tower — Time Management Enterprise Modals
+ * KaarTech ITMS Control Tower — Time Management Enterprise Modals
  * 
- * Centered modal dialogues adhering to EDGE Design System:
+ * Centered modal dialogues adhering to KaarTech ITMS Design System:
  * 1. ApplyLeaveModal: Resource Master binding, auto working days, backup conflict check
  * 2. ApprovalsModal: Operational approval workspace with live Approve/Reject actions
  * 3. LeaveDetailModal: Full request details, Availability Impact, and Workflow Progress Lineage
@@ -49,9 +49,9 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
   }, [selectedResourceId]);
 
   const reportingManager = useMemo(() => {
-    if (!selectedResource.reportingManager) return 'Fatima Al Zaabi';
+    if (!selectedResource.reportingManager) return 'Fatima Al-Otaibi';
     const mgr = RESOURCES.find(r => r.id === selectedResource.reportingManager);
-    return mgr ? mgr.name : 'Fatima Al Zaabi';
+    return mgr ? mgr.name : 'Fatima Al-Otaibi';
   }, [selectedResource]);
 
   // Working days auto-calculation
@@ -140,7 +140,7 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
             {/* 1. Resource Selector */}
             <div className="form-group" style={{ marginBottom: '16px' }}>
               <label className="form-label" style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>
-                Resource <span style={{ color: 'var(--edge-primary)' }}>*</span>
+                Resource <span style={{ color: 'var(--brand-primary)' }}>*</span>
               </label>
               <select
                 value={selectedResourceId}
@@ -167,7 +167,7 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
               >
                 {RESOURCES.map(r => (
                   <option key={r.id} value={r.id}>
-                    {r.name} — {r.role || 'Consultant'} ({r.businessDomain} • {r.location})
+                    {r.name} — {r.role || 'Consultant'} ({r.serviceDomain} • {r.location})
                   </option>
                 ))}
               </select>
@@ -186,8 +186,8 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
               fontSize: '12px'
             }}>
               <div>
-                <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '11px' }}>Business Domain</span>
-                <strong style={{ color: 'var(--text-primary)' }}>{selectedResource.businessDomain}</strong>
+                <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '11px' }}>Service Domain</span>
+                <strong style={{ color: 'var(--text-primary)' }}>{selectedResource.serviceDomain}</strong>
               </div>
               <div>
                 <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '11px' }}>Process Group</span>
@@ -206,7 +206,7 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
             {/* 2. Leave Type */}
             <div className="form-group" style={{ marginBottom: '16px' }}>
               <label className="form-label" style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>
-                Leave Type <span style={{ color: 'var(--edge-primary)' }}>*</span>
+                Leave Type <span style={{ color: 'var(--brand-primary)' }}>*</span>
               </label>
               <select
                 value={leaveType}
@@ -235,7 +235,7 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 120px', gap: '12px', marginBottom: '16px' }}>
               <div>
                 <label className="form-label" style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>
-                  Start Date <span style={{ color: 'var(--edge-primary)' }}>*</span>
+                  Start Date <span style={{ color: 'var(--brand-primary)' }}>*</span>
                 </label>
                 <input
                   type="date"
@@ -258,7 +258,7 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
 
               <div>
                 <label className="form-label" style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>
-                  End Date <span style={{ color: 'var(--edge-primary)' }}>*</span>
+                  End Date <span style={{ color: 'var(--brand-primary)' }}>*</span>
                 </label>
                 <input
                   type="date"
@@ -303,7 +303,7 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
             {/* 4. Reason */}
             <div className="form-group" style={{ marginBottom: '16px' }}>
               <label className="form-label" style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>
-                Operational Handover / Reason <span style={{ color: 'var(--edge-primary)' }}>*</span>
+                Operational Handover / Reason <span style={{ color: 'var(--brand-primary)' }}>*</span>
               </label>
               <textarea
                 value={reason}
@@ -327,7 +327,7 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
             {/* 5. Backup Resource */}
             <div className="form-group" style={{ marginBottom: '12px' }}>
               <label className="form-label" style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>
-                Backup Resource (from Resource Master) <span style={{ color: 'var(--edge-primary)' }}>*</span>
+                Backup Resource (from Resource Master) <span style={{ color: 'var(--brand-primary)' }}>*</span>
               </label>
               <select
                 value={backupResourceId}
@@ -346,7 +346,7 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
               >
                 {RESOURCES.filter(r => r.id !== selectedResourceId).map(r => (
                   <option key={r.id} value={r.id}>
-                    {r.name} — {r.role || 'Consultant'} ({r.businessDomain} • {r.location})
+                    {r.name} — {r.role || 'Consultant'} ({r.serviceDomain} • {r.location})
                   </option>
                 ))}
               </select>
@@ -399,8 +399,8 @@ export function ApplyLeaveModal({ isOpen, onClose, onSuccess }) {
               style={{
                 padding: '8px 20px',
                 fontSize: '13px',
-                background: 'var(--edge-primary)',
-                borderColor: 'var(--edge-primary)',
+                background: 'var(--brand-primary)',
+                borderColor: 'var(--brand-primary)',
                 color: '#FFFFFF',
                 opacity: conflictInfo?.hasConflict || calculatedDays <= 0 ? 0.5 : 1,
                 cursor: conflictInfo?.hasConflict || calculatedDays <= 0 ? 'not-allowed' : 'pointer',
@@ -436,7 +436,7 @@ export function ApprovalsModal({ isOpen, onClose, pendingLeaves = [], onActionSu
 
   const handleApprove = (leaveId) => {
     try {
-      approveLeave(leaveId, 'Fatima Al Zaabi', 'Approved per AMS operational staffing review.');
+      approveLeave(leaveId, 'Fatima Al-Otaibi', 'Approved per AMS operational staffing review.');
       setFeedbackBanner({ type: 'success', text: `Leave request ${leaveId} approved successfully.` });
       onActionSuccess?.();
       setTimeout(() => setFeedbackBanner(null), 3000);
@@ -448,7 +448,7 @@ export function ApprovalsModal({ isOpen, onClose, pendingLeaves = [], onActionSu
   const handleRejectConfirm = (leaveId) => {
     if (!rejectionReason.trim()) return;
     try {
-      rejectLeave(leaveId, 'Fatima Al Zaabi', rejectionReason.trim());
+      rejectLeave(leaveId, 'Fatima Al-Otaibi', rejectionReason.trim());
       setFeedbackBanner({ type: 'success', text: `Leave request ${leaveId} rejected.` });
       setRejectingId(null);
       setRejectionReason('Operational coverage requirement.');
@@ -529,7 +529,7 @@ export function ApprovalsModal({ isOpen, onClose, pendingLeaves = [], onActionSu
                         )}
                       </div>
                       <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
-                        {r.resourceName} <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>• {r.role} ({r.businessDomain})</span>
+                        {r.resourceName} <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>• {r.role} ({r.serviceDomain})</span>
                       </div>
                     </div>
 
@@ -557,7 +557,7 @@ export function ApprovalsModal({ isOpen, onClose, pendingLeaves = [], onActionSu
                     </div>
                     <div>
                       <strong style={{ color: 'var(--text-primary)' }}>Assigned Backup: </strong>
-                      <span style={{ color: 'var(--edge-primary)', fontWeight: 600 }}>{r.backupResourceName}</span>
+                      <span style={{ color: 'var(--brand-primary)', fontWeight: 600 }}>{r.backupResourceName}</span>
                       {r.backupResourceDomain && ` (${r.backupResourceDomain})`}
                     </div>
                   </div>
@@ -704,7 +704,7 @@ export function LeaveDetailModal({ isOpen, leave, onClose, onActionSuccess }) {
 
   const handleApprove = () => {
     try {
-      approveLeave(leave.id, 'Fatima Al Zaabi', 'Approved per AMS operational review.');
+      approveLeave(leave.id, 'Fatima Al-Otaibi', 'Approved per AMS operational review.');
       setFeedback({ type: 'success', text: `Leave request ${leave.id} approved.` });
       onActionSuccess?.();
       setTimeout(() => onClose(), 1000);
@@ -716,7 +716,7 @@ export function LeaveDetailModal({ isOpen, leave, onClose, onActionSuccess }) {
   const handleReject = () => {
     if (!rejectionReason.trim()) return;
     try {
-      rejectLeave(leave.id, 'Fatima Al Zaabi', rejectionReason.trim());
+      rejectLeave(leave.id, 'Fatima Al-Otaibi', rejectionReason.trim());
       setFeedback({ type: 'success', text: `Leave request ${leave.id} rejected.` });
       onActionSuccess?.();
       setTimeout(() => onClose(), 1000);
@@ -796,8 +796,8 @@ export function LeaveDetailModal({ isOpen, leave, onClose, onActionSuccess }) {
                 <strong style={{ color: 'var(--text-primary)' }}>{leave.resourceName}</strong>
               </div>
               <div>
-                <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '11px' }}>Business Domain</span>
-                <strong style={{ color: 'var(--text-primary)' }}>{leave.businessDomain}</strong>
+                <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '11px' }}>Service Domain</span>
+                <strong style={{ color: 'var(--text-primary)' }}>{leave.serviceDomain}</strong>
               </div>
               <div>
                 <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '11px' }}>Process Group</span>
@@ -813,7 +813,7 @@ export function LeaveDetailModal({ isOpen, leave, onClose, onActionSuccess }) {
               </div>
               <div>
                 <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '11px' }}>Number of Days</span>
-                <strong style={{ color: 'var(--edge-primary)' }}>{leave.days} working {leave.days === 1 ? 'day' : 'days'}</strong>
+                <strong style={{ color: 'var(--brand-primary)' }}>{leave.days} working {leave.days === 1 ? 'day' : 'days'}</strong>
               </div>
               <div style={{ gridColumn: 'span 3' }}>
                 <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '11px' }}>Reason</span>
@@ -829,7 +829,7 @@ export function LeaveDetailModal({ isOpen, leave, onClose, onActionSuccess }) {
               </div>
               <div>
                 <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '11px' }}>Assigned Backup</span>
-                <strong style={{ color: 'var(--edge-primary)' }}>{leave.backupResourceName}</strong>
+                <strong style={{ color: 'var(--brand-primary)' }}>{leave.backupResourceName}</strong>
               </div>
             </div>
           </div>
@@ -1031,7 +1031,7 @@ export function LeaveDetailModal({ isOpen, leave, onClose, onActionSuccess }) {
 export function RemoteWorkModal({ isOpen, onClose, onSuccess }) {
   const [selectedResourceId, setSelectedResourceId] = useState(RESOURCES[0]?.id || 'RES-001');
   const [date, setDate] = useState('2026-09-08');
-  const [location, setLocation] = useState('Remote (Abu Dhabi Residence)');
+  const [location, setLocation] = useState('Remote (Riyadh Residence)');
   const [reason, setReason] = useState('Operational remote alignment and night shift prep.');
   const [errorBanner, setErrorBanner] = useState('');
 
@@ -1112,7 +1112,7 @@ export function RemoteWorkModal({ isOpen, onClose, onSuccess }) {
               >
                 {RESOURCES.map(r => (
                   <option key={r.id} value={r.id}>
-                    {r.name} — {r.role} ({r.businessDomain} • {r.location})
+                    {r.name} — {r.role} ({r.serviceDomain} • {r.location})
                   </option>
                 ))}
               </select>
@@ -1159,8 +1159,8 @@ export function RemoteWorkModal({ isOpen, onClose, onSuccess }) {
                     fontSize: '13px',
                   }}
                 >
-                  <option value="Remote (Abu Dhabi Residence)">Remote (Abu Dhabi Residence)</option>
-                  <option value="Remote (Dubai Tech Hub)">Remote (Dubai Tech Hub)</option>
+                  <option value="Remote (Riyadh Residence)">Remote (Riyadh Residence)</option>
+                  <option value="Remote (Jeddah Tech Hub)">Remote (Jeddah Tech Hub)</option>
                   <option value="Offshore Dedicated Lab">Offshore Dedicated Lab</option>
                 </select>
               </div>
@@ -1205,8 +1205,8 @@ export function RemoteWorkModal({ isOpen, onClose, onSuccess }) {
               style={{
                 padding: '8px 20px',
                 fontSize: '13px',
-                background: 'var(--edge-primary)',
-                borderColor: 'var(--edge-primary)',
+                background: 'var(--brand-primary)',
+                borderColor: 'var(--brand-primary)',
                 color: '#fff',
               }}
             >
@@ -1318,7 +1318,7 @@ export function TimesheetEntryModal({ isOpen, onClose, defaultResourceId = 'RES-
               >
                 {RESOURCES.map(r => (
                   <option key={r.id} value={r.id}>
-                    {r.name} ({r.businessDomain} • {r.track})
+                    {r.name} ({r.serviceDomain} • {r.track})
                   </option>
                 ))}
               </select>
@@ -1434,7 +1434,7 @@ export function TimesheetEntryModal({ isOpen, onClose, defaultResourceId = 'RES-
                       {tot}h
                     </td>
                   ))}
-                  <td style={{ textAlign: 'center', padding: '10px 8px', color: 'var(--edge-primary)', fontSize: '13px' }}>
+                  <td style={{ textAlign: 'center', padding: '10px 8px', color: 'var(--brand-primary)', fontSize: '13px' }}>
                     {grandTotal}h
                   </td>
                 </tr>
@@ -1463,7 +1463,7 @@ export function TimesheetEntryModal({ isOpen, onClose, defaultResourceId = 'RES-
             </div>
             <div style={{ background: 'var(--bg-secondary)', padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)' }}>
               <span style={{ color: 'var(--text-tertiary)', fontSize: '11px', display: 'block' }}>Billable Utilization Ratio</span>
-              <strong style={{ fontSize: '15px', color: 'var(--edge-primary)' }}>{billablePercent}%</strong>
+              <strong style={{ fontSize: '15px', color: 'var(--brand-primary)' }}>{billablePercent}%</strong>
             </div>
           </div>
         </div>
@@ -1486,8 +1486,8 @@ export function TimesheetEntryModal({ isOpen, onClose, defaultResourceId = 'RES-
             style={{
               padding: '8px 20px',
               fontSize: '13px',
-              background: 'var(--edge-primary)',
-              borderColor: 'var(--edge-primary)',
+              background: 'var(--brand-primary)',
+              borderColor: 'var(--brand-primary)',
               color: '#fff',
             }}
           >

@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Top Header
+ * KaarTech ITMS Control Tower — Top Header
  * Global utilities: Actionable Search (Section 53), Calendar (Section 54),
  * Actionable Notifications (Section 55), Language RTL (Section 52), Theme Toggle (Section 51), Profile (Section 10).
  */
@@ -123,7 +123,7 @@ export default function TopHeader({ collapsed, onToggleSidebar, onOpenAssistant 
       if (
         res.name.toLowerCase().includes(q) ||
         res.skill?.toLowerCase().includes(q) ||
-        res.businessDomain?.toLowerCase().includes(q)
+        res.serviceDomain?.toLowerCase().includes(q)
       ) {
         results.push({
           type: 'Consultant',
@@ -189,7 +189,7 @@ export default function TopHeader({ collapsed, onToggleSidebar, onOpenAssistant 
             type: 'Audit',
             id: aud.id,
             title: aud.title,
-            subtitle: `${aud.entity || 'EDGE Group'} • ${aud.status} • ${aud.priority || 'High'}`,
+            subtitle: `${aud.entity || 'KaarTech Group'} • ${aud.status} • ${aud.priority || 'High'}`,
             path: '/governance/audits',
             badgeColor: 'badge-warning',
           });
@@ -214,7 +214,7 @@ export default function TopHeader({ collapsed, onToggleSidebar, onOpenAssistant 
             <Menu size={18} />
           </button>
 
-          {/* EDGE Brand Mark & Portal Title */}
+          {/* KaarTech Brand Mark & Portal Title */}
           <div
             onClick={() => navigate('/executive-board')}
             style={{
@@ -229,7 +229,7 @@ export default function TopHeader({ collapsed, onToggleSidebar, onOpenAssistant 
               marginRight: '8px',
               flexShrink: 0,
             }}
-            title="AMS Control Tower"
+            title="ITMS Control Tower"
           >
             <img
               src="/assets/kaartech logo.png"
@@ -237,7 +237,7 @@ export default function TopHeader({ collapsed, onToggleSidebar, onOpenAssistant 
               style={{ height: '18px', objectFit: 'contain' }}
             />
             <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
-              AMS CONTROL TOWER
+              ITMS Control Tower
             </span>
           </div>
 
@@ -265,7 +265,7 @@ export default function TopHeader({ collapsed, onToggleSidebar, onOpenAssistant 
               onClick={onOpenAssistant}
               aria-label="AMS AI Assistant"
               title="AMS AI Assistant"
-              style={{ color: 'var(--edge-primary)' }}
+              style={{ color: 'var(--brand-primary)' }}
             >
               <Bot size={18} />
             </button>
@@ -405,7 +405,7 @@ export default function TopHeader({ collapsed, onToggleSidebar, onOpenAssistant 
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-primary)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Search size={20} color="var(--edge-primary)" />
+              <Search size={20} color="var(--brand-primary)" />
               <input
                 type="text"
                 className="form-input"
@@ -451,12 +451,12 @@ export default function TopHeader({ collapsed, onToggleSidebar, onOpenAssistant 
                         cursor: 'pointer',
                         transition: 'all var(--transition-fast)',
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--edge-primary)')}
+                      onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--brand-primary)')}
                       onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-secondary)')}
                     >
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary)' }}>
+                          <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary)' }}>
                             {res.id}
                           </span>
                           <span className={`badge ${res.badgeColor}`} style={{ fontSize: '10px', padding: '1px 6px' }}>
@@ -478,7 +478,7 @@ export default function TopHeader({ collapsed, onToggleSidebar, onOpenAssistant 
                 </div>
               ) : (
                 <div style={{ padding: '8px 4px', fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>
-                  Quick lookups: <code style={{ color: 'var(--edge-primary)' }}>INC-00001</code>, <code style={{ color: 'var(--edge-primary)' }}>PRB-00001</code>, <code style={{ color: 'var(--edge-primary)' }}>SR</code>, <code style={{ color: 'var(--edge-primary)' }}>S/4HANA</code>, <code style={{ color: 'var(--edge-primary)' }}>Khalid</code>
+                  Quick lookups: <code style={{ color: 'var(--brand-primary)' }}>INC-00001</code>, <code style={{ color: 'var(--brand-primary)' }}>PRB-00001</code>, <code style={{ color: 'var(--brand-primary)' }}>SR</code>, <code style={{ color: 'var(--brand-primary)' }}>S/4HANA</code>, <code style={{ color: 'var(--brand-primary)' }}>Khalid</code>
                 </div>
               )}
             </div>

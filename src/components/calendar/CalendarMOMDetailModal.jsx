@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Global Calendar MOM Detail Modal
+﻿/**
+ * KaarTech ITMS Control Tower — Global Calendar MOM Detail Modal
  * FIRST-CLASS CITIZEN: Displays complete Minutes of Meeting record, key decisions,
  * action items table with owner, target date, priority, status, overdue callouts, and CTA navigation.
  */
@@ -102,7 +102,7 @@ export default function CalendarMOMDetailModal({
 
             <div className="cal-modal-field">
               <span className="cal-field-label"><Clock size={13} /> Time Window</span>
-              <span className="cal-field-value">{mom.meetingTime || event.startTime || '10:00 – 11:30 GST'}</span>
+              <span className="cal-field-value">{mom.meetingTime || event.startTime || '10:00 – 11:30 AST'}</span>
             </div>
 
             <div className="cal-modal-field">
@@ -112,7 +112,7 @@ export default function CalendarMOMDetailModal({
 
             <div className="cal-modal-field">
               <span className="cal-field-label"><MapPin size={13} /> Entity / Cluster</span>
-              <span className="cal-field-value">{mom.customerOrEntity || event.customerOrEntity || 'EDGE Group HQ'}</span>
+              <span className="cal-field-value">{mom.customerOrEntity || event.customerOrEntity || 'KaarTech Group HQ'}</span>
             </div>
 
             {mom.processGroup && (

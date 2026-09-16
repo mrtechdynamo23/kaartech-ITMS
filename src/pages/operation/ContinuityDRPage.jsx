@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Service Continuity & DR
+ * KaarTech ITMS Control Tower — Service Continuity & DR
  * Route: /service-operation/continuity
  */
 import React from 'react';
@@ -11,10 +11,10 @@ export default function ContinuityDRPage() {
   const opMetrics = getServiceOperationMetrics();
 
   const drSystems = [
-    { system: 'SAP S/4HANA 2025 Core', primary: 'Abu Dhabi DC 1', drSite: 'Al Ain DR DC 2', rtoActual: '45 mins (Target: 2h)', rpoActual: '4 mins (Target: 15m)', replication: 'HANA System Replication (Sync)', status: 'Failover Ready' },
-    { system: 'SAP BW/4HANA Analytics', primary: 'Abu Dhabi DC 1', drSite: 'Al Ain DR DC 2', rtoActual: '1h 10m (Target: 4h)', rpoActual: '8 mins (Target: 30m)', replication: 'HANA System Replication (Async)', status: 'Failover Ready' },
+    { system: 'SAP S/4HANA 2025 Core', primary: 'Riyadh DC 1', drSite: 'Jeddah DR DC 2', rtoActual: '45 mins (Target: 2h)', rpoActual: '4 mins (Target: 15m)', replication: 'HANA System Replication (Sync)', status: 'Failover Ready' },
+    { system: 'SAP BW/4HANA Analytics', primary: 'Riyadh DC 1', drSite: 'Jeddah DR DC 2', rtoActual: '1h 10m (Target: 4h)', rpoActual: '8 mins (Target: 30m)', replication: 'HANA System Replication (Async)', status: 'Failover Ready' },
     { system: 'SAP MES / MII (Plant Tier)', primary: 'Plant Edge Clusters', drSite: 'Local Secondary Cluster', rtoActual: '15 mins (Target: 1h)', rpoActual: '0 mins (Target: 5m)', replication: 'Active-Active HA Pair', status: 'Failover Ready' },
-    { system: 'Opentext xECM Platform', primary: 'Abu Dhabi DC 1', drSite: 'Azure UAE North Cloud', rtoActual: '1h 30m (Target: 4h)', rpoActual: '12 mins (Target: 1h)', replication: 'Cloud Storage Mirroring', status: 'Failover Ready' },
+    { system: 'Opentext xECM Platform', primary: 'Riyadh DC 1', drSite: 'Azure Saudi Arabia Central', rtoActual: '1h 30m (Target: 4h)', rpoActual: '12 mins (Target: 1h)', replication: 'Cloud Storage Mirroring', status: 'Failover Ready' },
   ];
 
   return (

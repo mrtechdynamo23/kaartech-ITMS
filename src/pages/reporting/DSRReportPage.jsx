@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Daily Service Report (DSR)
+﻿/**
+ * KaarTech ITMS Control Tower — Daily Service Report (DSR)
  * Route: /reporting/dsr
  */
 import React from 'react';
@@ -73,7 +73,7 @@ export default function DSRReportPage() {
             </thead>
             <tbody>
               {[
-                { shift: 'General Shift (08:00 – 17:00 GST)', lead: 'Khalid Al Hashimi', in: 48, out: 48, p1: 1, sla: '98.5%' },
+                { shift: 'General Shift (08:00 – 17:00 AST)', lead: 'Khalid Al Hashimi', in: 48, out: 48, p1: 1, sla: '98.5%' },
               ].map(s => (
                 <tr key={s.shift} style={{ borderBottom: '1px solid var(--border-secondary)' }}>
                   <td style={{ padding: '12px 16px', fontWeight: 600, color: 'var(--text-primary)' }}>{s.shift}</td>

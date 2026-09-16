@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Governance Workflow Store
+ * KaarTech ITMS Control Tower — Governance Workflow Store
  * Centralized reactive store for Audits, Findings, and Remediation Tasks.
  * 
  * Traceability Chain:
@@ -167,7 +167,7 @@ export const governanceStore = {
     const newAudit = {
       id: newId,
       title: auditData.title || 'New Governance Review',
-      businessDomain: auditData.businessDomain || 'R2R',
+      serviceDomain: auditData.serviceDomain || 'SAP ERP and SuccessFactors',
       framework: auditData.framework || 'ISO 20000',
       leadAuditor: auditData.leadAuditor || 'Omar Al Suwaidi',
       status: auditData.status || 'Planned',

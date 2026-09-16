@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Centered Record Detail Modal Component
+ * KaarTech ITMS Control Tower — Centered Record Detail Modal Component
  * Universal centered modal for inspecting Incidents, SRs, Enhancements, Problems, Risks, Audits, Findings, and Tasks.
  * Implements Sections 4, 6, 7, 8, 9, 23, 24, 25, 26, 27 of Master Build & Governance Specifications:
  * - Centered viewport with dimmed backdrop
@@ -285,13 +285,13 @@ export default function DetailModal({
                 style={{
                   fontSize: 'var(--text-xs)',
                   fontWeight: 800,
-                  color: 'var(--edge-primary, #FF5622)',
+                  color: 'var(--brand-primary, #6B1D2A)',
                   letterSpacing: '0.06em',
                   textTransform: 'uppercase',
-                  background: 'rgba(255, 86, 34, 0.08)',
+                  background: 'rgba(107, 29, 42, 0.08)',
                   padding: '3px 8px',
                   borderRadius: 'var(--radius-sm)',
-                  border: '1px solid rgba(255, 86, 34, 0.2)',
+                  border: '1px solid rgba(107, 29, 42, 0.2)',
                 }}
               >
                 {activeItem.id}
@@ -302,7 +302,7 @@ export default function DetailModal({
                   <PriorityBadge priority={liveFinding.impactCategory || liveFinding.severity} size="sm" />
                   <StatusBadge status={liveFinding.complianceStatus || liveFinding.status} size="sm" />
                   <span className="badge badge-neutral" style={{ fontSize: '11px', fontWeight: 600 }}>
-                    {liveFinding.businessDomain || 'Cross-Domain'}
+                    {liveFinding.serviceDomain || 'Cross-Domain'}
                   </span>
                 </>
               ) : isTask ? (
@@ -317,6 +317,20 @@ export default function DetailModal({
                   {activeItem.priority && <PriorityBadge priority={activeItem.priority} size="sm" />}
                   {activeItem.status && <StatusBadge status={activeItem.status} size="sm" />}
                   {activeItem.complianceStatus && <StatusBadge status={activeItem.complianceStatus} size="sm" />}
+                  {activeItem.serviceDomain && (
+                    <span
+                      className="badge"
+                      style={{
+                        background: 'rgba(107, 29, 42, 0.1)',
+                        color: 'var(--brand-primary)',
+                        border: '1px solid rgba(107, 29, 42, 0.2)',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                      }}
+                    >
+                      {activeItem.serviceDomain}
+                    </span>
+                  )}
                 </>
               )}
             </div>
@@ -375,7 +389,10 @@ export default function DetailModal({
             ) : (
               <>
                 {activeItem.entity && <span>Entity: <strong style={{ color: 'var(--text-primary)' }}>{activeItem.entity}</strong></span>}
-                {activeItem.businessDomain && <span>Domain: <strong style={{ color: 'var(--text-primary)' }}>{activeItem.businessDomain}</strong></span>}
+                {activeItem.serviceDomain && <span>Service Domain: <strong style={{ color: 'var(--brand-primary)' }}>{activeItem.serviceDomain}</strong></span>}
+                {activeItem.serviceDomain && <span>Stream: <strong style={{ color: 'var(--text-primary)' }}>{activeItem.serviceDomain}</strong></span>}
+                {activeItem.processGroup && <span>Process Group: <strong style={{ color: 'var(--text-primary)' }}>{activeItem.processGroup}</strong></span>}
+                {activeItem.application && <span>Application: <strong style={{ color: 'var(--text-primary)' }}>{activeItem.application}</strong></span>}
                 {activeItem.framework && <span>Framework: <strong style={{ color: 'var(--text-primary)' }}>{activeItem.framework}</strong></span>}
                 {activeItem.leadAuditor && <span>Lead Auditor: <strong style={{ color: 'var(--text-primary)' }}>{activeItem.leadAuditor}</strong></span>}
               </>
@@ -407,8 +424,8 @@ export default function DetailModal({
                   padding: '12px 16px',
                   background: 'none',
                   border: 'none',
-                  borderBottom: isActive ? '2px solid var(--edge-primary, #FF5622)' : '2px solid transparent',
-                  color: isActive ? 'var(--edge-primary, #FF5622)' : 'var(--text-secondary)',
+                  borderBottom: isActive ? '2px solid var(--brand-primary, #6B1D2A)' : '2px solid transparent',
+                  color: isActive ? 'var(--brand-primary, #6B1D2A)' : 'var(--text-secondary)',
                   fontWeight: isActive ? 600 : 500,
                   fontSize: 'var(--text-xs)',
                   cursor: 'pointer',
@@ -451,15 +468,15 @@ export default function DetailModal({
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '14px', background: 'var(--bg-secondary)', padding: '16px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-primary)' }}>
                   <div>
                     <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Finding ID</div>
-                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 800, color: 'var(--edge-primary, #FF5622)' }}>{liveFinding.id}</div>
+                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 800, color: 'var(--brand-primary, #6B1D2A)' }}>{liveFinding.id}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Impact Category</div>
                     <div><PriorityBadge priority={liveFinding.impactCategory || liveFinding.severity} size="sm" /></div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Business Domain</div>
-                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{liveFinding.businessDomain || 'Cross-Domain'}</div>
+                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Service Domain</div>
+                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{liveFinding.serviceDomain || 'Cross-Domain'}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Process Group</div>
@@ -499,7 +516,7 @@ export default function DetailModal({
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
                     <div>
                       <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', marginBottom: '2px' }}>Audit ID</div>
-                      <div style={{ fontSize: 'var(--text-sm)', fontWeight: 800, color: 'var(--edge-primary, #FF5622)' }}>
+                      <div style={{ fontSize: 'var(--text-sm)', fontWeight: 800, color: 'var(--brand-primary, #6B1D2A)' }}>
                         {liveFinding.auditId || 'AUD-0008'}
                       </div>
                     </div>
@@ -548,8 +565,8 @@ export default function DetailModal({
                       display: 'flex',
                       alignItems: 'center',
                       gap: '4px',
-                      background: 'var(--edge-primary, #FF5622)',
-                      borderColor: 'var(--edge-primary, #FF5622)',
+                      background: 'var(--brand-primary, #6B1D2A)',
+                      borderColor: 'var(--brand-primary, #6B1D2A)',
                       color: '#FFFFFF',
                     }}
                   >
@@ -580,7 +597,7 @@ export default function DetailModal({
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <span style={{ fontSize: 'var(--text-xs)', fontWeight: 800, color: 'var(--edge-primary, #FF5622)' }}>
+                            <span style={{ fontSize: 'var(--text-xs)', fontWeight: 800, color: 'var(--brand-primary, #6B1D2A)' }}>
                               {task.id}
                             </span>
                             <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>
@@ -669,7 +686,7 @@ export default function DetailModal({
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '14px', background: 'var(--bg-secondary)', padding: '16px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-primary)' }}>
                   <div>
                     <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Task ID</div>
-                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 800, color: 'var(--edge-primary, #FF5622)' }}>{liveTask.id}</div>
+                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 800, color: 'var(--brand-primary, #6B1D2A)' }}>{liveTask.id}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Status</div>
@@ -777,7 +794,7 @@ export default function DetailModal({
                   {/* Related Audit */}
                   <div style={{ background: 'var(--bg-secondary)', padding: '14px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700 }}>Related Audit</div>
-                    <div style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary, #FF5622)' }}>{liveTask.auditId || 'AUD-0008'}</div>
+                    <div style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary, #6B1D2A)' }}>{liveTask.auditId || 'AUD-0008'}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-secondary)', flex: 1 }}>
                       {relatedAudit?.title || relatedAudit?.auditName || 'Service Operations SLA Governance Review'}
                     </div>
@@ -811,7 +828,7 @@ export default function DetailModal({
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '14px', background: 'var(--bg-secondary)', padding: '16px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-primary)' }}>
                   <div>
                     <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Audit ID</div>
-                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 800, color: 'var(--edge-primary, #FF5622)' }}>{liveAudit.id}</div>
+                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 800, color: 'var(--brand-primary, #6B1D2A)' }}>{liveAudit.id}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Audit Type</div>
@@ -822,8 +839,8 @@ export default function DetailModal({
                     <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{liveAudit.framework || 'Operational Governance'}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Business Domain</div>
-                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{liveAudit.businessDomain || 'Cross-Domain'}</div>
+                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Service Domain</div>
+                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{liveAudit.serviceDomain || 'Cross-Domain'}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '3px' }}>Lead Auditor</div>
@@ -921,7 +938,7 @@ export default function DetailModal({
                       >
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{ fontWeight: 800, fontSize: 'var(--text-xs)', color: 'var(--edge-primary, #FF5622)' }}>
+                            <span style={{ fontWeight: 800, fontSize: 'var(--text-xs)', color: 'var(--brand-primary, #6B1D2A)' }}>
                               {f.id}
                             </span>
                             <PriorityBadge priority={f.severity || f.impactCategory} size="sm" />

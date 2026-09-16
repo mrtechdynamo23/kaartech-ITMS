@@ -1,10 +1,10 @@
 /**
- * EDGE AMS Control Tower — Application Root & Router
+ * KaarTech ITMS Control Tower — Application Root & Router
  * 
- * User Journey (NON-NEGOTIABLE):
+ * User Journey:
  * /login → /landing → /executive-board → all portal modules
  * 
- * Route architecture per Section 86 with all dedicated operational modules.
+ * Route architecture with all dedicated operational modules.
  */
 import React, { useState, useEffect, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
@@ -26,7 +26,7 @@ import ServiceRequestsPage from './pages/command-center/ServiceRequestsPage';
 import EnhancementsPage from './pages/command-center/EnhancementsPage';
 import ProblemsPage from './pages/command-center/ProblemsPage';
 
-// ── Governance Pages ──
+// ── Governance Pages (accessible via routes, not in sidebar) ──
 import AuditsPage from './pages/governance/AuditsPage';
 import RiskRegisterPage from './pages/governance/RiskRegisterPage';
 import LicensesPage from './pages/governance/LicensesPage';
@@ -41,6 +41,18 @@ import TimeEffortPage from './pages/resources/TimeEffortPage';
 import ContactMatrixPage from './pages/resources/ContactMatrixPage';
 import SkillsMatrixPage from './pages/resources/SkillsMatrixPage';
 import CoveragePage from './pages/resources/CoveragePage';
+import ResourceRequestsPage from './pages/resources/ResourceRequestsPage';
+import ResourceAssignmentsPage from './pages/resources/ResourceAssignmentsPage';
+
+// ── Leave & Timesheet ──
+import LeaveTimesheetPage from './pages/leave-timesheet/LeaveTimesheetPage';
+
+// ── Resource SLA Governance ──
+import ResourceSLAGovernancePage from './pages/sla-governance/ResourceSLAGovernancePage';
+
+// ── Resource Profile & Settings ──
+import ResourceProfilePage from './pages/resources/ResourceProfilePage';
+import SettingsPage from './pages/SettingsPage';
 
 // ── Technology Pages ──
 import ApplicationsPage from './pages/technology/ApplicationsPage';
@@ -106,7 +118,7 @@ function LoadingScreen() {
     }}>
       <div style={{ textAlign: 'center' }}>
         <div className="spinner spinner-lg" style={{ margin: '0 auto var(--space-base)' }} />
-        <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>Loading AMS Control Tower...</p>
+        <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>Loading ITMS Control Tower...</p>
       </div>
     </div>
   );
@@ -172,24 +184,24 @@ function AuthenticatedLayout() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'linear-gradient(135deg, var(--edge-primary) 0%, #B82B10 100%)',
+            background: 'linear-gradient(135deg, var(--brand-primary) 0%, #4A131E 100%)',
             color: 'white',
             border: 'none',
-            boxShadow: '0 6px 20px rgba(209, 50, 18, 0.4), 0 2px 6px rgba(0, 0, 0, 0.12)',
+            boxShadow: '0 6px 20px rgba(107, 29, 42, 0.4), 0 2px 6px rgba(0, 0, 0, 0.12)',
             cursor: 'pointer',
             transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
             padding: 0,
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-3px) scale(1.08)';
-            e.currentTarget.style.boxShadow = '0 8px 24px rgba(209, 50, 18, 0.5), 0 4px 10px rgba(0, 0, 0, 0.18)';
+            e.currentTarget.style.boxShadow = '0 8px 24px rgba(107, 29, 42, 0.5), 0 4px 10px rgba(0, 0, 0, 0.18)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0) scale(1)';
-            e.currentTarget.style.boxShadow = '0 6px 20px rgba(209, 50, 18, 0.4), 0 2px 6px rgba(0, 0, 0, 0.12)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(107, 29, 42, 0.4), 0 2px 6px rgba(0, 0, 0, 0.12)';
           }}
-          aria-label="Open AMS Assistant"
-          title="AMS Assistant (AI Operational Copilot)"
+          aria-label="Open ITMS Assistant"
+          title="ITMS Assistant (AI Operational Copilot)"
         >
           <Bot size={22} strokeWidth={2.2} />
           <span
@@ -235,8 +247,9 @@ export default function App() {
 
               {/* ── Authenticated Portal Shell ── */}
               <Route element={<AuthenticatedLayout />}>
-                {/* Executive Board */}
+                {/* Executive Board & Aliases */}
                 <Route path="/executive-board" element={<ExecutiveBoardPage />} />
+                <Route path="/dashboard" element={<Navigate to="/executive-board" replace />} />
 
                 {/* Global Calendar */}
                 <Route path="/calendar" element={<GlobalCalendarPage />} />
@@ -248,7 +261,7 @@ export default function App() {
                 <Route path="/command-center/enhancements" element={<EnhancementsPage />} />
                 <Route path="/command-center/problems" element={<ProblemsPage />} />
 
-                {/* Governance & Compliance */}
+                {/* Governance & Compliance (accessible via routes) */}
                 <Route path="/governance" element={<Navigate to="/governance/audits" replace />} />
                 <Route path="/governance/audits" element={<AuditsPage />} />
                 <Route path="/governance/risks" element={<RiskRegisterPage />} />
@@ -260,11 +273,27 @@ export default function App() {
                 {/* Resource & Capability */}
                 <Route path="/resources" element={<Navigate to="/resources/directory" replace />} />
                 <Route path="/resources/directory" element={<ResourceDirectoryPage />} />
+                <Route path="/resources/:resourceId" element={<ResourceProfilePage />} />
+                <Route path="/resources/requests" element={<ResourceRequestsPage />} />
+                <Route path="/resources/assignments" element={<ResourceAssignmentsPage />} />
                 <Route path="/resources/organization" element={<OrganizationPage />} />
                 <Route path="/resources/time" element={<TimeEffortPage />} />
                 <Route path="/resources/contact" element={<ContactMatrixPage />} />
                 <Route path="/resources/skills" element={<SkillsMatrixPage />} />
                 <Route path="/resources/coverage" element={<CoveragePage />} />
+
+                {/* Leave & Timesheet */}
+                <Route path="/leave-timesheet" element={<LeaveTimesheetPage />} />
+
+                {/* Resource SLA Governance & Aliases */}
+                <Route path="/sla-governance" element={<ResourceSLAGovernancePage />} />
+                <Route path="/sla" element={<Navigate to="/sla-governance" replace />} />
+                <Route path="/sla/overview" element={<ResourceSLAGovernancePage initialTab="overview" />} />
+                <Route path="/sla/measurements" element={<ResourceSLAGovernancePage initialTab="measurements" />} />
+                <Route path="/sla/admin" element={<ResourceSLAGovernancePage initialTab="management" />} />
+                <Route path="/sla/history" element={<ResourceSLAGovernancePage initialTab="history" />} />
+                <Route path="/sla/breaches" element={<ResourceSLAGovernancePage initialTab="breaches" />} />
+                <Route path="/sla/detail/:slaId" element={<ResourceSLAGovernancePage />} />
 
                 {/* Application & Technology Estate */}
                 <Route path="/technology" element={<Navigate to="/technology/applications" replace />} />
@@ -306,6 +335,16 @@ export default function App() {
                 <Route path="/reporting/msr" element={<MSRReportPage />} />
                 <Route path="/reporting/sla" element={<SLAPerformancePage />} />
                 <Route path="/reporting/executive" element={<ExecutiveReportPage />} />
+
+                {/* Settings */}
+                <Route path="/settings" element={<SettingsPage />} />
+
+                {/* Fallback Aliases & Safety Nets */}
+                <Route path="/estate/*" element={<Navigate to="/technology/applications" replace />} />
+                <Route path="/customer/csat" element={<Navigate to="/customer/feedback" replace />} />
+                <Route path="/innovation/*" element={<Navigate to="/service-innovation/ticket-reduction" replace />} />
+                <Route path="/sla/contract" element={<Navigate to="/sla-governance" replace />} />
+                <Route path="/sla/governance" element={<Navigate to="/sla-governance" replace />} />
               </Route>
 
               {/* ── Catch-all ── */}

@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Common Badges
+﻿/**
+ * KaarTech ITMS Control Tower — Common Badges
  * StatusBadge, PriorityBadge, SLABadge, TrendIndicator
  * Unified with centralized semantic color tokens (Section 5, 6, 7).
  */

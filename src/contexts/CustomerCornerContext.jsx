@@ -1,9 +1,9 @@
 /**
- * EDGE AMS Control Tower — Customer Corner State Context
+ * KaarTech ITMS Control Tower — Customer Corner State Context
  *
  * React context provider managing all Customer Corner state:
  * threads, active persona, read state, and all mutators.
- * Persisted to localStorage with EDGE-specific keys.
+ * Persisted to localStorage with KaarTech-specific keys.
  */
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import {
@@ -11,9 +11,9 @@ import {
 } from '../data/customerCornerData';
 
 const STORAGE_KEYS = {
-  threads: 'edge-customer-corner',
-  persona: 'edge-corner-persona',
-  read: 'edge-corner-read',
+  threads: 'kaartech-customer-corner',
+  persona: 'kaartech-corner-persona',
+  read: 'kaartech-corner-read',
 };
 
 const CustomerCornerContext = createContext(null);
@@ -31,7 +31,7 @@ export function CustomerCornerProvider({ children }) {
 
   // ─── Active persona ────────────────────────────────────────────────────
   const [activeStakeholderId, setActiveStakeholderId] = useState(
-    () => localStorage.getItem(STORAGE_KEYS.persona) || 'EDGE-01'
+    () => localStorage.getItem(STORAGE_KEYS.persona) || 'CLI-01'
   );
 
   // ─── Per-persona read state ────────────────────────────────────────────

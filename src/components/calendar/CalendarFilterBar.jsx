@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Global Calendar Filter Bar
+﻿/**
+ * KaarTech ITMS Control Tower — Global Calendar Filter Bar
  * Compact, restrained multi-select category filtering across all 15 operational event types.
  * Matches event light and dark mode colors without dominating the calendar surface.
  */

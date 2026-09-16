@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Monthly Service Report (MSR)
+ * KaarTech ITMS Control Tower — Monthly Service Report (MSR)
  * Route: /reporting/msr
  */
 import React from 'react';
@@ -48,7 +48,7 @@ export default function MSRReportPage() {
         />
         <KPICard
           title="Service Penalty Deductions"
-          value="AED 0"
+          value="SAR 0"
           status="success"
           subtitle="Zero contractual penalties"
           icon={DollarSign}
@@ -76,7 +76,7 @@ export default function MSRReportPage() {
           <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--text-sm)' }}>
             <thead>
               <tr style={{ background: 'var(--bg-tertiary)' }}>
-                <th style={{ padding: '12px 16px', textAlign: 'left' }}>EDGE Entity Name</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left' }}>Operating Entity Name</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>Incidents</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>Service Requests</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left' }}>P1/P2 SLA Met</th>

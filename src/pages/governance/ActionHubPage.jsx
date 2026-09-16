@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Action Hub & CAPA
+ * KaarTech ITMS Control Tower — Action Hub & CAPA
  * Route: /governance/actions
  * Cross-functional Action Hub aggregating Audit Actions, Risk Actions,
  * Customer Actions, Program Actions, Transition Actions, and Service Improvement CTAs (Section 24).
@@ -236,7 +236,7 @@ export default function ActionHubPage() {
         columns={columns}
         data={filteredCtas}
         onRowClick={(item) => setSelectedAction(item)}
-        exportFilename="edge-action-hub.csv"
+        exportFilename="itms-action-hub.csv"
       />
 
       {/* Centered Record Detail Modal (Section 23, 29) */}
@@ -275,8 +275,8 @@ export default function ActionHubPage() {
               boxShadow: 'var(--shadow-2xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25))',
               maxWidth: '640px',
               width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              maxHeight: '88vh',
+              overflow: 'hidden',
               margin: 'auto',
               alignSelf: 'center',
               display: 'flex',
@@ -294,10 +294,11 @@ export default function ActionHubPage() {
               justifyContent: 'space-between',
               background: 'var(--bg-secondary, #f8fafc)',
               borderRadius: '16px 16px 0 0',
+              flexShrink: 0,
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <ListChecks size={18} color="var(--edge-primary, #FF5622)" />
+                  <ListChecks size={18} color="var(--brand-primary, #6B1D2A)" />
                   <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                     Create Action Item / CAPA
                   </h3>
@@ -316,7 +317,8 @@ export default function ActionHubPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleCreateAction} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleCreateAction} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+              <div className="modal-form-scrollable-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
                   Action Item Title / Deliverable *
@@ -455,16 +457,10 @@ export default function ActionHubPage() {
                   }}
                 />
               </div>
+              </div>
 
-              {/* Action Buttons */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                marginTop: '12px',
-                paddingTop: '16px',
-                borderTop: '1px solid var(--border-primary, #e2e8f0)',
-              }}>
+              {/* Action Buttons — Sticky Footer */}
+              <div className="modal-form-sticky-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"

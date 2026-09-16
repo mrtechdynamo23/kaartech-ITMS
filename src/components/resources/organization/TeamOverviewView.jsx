@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Team Overview View
+ * KaarTech ITMS Control Tower — Team Overview View
  * 
  * Inspired by NOC TeamStructurePage & TeamOverviewLandingPage concepts:
  * - Domain Workforce Distribution (Horizontal Bar Chart)
@@ -14,9 +14,9 @@ import {
 } from 'recharts';
 import { Shield, Users, MapPin, ChevronRight, Layers, Award } from 'lucide-react';
 import { getEnrichedResources, getOrganizationMetrics, getMemberChangeCountForTeam } from '../../../data/organizationData';
-import { BUSINESS_DOMAINS } from '../../../data/masterData';
+import { SERVICE_DOMAINS } from '../../../data/serviceDomains';
 
-const DONUT_COLORS = ['#FF5622', '#2563EB', '#7C3AED', '#0D9F6E'];
+const DONUT_COLORS = ['#6B1D2A', '#2563EB', '#7C3AED', '#0D9F6E'];
 
 export default function TeamOverviewView({
   onOpenResource,
@@ -30,13 +30,13 @@ export default function TeamOverviewView({
 
   // Domain Chart Data
   const domainChartData = useMemo(() => {
-    return BUSINESS_DOMAINS.map(d => {
-      const resInDomain = enriched.filter(r => r.businessDomain === d.key);
+    return SERVICE_DOMAINS.map(d => {
+      const resInDomain = enriched.filter(r => r.serviceDomain === d.id);
       const onsite = resInDomain.filter(r => r.location === 'Onsite').length;
       const offshore = resInDomain.filter(r => r.location === 'Offshore').length;
       return {
-        domain: d.key,
-        name: d.label,
+        domain: d.id,
+        name: d.name,
         total: resInDomain.length,
         onsite,
         offshore,
@@ -46,7 +46,7 @@ export default function TeamOverviewView({
 
   // Delivery Location Mix Data
   const locationMixData = useMemo(() => [
-    { name: 'Onsite (Abu Dhabi HQ)', value: metrics.onsiteCount, color: '#0D9F6E' },
+    { name: 'Onsite (Riyadh HQ)', value: metrics.onsiteCount, color: '#0D9F6E' },
     { name: 'Offshore Dedicated', value: metrics.offshoreCount - metrics.sharedFlexCount, color: '#2563EB' },
     { name: 'Offshore Flex Pool', value: metrics.sharedFlexCount, color: '#7C3AED' },
   ], [metrics]);
@@ -58,19 +58,19 @@ export default function TeamOverviewView({
 
   const filteredLeads = useMemo(() => {
     if (selectedDomainFilter === 'all') return domainLeads;
-    return domainLeads.filter(l => l.businessDomain === selectedDomainFilter);
+    return domainLeads.filter(l => l.serviceDomain === selectedDomainFilter);
   }, [domainLeads, selectedDomainFilter]);
 
   // All 17 capability teams
   const allTeams = useMemo(() => {
     const teamsMap = new Map();
     enriched.forEach(r => {
-      const key = `${r.businessDomain}::${r.processGroup}`;
+      const key = `${r.serviceDomain}::${r.processGroup}`;
       if (!teamsMap.has(key)) {
         teamsMap.set(key, {
-          id: `team-${r.businessDomain}-${r.processGroup.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
-          domainKey: r.businessDomain,
-          domainName: BUSINESS_DOMAINS.find(d => d.key === r.businessDomain)?.label || r.businessDomain,
+          id: `team-${r.serviceDomain}-${r.processGroup.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+          domainKey: r.serviceDomain,
+          domainName: SERVICE_DOMAINS.find(d => d.id === r.serviceDomain)?.label || r.serviceDomain,
           name: r.processGroup,
           members: [],
           onsiteCount: 0,
@@ -114,7 +114,7 @@ export default function TeamOverviewView({
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
             <div>
               <h3 style={{ margin: 0, fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--text-primary)' }}>
-                Headcount Allocation by Business Domain
+                Headcount Allocation by Service Domain
               </h3>
               <p style={{ margin: '2px 0 0', fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>
                 Dedicated specialists assigned across all 8 ERP/HXM core operational streams
@@ -146,7 +146,7 @@ export default function TeamOverviewView({
                     return `${label} — ${item ? item.name : ''}`;
                   }}
                 />
-                <Bar dataKey="onsite" name="Onsite (UAE)" fill="#0D9F6E" stackId="a" radius={[0, 0, 0, 0]} barSize={22} />
+                <Bar dataKey="onsite" name="Onsite (Saudi HQ)" fill="#0D9F6E" stackId="a" radius={[0, 0, 0, 0]} barSize={22} />
                 <Bar dataKey="offshore" name="Offshore" fill="#2563EB" stackId="a" radius={[4, 4, 0, 0]} barSize={22} />
               </BarChart>
             </ResponsiveContainer>
@@ -169,7 +169,7 @@ export default function TeamOverviewView({
                 Delivery Track & Onsite Deployment Mix
               </h3>
               <p style={{ margin: '2px 0 0', fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>
-                Hybrid delivery model: Abu Dhabi Onsite presence vs Offshore delivery centers
+                Hybrid delivery model: Riyadh Onsite presence vs Offshore delivery centers
               </p>
             </div>
             <span className="badge badge-success" style={{ fontSize: '11px' }}>
@@ -289,8 +289,8 @@ export default function TeamOverviewView({
             }}
           >
             <option value="all">All Domains ({domainLeads.length} Leads)</option>
-            {BUSINESS_DOMAINS.map(d => (
-              <option key={d.key} value={d.key}>{d.key} — {d.label}</option>
+            {SERVICE_DOMAINS.map(d => (
+              <option key={d.id} value={d.id}>{d.id} — {d.name}</option>
             ))}
           </select>
         </div>
@@ -322,7 +322,7 @@ export default function TeamOverviewView({
                     width: '40px',
                     height: '40px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, var(--edge-primary) 0%, #B82B10 100%)',
+                    background: 'linear-gradient(135deg, var(--brand-primary) 0%, #4A131E 100%)',
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',
@@ -337,14 +337,14 @@ export default function TeamOverviewView({
                   <div style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--text-primary)' }}>
                     {lead.name}
                   </div>
-                  <div style={{ fontSize: '11px', color: 'var(--edge-primary)', fontWeight: 600 }}>
+                  <div style={{ fontSize: '11px', color: 'var(--brand-primary)', fontWeight: 600 }}>
                     {lead.role}
                   </div>
                 </div>
               </div>
 
               <div style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                <div><strong>Domain:</strong> {lead.businessDomain} • {lead.processGroup}</div>
+                <div><strong>Domain:</strong> {lead.serviceDomain} • {lead.processGroup}</div>
                 <div><strong>Direct Reports:</strong> {lead.directReports.length} specialists</div>
                 <div><strong>Location:</strong> {lead.location} ({lead.track})</div>
               </div>
@@ -353,7 +353,7 @@ export default function TeamOverviewView({
                 <span className="badge badge-success" style={{ fontSize: '10px' }}>
                   {lead.status}
                 </span>
-                <span style={{ color: 'var(--edge-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <span style={{ color: 'var(--brand-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '2px' }}>
                   <span>View Profile</span>
                   <ChevronRight size={12} />
                 </span>
@@ -408,8 +408,8 @@ export default function TeamOverviewView({
                     fontSize: '10px',
                     fontWeight: 700,
                     textTransform: 'uppercase',
-                    color: 'var(--edge-primary)',
-                    background: 'rgba(255, 86, 34, 0.1)',
+                    color: 'var(--brand-primary)',
+                    background: 'rgba(107, 29, 42, 0.1)',
                     padding: '2px 6px',
                     borderRadius: '4px',
                   }}
@@ -449,7 +449,7 @@ export default function TeamOverviewView({
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px', paddingTop: '8px', borderTop: '1px solid var(--border-primary)', fontSize: '10px', color: 'var(--text-tertiary)' }}>
                 <span>{team.onsiteCount} Onsite · {team.offshoreCount} Offshore</span>
-                <span style={{ color: 'var(--edge-primary)', fontWeight: 600 }}>Inspect Team →</span>
+                <span style={{ color: 'var(--brand-primary)', fontWeight: 600 }}>Inspect Team →</span>
               </div>
             </div>
           ))}

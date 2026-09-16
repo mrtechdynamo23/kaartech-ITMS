@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Risk Register
+ * KaarTech ITMS Control Tower — Risk Register
  * Route: /governance/risks
  * 5x5 Risk Heat Map matrix and mitigation action plans (Section 31).
  * Strictly enforces semantic colors (Red = Critical, Amber = Medium, Green = Low).
@@ -11,6 +11,7 @@ import KPICard from '../../components/common/KPICard';
 import DataTable from '../../components/common/DataTable';
 import DetailModal from '../../components/common/DetailModal';
 import { risks as initialRisks } from '../../data/demoData';
+import { SERVICE_DOMAINS } from '../../data/serviceDomains';
 
 export default function RiskRegisterPage() {
   const [selectedRisk, setSelectedRisk] = useState(null);
@@ -22,7 +23,7 @@ export default function RiskRegisterPage() {
 
   // Form state
   const [riskTitle, setRiskTitle] = useState('');
-  const [riskDomain, setRiskDomain] = useState('L2C');
+  const [riskDomain, setRiskDomain] = useState(SERVICE_DOMAINS[5].name);
   const [riskCategory, setRiskCategory] = useState('Operational');
   const [riskSeverity, setRiskSeverity] = useState('High');
   const [riskOwner, setRiskOwner] = useState('Suresh N.');
@@ -42,7 +43,7 @@ export default function RiskRegisterPage() {
       id: newId,
       title: riskTitle.trim(),
       category: riskCategory,
-      businessDomain: riskDomain,
+      serviceDomain: riskDomain,
       severity: riskSeverity,
       inherentScore: riskSeverity === 'Critical' ? 20 : riskSeverity === 'High' ? 16 : riskSeverity === 'Medium' ? 12 : 6,
       residualScore: riskSeverity === 'Critical' ? 8 : riskSeverity === 'High' ? 6 : 4,
@@ -284,7 +285,7 @@ export default function RiskRegisterPage() {
         columns={columns}
         data={filteredRisks}
         onRowClick={(item) => setSelectedRisk(item)}
-        exportFilename="edge-risk-register.csv"
+        exportFilename="itms-risk-register.csv"
       />
 
       {/* Centered Record Detail Modal */}
@@ -323,8 +324,8 @@ export default function RiskRegisterPage() {
               boxShadow: 'var(--shadow-2xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25))',
               maxWidth: '640px',
               width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              maxHeight: '88vh',
+              overflow: 'hidden',
               margin: 'auto',
               alignSelf: 'center',
               display: 'flex',
@@ -342,10 +343,11 @@ export default function RiskRegisterPage() {
               justifyContent: 'space-between',
               background: 'var(--bg-secondary, #f8fafc)',
               borderRadius: '16px 16px 0 0',
+              flexShrink: 0,
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <ShieldAlert size={18} color="var(--edge-primary, #FF5622)" />
+                  <ShieldAlert size={18} color="var(--brand-primary, #6B1D2A)" />
                   <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                     Log New Operational Risk
                   </h3>
@@ -364,7 +366,8 @@ export default function RiskRegisterPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleLogRisk} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleLogRisk} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+              <div className="modal-form-scrollable-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
                   Risk Statement / Hazard Description *
@@ -390,7 +393,7 @@ export default function RiskRegisterPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                    Business Domain
+                    Service Domain
                   </label>
                   <select
                     value={riskDomain}
@@ -405,14 +408,9 @@ export default function RiskRegisterPage() {
                       fontSize: '13px',
                     }}
                   >
-                    <option value="L2C">L2C (Lead to Cash)</option>
-                    <option value="O2C">O2C (Order to Cash)</option>
-                    <option value="P2P">P2P (Procure to Pay)</option>
-                    <option value="R2R">R2R (Record to Report)</option>
-                    <option value="H2R">H2R (Hire to Retire)</option>
-                    <option value="S2P">S2P (Source to Pay)</option>
-                    <option value="MFG">MFG (Manufacturing)</option>
-                    <option value="CRM">CRM (Customer Mgmt)</option>
+                    {SERVICE_DOMAINS.map(d => (
+                      <option key={d.id} value={d.name}>{d.id} — {d.name}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -529,16 +527,10 @@ export default function RiskRegisterPage() {
                   }}
                 />
               </div>
+              </div>
 
-              {/* Action Buttons */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                marginTop: '12px',
-                paddingTop: '16px',
-                borderTop: '1px solid var(--border-primary, #e2e8f0)',
-              }}>
+              {/* Action Buttons — Sticky Footer */}
+              <div className="modal-form-sticky-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"

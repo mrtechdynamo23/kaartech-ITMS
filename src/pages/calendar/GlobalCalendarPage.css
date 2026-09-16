@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Unified Global Calendar Styles
+﻿/**
+ * KaarTech ITMS Control Tower — Unified Global Calendar Styles
  * Comprehensive Light Mode and Dark Mode Color Systems.
  * Strict column containment, restrained semantic tints, high-contrast typography, and RTL support.
  */
@@ -37,9 +37,9 @@
   width: 42px;
   height: 42px;
   border-radius: var(--radius-md, 8px);
-  background: rgba(255, 86, 34, 0.1);
-  color: var(--color-primary, #FF5622);
-  border: 1px solid rgba(255, 86, 34, 0.22);
+  background: rgba(107, 29, 42, 0.1);
+  color: var(--color-primary, #6B1D2A);
+  border: 1px solid rgba(107, 29, 42, 0.22);
 }
 
 .cal-page-title {
@@ -145,7 +145,7 @@
 }
 
 .cal-btn-today {
-  background: var(--color-primary, #FF5622);
+  background: var(--color-primary, #6B1D2A);
   color: #FFFFFF;
   border: none;
   font-size: 12px;
@@ -196,7 +196,7 @@
 }
 
 .cal-period-icon {
-  color: var(--color-primary, #FF5622);
+  color: var(--color-primary, #6B1D2A);
 }
 
 .cal-period-title {
@@ -242,7 +242,7 @@
 }
 
 .cal-search-input:focus {
-  border-color: var(--color-primary, #FF5622);
+  border-color: var(--color-primary, #6B1D2A);
 }
 
 .cal-search-clear {
@@ -285,7 +285,7 @@
 
 .cal-view-tab.active {
   background: var(--bg-card, #14181E);
-  color: var(--color-primary, #FF5622);
+  color: var(--color-primary, #6B1D2A);
   font-weight: 600;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
@@ -334,9 +334,9 @@
 }
 
 .cal-month-chip.active {
-  background: rgba(255, 86, 34, 0.12);
+  background: rgba(107, 29, 42, 0.12);
   color: #FF8A65;
-  border: 1.5px solid var(--color-primary, #FF5622);
+  border: 1.5px solid var(--color-primary, #6B1D2A);
   font-weight: 600;
 }
 
@@ -376,7 +376,7 @@
 }
 
 .cal-filter-icon {
-  color: var(--color-primary, #FF5622);
+  color: var(--color-primary, #6B1D2A);
 }
 
 .cal-filter-active-count {
@@ -525,7 +525,7 @@
 }
 
 .cal-month-cell.today-cell {
-  background: rgba(255, 86, 34, 0.03);
+  background: rgba(107, 29, 42, 0.03);
 }
 
 .cal-cell-header {
@@ -556,7 +556,7 @@
 }
 
 .cal-cell-day-num.today-pill {
-  background: var(--color-primary, #FF5622);
+  background: var(--color-primary, #6B1D2A);
   color: #FFFFFF;
   font-weight: 700;
 }
@@ -565,7 +565,7 @@
   font-size: 9.5px;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--color-primary, #FF5622);
+  color: var(--color-primary, #6B1D2A);
   letter-spacing: 0.03em;
 }
 
@@ -647,7 +647,7 @@
   gap: 3px;
   background: transparent;
   border: none;
-  color: var(--color-primary, #FF5622);
+  color: var(--color-primary, #6B1D2A);
   font-size: 10.5px;
   font-weight: 600;
   padding: 2px 4px;
@@ -658,7 +658,7 @@
 }
 
 .cal-cell-more-btn:hover {
-  background: rgba(255, 86, 34, 0.08);
+  background: rgba(107, 29, 42, 0.08);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -708,7 +708,7 @@
 }
 
 .cal-week-day-header.today-header {
-  background: rgba(255, 86, 34, 0.04);
+  background: rgba(107, 29, 42, 0.04);
 }
 
 .cal-week-day-name {
@@ -731,7 +731,7 @@
 }
 
 .cal-week-day-number.today-pill {
-  background: var(--color-primary, #FF5622);
+  background: var(--color-primary, #6B1D2A);
   color: #FFFFFF;
 }
 
@@ -831,7 +831,7 @@
 }
 
 .cal-week-col.today-col {
-  background: rgba(255, 86, 34, 0.02);
+  background: rgba(107, 29, 42, 0.02);
 }
 
 .cal-week-hour-slot {
@@ -922,7 +922,7 @@
 .cal-day-num {
   font-size: 30px;
   font-weight: 800;
-  color: var(--color-primary, #FF5622);
+  color: var(--color-primary, #6B1D2A);
 }
 
 .cal-day-words {
@@ -1187,7 +1187,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: var(--color-primary, #FF5622);
+  color: var(--color-primary, #6B1D2A);
   margin-left: auto;
   font-weight: 600;
   opacity: 1;
@@ -1210,7 +1210,7 @@
 }
 
 .cal-agenda-date-group.is-today {
-  border-color: rgba(255, 86, 34, 0.35);
+  border-color: rgba(107, 29, 42, 0.35);
 }
 
 .cal-agenda-date-header {
@@ -1263,7 +1263,7 @@
 .cal-agenda-today-pill {
   font-size: 9.5px;
   font-weight: 700;
-  background: var(--color-primary, #FF5622);
+  background: var(--color-primary, #6B1D2A);
   color: #FFFFFF;
   padding: 1px 5px;
   border-radius: 3px;
@@ -1406,8 +1406,8 @@
   align-items: center;
   gap: 4px;
   background: transparent;
-  color: var(--color-primary, #FF5622);
-  border: 1px solid rgba(255, 86, 34, 0.25);
+  color: var(--color-primary, #6B1D2A);
+  border: 1px solid rgba(107, 29, 42, 0.25);
   padding: 5px 9px;
   border-radius: 4px;
   font-size: 11px;
@@ -1417,8 +1417,8 @@
 }
 
 .cal-agenda-view-btn:hover {
-  background: rgba(255, 86, 34, 0.08);
-  border-color: var(--color-primary, #FF5622);
+  background: rgba(107, 29, 42, 0.08);
+  border-color: var(--color-primary, #6B1D2A);
 }
 
 .cal-agenda-empty {
@@ -1626,7 +1626,7 @@
 
 [data-theme="light"] .cal-month-chip.active {
   background: #FFF5F2;
-  border-color: var(--color-primary, #FF5622);
+  border-color: var(--color-primary, #6B1D2A);
   color: #C2410C;
   font-weight: 600;
 }
@@ -1924,7 +1924,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--color-primary, #FF5622);
+  background: var(--color-primary, #6B1D2A);
   color: #FFFFFF;
   border: none;
   padding: 6px 14px;
@@ -2283,12 +2283,12 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: var(--color-primary, #FF5622);
+  color: var(--color-primary, #6B1D2A);
   font-weight: 600;
 }
 
 .cal-text-brand {
-  color: var(--color-primary, #FF5622);
+  color: var(--color-primary, #6B1D2A);
 }
 
 /* ═══════════════════════════════════════════════════

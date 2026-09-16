@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Global Calendar Month View
+﻿/**
+ * KaarTech ITMS Control Tower — Global Calendar Month View
  * Executive monthly grid, compact event pills, overflow handling, today badge.
  * Strict column containment, normalized short titles, separate light/dark theme tokens.
  */

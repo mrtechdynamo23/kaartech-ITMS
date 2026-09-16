@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — DFR PDF AutoTable Definitions
+﻿/**
+ * KaarTech ITMS Control Tower — DFR PDF AutoTable Definitions
  * Generates exact table hierarchy matching DFR Format(1).pdf:
  *  - Service Requests Comparison Table (14 columns, 3 periods)
  *  - Incidents Comparison Table (14 columns, 3 periods)

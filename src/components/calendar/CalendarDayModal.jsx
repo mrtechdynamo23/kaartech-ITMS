@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Global Calendar Day Events Modal
+﻿/**
+ * KaarTech ITMS Control Tower — Global Calendar Day Events Modal
  * Opens when a user clicks a day in Month view or clicks "+X more" to review all scheduled operational events.
  */
 import React, { useEffect } from 'react';

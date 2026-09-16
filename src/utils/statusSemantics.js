@@ -1,9 +1,9 @@
 /**
- * EDGE AMS Control Tower — Centralized Status & Priority Semantics
+ * KaarTech ITMS Control Tower — Centralized Status & Priority Semantics
  * Section 5, 6, 7 of Master Build Specification.
  * 
  * Strict semantic rules:
- * - EDGE Orange (#FF5622) is BRAND ONLY. Never used as a warning/risk color.
+ * - KaarTech Maroon (#6B1D2A) is BRAND ONLY. Never used as a warning/risk color.
  * - Neutral: #7A8288 (Draft, New, Planned, Not Started)
  * - Active / In Progress: #3B82C4 (In Progress, Under Review, In Development, Testing, Build, UAT, Mitigating, Monitoring)
  * - Waiting: #E5A000 (Awaiting Info, Pending, On Hold, Under Investigation)
@@ -21,7 +21,7 @@ export const SEMANTIC_COLORS = {
   attention: '#E5A000',
   success: '#159A6A',
   critical: '#D92D20',
-  brand: '#FF5622',
+  brand: '#6B1D2A',
   innovation: '#7357B8',
 };
 

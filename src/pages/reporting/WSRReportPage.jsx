@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Weekly Service Report (WSR)
+﻿/**
+ * KaarTech ITMS Control Tower — Weekly Service Report (WSR)
  * Route: /reporting/wsr
  */
 import React from 'react';
@@ -79,7 +79,7 @@ export default function WSRReportPage() {
                 itemStyle={{ color: 'var(--text-primary)' }}
               />
               <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-              <Bar dataKey="Volume" fill="#D13212" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Volume" fill="#6B1D2A" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

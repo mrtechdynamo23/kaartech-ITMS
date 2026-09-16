@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Unified Global Calendar (Section 22 & 46)
+﻿/**
+ * KaarTech ITMS Control Tower — Unified Global Calendar (Section 22 & 46)
  * Route: /calendar
  * 
  * Aggregates:

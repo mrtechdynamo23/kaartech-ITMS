@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Resource & Capability → Time Management
+ * KaarTech ITMS Control Tower — Resource & Capability → Time Management
  * Route: /resources/time
  * 
  * Operational Workspace for Leave Management, Approvals, Availability,
@@ -90,7 +90,7 @@ export default function TimeEffortPage() {
       // Type
       if (typeFilter !== 'all' && item.leaveType !== typeFilter) return false;
       // Domain
-      if (domainFilter !== 'all' && item.businessDomain !== domainFilter) return false;
+      if (domainFilter !== 'all' && item.serviceDomain !== domainFilter) return false;
       // Location
       if (locationFilter !== 'all' && item.location !== locationFilter) return false;
       // Resource
@@ -101,7 +101,7 @@ export default function TimeEffortPage() {
         const q = searchQuery.toLowerCase();
         const matchId = (item.id || '').toLowerCase().includes(q);
         const matchRes = (item.resourceName || '').toLowerCase().includes(q);
-        const matchDomain = (item.businessDomain || '').toLowerCase().includes(q);
+        const matchDomain = (item.serviceDomain || '').toLowerCase().includes(q);
         const matchProcess = (item.processGroup || '').toLowerCase().includes(q);
         const matchType = (item.leaveType || '').toLowerCase().includes(q);
         const matchBackup = (item.backupResourceName || '').toLowerCase().includes(q);
@@ -397,7 +397,7 @@ export default function TimeEffortPage() {
         flexWrap: 'wrap',
         gap: '12px',
       }}>
-        {/* Actions (Only Apply Leave is strongly emphasized in EDGE orange) */}
+        {/* Actions (Only Apply Leave is strongly emphasized in KaarTech maroon) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <button
             type="button"
@@ -407,10 +407,10 @@ export default function TimeEffortPage() {
               padding: '8px 18px',
               fontSize: '13px',
               fontWeight: 600,
-              background: 'var(--edge-primary)',
-              borderColor: 'var(--edge-primary)',
+              background: 'var(--brand-primary)',
+              borderColor: 'var(--brand-primary)',
               color: '#FFFFFF',
-              boxShadow: '0 2px 4px rgba(255, 86, 34, 0.25)',
+              boxShadow: '0 2px 4px rgba(107, 29, 42, 0.25)',
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
@@ -655,7 +655,7 @@ export default function TimeEffortPage() {
           }}
         >
           <option value="all">All Locations</option>
-          <option value="Onsite">Onsite (Abu Dhabi)</option>
+          <option value="Onsite">Onsite (Riyadh)</option>
           <option value="Offshore">Offshore</option>
         </select>
 
@@ -805,7 +805,7 @@ export default function TimeEffortPage() {
                         </td>
                         <td style={{ padding: '12px 10px' }}>
                           <span className="badge badge-neutral" style={{ fontWeight: 600, fontSize: '11px' }}>
-                            {r.businessDomain}
+                            {r.serviceDomain}
                           </span>
                         </td>
                         <td style={{ padding: '12px 12px', color: 'var(--text-secondary)' }}>
@@ -833,7 +833,7 @@ export default function TimeEffortPage() {
                         </td>
                         <td style={{ padding: '12px 12px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <Shield size={13} color="var(--edge-primary)" />
+                            <Shield size={13} color="var(--brand-primary)" />
                             <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{r.backupResourceName}</span>
                           </div>
                           {r.backupConflict && (

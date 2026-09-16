@@ -1,10 +1,10 @@
 /**
- * EDGE AMS Control Tower — Customer Corner (Collaboration Workspace)
+ * KaarTech ITMS Control Tower — Customer Corner (Collaboration Workspace)
  * Route: /customer/corner
  *
  * Stakeholder collaboration workspace with thread list + conversation detail.
  * Supports Ticket Threads (tagged to existing INC/SR) and CTA Threads.
- * Fully aligned with EDGE enterprise dark & light design system.
+ * Fully aligned with KaarTech enterprise dark & light design system.
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -44,7 +44,7 @@ function MessageBody({ body }) {
     }
     if (hit.at > 0) nodes.push(<span key={key++}>{rest.slice(0, hit.at)}</span>);
     nodes.push(
-      <strong key={key++} style={{ color: 'var(--edge-primary, #FF5622)', fontWeight: 600 }}>
+      <strong key={key++} style={{ color: 'var(--brand-primary, #6B1D2A)', fontWeight: 600 }}>
         @{hit.name}
       </strong>
     );
@@ -146,7 +146,7 @@ export default function CustomerCornerPage() {
 
   const sideFilterOptions = useMemo(() => [
     { value: 'All', label: 'All Stakeholders' },
-    { value: 'EDGE', label: 'Client involved' },
+    { value: 'KaarTech', label: 'Client involved' },
     { value: 'AMS', label: 'KaarTech AMS involved' },
     { value: 'THIRD PARTY', label: 'Third Party involved' },
   ], []);
@@ -260,7 +260,7 @@ export default function CustomerCornerPage() {
       >
         <div style={{ flex: '1 1 320px', minWidth: 0 }}>
           <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <MessagesSquare size={22} style={{ color: 'var(--edge-primary, #FF5622)' }} />
+            <MessagesSquare size={22} style={{ color: 'var(--brand-primary, #6B1D2A)' }} />
             Customer Corner
           </h1>
           <p className="page-subtitle" style={{ maxWidth: 760 }}>
@@ -308,7 +308,7 @@ export default function CustomerCornerPage() {
             <Tag size={15} /> Tag a Ticket
           </button>
 
-          {/* Primary EDGE orange button: Raise a CTA */}
+          {/* Primary KaarTech maroon button: Raise a CTA */}
           <button
             type="button"
             onClick={() => setShowCTAModal(true)}
@@ -481,7 +481,7 @@ export default function CustomerCornerPage() {
                         fontFamily: 'var(--font-mono, monospace)',
                         fontWeight: 800,
                         fontSize: '0.8125rem',
-                        color: isTicket ? 'var(--edge-primary, #FF5622)' : '#FBBF24',
+                        color: isTicket ? 'var(--brand-primary, #6B1D2A)' : '#FBBF24',
                         letterSpacing: '0.02em',
                       }}
                     >
@@ -526,9 +526,9 @@ export default function CustomerCornerPage() {
                           width: 7,
                           height: 7,
                           borderRadius: '50%',
-                          background: 'var(--edge-primary, #FF5622)',
+                          background: 'var(--brand-primary, #6B1D2A)',
                           marginLeft: 'auto',
-                          boxShadow: '0 0 6px rgba(255, 86, 34, 0.6)',
+                          boxShadow: '0 0 6px rgba(107, 29, 42, 0.6)',
                         }}
                         title="Unread activity"
                       />
@@ -578,7 +578,7 @@ export default function CustomerCornerPage() {
                         <span
                           style={{
                             fontWeight: 600,
-                            color: waiting === 'EDGE' ? '#93C5FD' : waiting === 'AMS' ? '#6EE7B7' : '#D1D5DB',
+                            color: waiting === 'KaarTech' ? '#93C5FD' : waiting === 'AMS' ? '#6EE7B7' : '#D1D5DB',
                           }}
                         >
                           Waiting on {SIDE_META[waiting]?.short || waiting}
@@ -637,7 +637,7 @@ export default function CustomerCornerPage() {
                           fontFamily: 'var(--font-mono, monospace)',
                           fontWeight: 800,
                           fontSize: '1rem',
-                          color: selected.type === 'Ticket' ? 'var(--edge-primary, #FF5622)' : '#FBBF24',
+                          color: selected.type === 'Ticket' ? 'var(--brand-primary, #6B1D2A)' : '#FBBF24',
                           letterSpacing: '0.02em',
                         }}
                       >
@@ -910,7 +910,7 @@ export default function CustomerCornerPage() {
                         <div className="corner-bubble-meta">
                           <span>{formatCornerTime(message.postedAt)}</span>
                           {isMe && (
-                            <CheckCheck size={14} style={{ color: 'var(--edge-primary, #FF5622)', marginLeft: 3, flexShrink: 0 }} />
+                            <CheckCheck size={14} style={{ color: 'var(--brand-primary, #6B1D2A)', marginLeft: 3, flexShrink: 0 }} />
                           )}
                         </div>
                       </div>

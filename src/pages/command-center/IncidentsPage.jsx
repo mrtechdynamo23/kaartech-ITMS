@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Incident Management (Section 18)
+ * KaarTech ITMS Control Tower — Incident Management (Section 18)
  * Canonical functional chart reference featuring all 5 required visuals:
  * 1. Priority Distribution (Donut)
  * 2. Created vs Closed (4 Months)
@@ -29,6 +29,7 @@ export default function IncidentsPage() {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [filters, setFilters] = useState({
+    serviceDomain: 'all',
     entity: 'all',
     domain: 'all',
     priority: 'all',
@@ -53,10 +54,29 @@ export default function IncidentsPage() {
 
   const columns = [
     { key: 'id', label: 'Incident ID', width: '110px' },
-    { key: 'priority', label: 'Priority', type: 'priority', width: '130px' },
+    { key: 'priority', label: 'Priority', type: 'priority', width: '120px' },
     { key: 'shortDescription', label: 'Incident Summary', wrap: true },
+    {
+      key: 'serviceDomain',
+      label: 'Service Domain',
+      width: '180px',
+      render: (val, item) => (
+        <span
+          className="badge"
+          style={{
+            fontSize: '11px',
+            fontWeight: 700,
+            background: 'rgba(107, 29, 42, 0.08)',
+            color: 'var(--brand-primary)',
+            border: '1px solid rgba(107, 29, 42, 0.2)',
+          }}
+          title={val || item.serviceDomainId}
+        >
+          {val || item.serviceDomainId || 'IT Helpdesk'}
+        </span>
+      ),
+    },
     { key: 'application', label: 'Application', width: '150px' },
-    { key: 'businessDomain', label: 'Domain', width: '80px' },
     { key: 'processGroup', label: 'Process Group', width: '120px' },
     { key: 'entity', label: 'Entity', width: '130px' },
     { key: 'assignedTo', label: 'Resolver', width: '140px' },
@@ -90,7 +110,8 @@ export default function IncidentsPage() {
       <FilterBar
         filters={filters}
         onChange={setFilters}
-        onReset={() => setFilters({ entity: 'all', domain: 'all', priority: 'all', status: 'all', app: 'all' })}
+        onReset={() => setFilters({ serviceDomain: 'all', entity: 'all', domain: 'all', priority: 'all', status: 'all', app: 'all' })}
+        showServiceDomain={true}
         showEntity={true}
         showDomain={true}
         showPriority={true}
@@ -224,7 +245,7 @@ export default function IncidentsPage() {
                 itemStyle={{ color: 'var(--text-primary)' }}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }} />
-              <Bar dataKey="Created" fill="#FF5622" radius={[4, 4, 0, 0]} name="Created Inflow" />
+              <Bar dataKey="Created" fill="#6B1D2A" radius={[4, 4, 0, 0]} name="Created Inflow" />
               <Bar dataKey="Closed" fill="#0D9F6E" radius={[4, 4, 0, 0]} name="Resolved / Closed" />
             </BarChart>
           </ResponsiveContainer>
@@ -246,6 +267,42 @@ export default function IncidentsPage() {
                 itemStyle={{ color: 'var(--text-primary)' }}
               />
               <Bar dataKey="count" fill="#2563EB" radius={[0, 4, 4, 0]} name="Active Tickets" />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        {/* Visual 4: Incidents by Service Domain */}
+        <ChartCard
+          title="Incidents by Service Domain (7 RFP Domains)"
+          subtitle="Click bar to filter active incident queue"
+          height={240}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={analytics.serviceDomainDistribution}
+              margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
+            >
+              <XAxis dataKey="code" stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
+              <YAxis stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
+              <Tooltip
+                contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '11px', boxShadow: 'var(--shadow-lg)' }}
+                labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
+                itemStyle={{ color: 'var(--text-primary)' }}
+                formatter={(val, name, entry) => [`${val} incidents`, entry.payload.name]}
+              />
+              <Bar
+                dataKey="count"
+                fill="var(--brand-primary)"
+                radius={[4, 4, 0, 0]}
+                name="Incidents"
+                cursor="pointer"
+                onClick={(entry) => {
+                  setFilters(prev => ({
+                    ...prev,
+                    serviceDomain: prev.serviceDomain === entry.id ? 'all' : entry.id
+                  }));
+                }}
+              />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -274,7 +331,7 @@ export default function IncidentsPage() {
                 itemStyle={{ color: 'var(--text-primary)' }}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }} />
-              <Area type="monotone" dataKey="Created" stroke="#FF5622" fill="#FF5622" fillOpacity={0.15} strokeWidth={2} name="Created" />
+              <Area type="monotone" dataKey="Created" stroke="#6B1D2A" fill="#6B1D2A" fillOpacity={0.15} strokeWidth={2} name="Created" />
               <Area type="monotone" dataKey="Closed" stroke="#0D9F6E" fill="#0D9F6E" fillOpacity={0.15} strokeWidth={2} name="Closed" />
               <Area type="monotone" dataKey="Open" stroke="#2563EB" fill="#2563EB" fillOpacity={0.15} strokeWidth={1.5} name="Active Open" />
             </AreaChart>
@@ -312,7 +369,7 @@ export default function IncidentsPage() {
         columns={columns}
         data={analytics.filteredList}
         onRowClick={(item) => setSelectedTicket(item)}
-        exportFilename="edge-incident-register.csv"
+        exportFilename="itms-incident-register.csv"
       />
 
       {/* Centered Record Detail Modal (Section 23, 26) */}

@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Continuous Improvement (CIP)
+ * KaarTech ITMS Control Tower — Continuous Improvement (CIP)
  * Route: /service-innovation/continuous-improvement
  */
 import React from 'react';
@@ -8,10 +8,10 @@ import KPICard from '../../components/common/KPICard';
 
 export default function ContinuousImprovementPage() {
   const cips = [
-    { id: 'CIP-001', title: 'Automated VAT Reconciliation Engine on S/4HANA', submitter: 'Mariam Al Suwaidi', domain: 'R2R', annualSavings: 'AED 420,000', status: 'Implemented', roi: '14.2x' },
-    { id: 'CIP-002', title: 'Self-Healing CPI Integration Queue Monitor', submitter: 'Sunita Reddy', domain: 'Technology', annualSavings: 'AED 310,000', status: 'Implemented', roi: '9.8x' },
-    { id: 'CIP-003', title: 'Plant MES Inventory Barcode Auto-Sync', submitter: 'Hassan Al Nuaimi', domain: 'E2M', annualSavings: 'AED 560,000', status: 'In Implementation', roi: '18.5x' },
-    { id: 'CIP-004', title: 'Ariba Catalog Bulk Update Accelerator', submitter: 'Noura Al Shamsi', domain: 'S2P', annualSavings: 'AED 280,000', status: 'Under Review', roi: '8.0x' },
+    { id: 'CIP-001', title: 'Automated VAT Reconciliation Engine on S/4HANA', submitter: 'Mariam Al Suwaidi', serviceDomain: 'SAP ERP and SuccessFactors', annualSavings: 'SAR 420,000', status: 'Implemented', roi: '14.2x' },
+    { id: 'CIP-002', title: 'Self-Healing CPI Integration Queue Monitor', submitter: 'Sunita Reddy', serviceDomain: 'Applications, Digital, and Integration', annualSavings: 'SAR 310,000', status: 'Implemented', roi: '9.8x' },
+    { id: 'CIP-003', title: 'Plant MES Inventory Barcode Auto-Sync', submitter: 'Hassan Al Nuaimi', serviceDomain: 'SAP ERP and SuccessFactors', annualSavings: 'SAR 560,000', status: 'In Implementation', roi: '18.5x' },
+    { id: 'CIP-004', title: 'Ariba Catalog Bulk Update Accelerator', submitter: 'Noura Al Shamsi', serviceDomain: 'SAP ERP and SuccessFactors', annualSavings: 'SAR 280,000', status: 'Under Review', roi: '8.0x' },
   ];
 
   return (
@@ -21,7 +21,7 @@ export default function ContinuousImprovementPage() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <h1 className="page-title">Continuous Improvement (CIP) & Kaizen</h1>
-            <span className="badge badge-success">AED 1.8M Annual Savings</span>
+            <span className="badge badge-success">SAR 1.8M Annual Savings</span>
           </div>
           <p className="page-subtitle">Kaizen innovation pipeline, value engineering initiatives, and quantified business return on investment.</p>
         </div>
@@ -36,7 +36,7 @@ export default function ContinuousImprovementPage() {
       <div className="kpi-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '16px', marginBottom: '24px' }}>
         <KPICard
           title="Total Annual Value Created"
-          value="AED 1.8M"
+          value="SAR 1.8M"
           status="success"
           trend={+24}
           icon={DollarSign}
@@ -72,7 +72,7 @@ export default function ContinuousImprovementPage() {
             <div key={c.id} style={{ background: 'var(--bg-secondary)', padding: '18px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                 <div>
-                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary)' }}>{c.id} • {c.domain}</span>
+                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary)' }}>{c.id} • {c.serviceDomain}</span>
                   <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)', margin: '4px 0 0' }}>{c.title}</h4>
                 </div>
                 <span className={`badge ${c.status === 'Implemented' ? 'badge-success' : 'badge-warning'}`}>{c.status}</span>

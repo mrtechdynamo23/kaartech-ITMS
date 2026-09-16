@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Technology Contracts & Lifecycle
+﻿/**
+ * KaarTech ITMS Control Tower — Technology Contracts & Lifecycle
  * Route: /technology/licenses
  */
 import React from 'react';

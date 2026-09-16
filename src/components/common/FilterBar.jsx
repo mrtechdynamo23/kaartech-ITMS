@@ -1,19 +1,20 @@
 /**
- * EDGE AMS Control Tower — FilterBar Component
+ * KaarTech ITMS Control Tower — FilterBar Component
  * Multi-dimensional filtering by Entity, Domain, Priority, Track, Status, Application.
  * Upgraded with custom FilterDropdowns (Section 21) and active filter badge counter (Section 22).
  */
 import React from 'react';
 import { Filter, X, RotateCcw } from 'lucide-react';
 import FilterDropdown from './FilterDropdown';
-import { ENTITIES, BUSINESS_DOMAINS, APPLICATIONS, TRACKS } from '../../data/masterData';
+import { ENTITIES, APPLICATIONS, TRACKS } from '../../data/masterData';
+import { SERVICE_DOMAINS } from '../../data/serviceDomains';
 
 export default function FilterBar({
   filters = {},
   onChange,
   onReset,
+  showServiceDomain = true,
   showEntity = true,
-  showDomain = true,
   showPriority = true,
   showTrack = false,
   showStatus = true,
@@ -26,15 +27,16 @@ export default function FilterBar({
 
   const activeFilterCount = Object.values(filters).filter(v => v && v !== 'all' && v !== '').length;
 
+  const serviceDomainOptions = [
+    { value: 'all', label: 'All Service Domains (7)' },
+    ...SERVICE_DOMAINS.map(sd => ({ value: sd.id, label: `${sd.id} — ${sd.shortName || sd.name}` }))
+  ];
+
   const entityOptions = [
     { value: 'all', label: 'All Entities (34)' },
     ...ENTITIES.map(ent => ({ value: ent.name, label: ent.name }))
   ];
 
-  const domainOptions = [
-    { value: 'all', label: 'All Domains (8)' },
-    ...BUSINESS_DOMAINS.map(d => ({ value: d.key, label: `${d.key} — ${d.label}` }))
-  ];
 
   const priorityOptions = [
     { value: 'all', label: 'All Priorities' },
@@ -87,12 +89,12 @@ export default function FilterBar({
           marginRight: '4px',
         }}
       >
-        <Filter size={14} style={{ color: 'var(--edge-primary)' }} />
+        <Filter size={14} style={{ color: 'var(--brand-primary)' }} />
         <span>Filters</span>
         {activeFilterCount > 0 && (
           <span
             style={{
-              background: 'var(--edge-primary)',
+              background: 'var(--brand-primary)',
               color: 'white',
               borderRadius: '10px',
               padding: '1px 6px',
@@ -105,6 +107,17 @@ export default function FilterBar({
         )}
       </div>
 
+      {/* Primary Service Domain Filter */}
+      {showServiceDomain && (
+        <FilterDropdown
+          value={filters.serviceDomain || 'all'}
+          options={serviceDomainOptions}
+          onChange={(val) => handleFilterChange('serviceDomain', val)}
+          minWidth="160px"
+          maxWidth="220px"
+        />
+      )}
+
       {/* Entity Filter */}
       {showEntity && (
         <FilterDropdown
@@ -116,16 +129,6 @@ export default function FilterBar({
         />
       )}
 
-      {/* Domain Filter */}
-      {showDomain && (
-        <FilterDropdown
-          value={filters.domain || 'all'}
-          options={domainOptions}
-          onChange={(val) => handleFilterChange('domain', val)}
-          minWidth="130px"
-          maxWidth="180px"
-        />
-      )}
 
       {/* Priority Filter */}
       {showPriority && (
@@ -181,7 +184,7 @@ export default function FilterBar({
             alignItems: 'center',
             gap: '4px',
             fontSize: 'var(--text-xs)',
-            color: 'var(--edge-primary)',
+            color: 'var(--brand-primary)',
             marginLeft: 'auto',
             padding: '4px 8px',
             fontWeight: 600,

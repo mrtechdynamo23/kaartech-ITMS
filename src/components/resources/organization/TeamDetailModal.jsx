@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Team Detail Modal
+ * KaarTech ITMS Control Tower — Team Detail Modal
  * 
  * Deep drilldown for capability/process groups implementing Section 24 of specifications:
  * - Team Overview (name, manager, domain, process group)
@@ -58,7 +58,7 @@ export default function TeamDetailModal({
         <div
           style={{
             padding: '22px 24px',
-            background: 'linear-gradient(135deg, rgba(255, 86, 34, 0.1) 0%, rgba(20, 24, 30, 0.98) 100%)',
+            background: 'linear-gradient(135deg, rgba(107, 29, 42, 0.1) 0%, rgba(20, 24, 30, 0.98) 100%)',
             borderBottom: '1px solid var(--border-primary)',
           }}
         >
@@ -70,8 +70,8 @@ export default function TeamDetailModal({
                     fontSize: '11px',
                     fontWeight: 700,
                     textTransform: 'uppercase',
-                    color: 'var(--edge-primary)',
-                    background: 'rgba(255, 86, 34, 0.1)',
+                    color: 'var(--brand-primary)',
+                    background: 'rgba(107, 29, 42, 0.1)',
                     padding: '2px 8px',
                     borderRadius: 'var(--radius-sm)',
                     letterSpacing: '0.04em',
@@ -98,7 +98,7 @@ export default function TeamDetailModal({
                 )}
               </div>
               <p style={{ margin: '4px 0 0', fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>
-                Operational process capability unit within the {team.domainName} business domain.
+                Operational process capability unit within the {team.domainName} service domain.
               </p>
             </div>
 
@@ -137,7 +137,7 @@ export default function TeamDetailModal({
               <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{team.resourceCount} FTE</div>
             </div>
             <div style={{ padding: '10px 12px', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)' }}>
-              <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700 }}>Onsite (Abu Dhabi)</div>
+              <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700 }}>Onsite (Riyadh)</div>
               <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-green)', marginTop: '2px' }}>{team.onsiteCount}</div>
             </div>
             <div style={{ padding: '10px 12px', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)' }}>
@@ -197,7 +197,7 @@ export default function TeamDetailModal({
                             width: '28px',
                             height: '28px',
                             borderRadius: '50%',
-                            background: 'var(--edge-primary)',
+                            background: 'var(--brand-primary)',
                             color: 'white',
                             display: 'flex',
                             alignItems: 'center',

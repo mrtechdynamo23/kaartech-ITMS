@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: edge-ams-control-tower
+    name: kaartech-itms-portal
     runtime: static
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist

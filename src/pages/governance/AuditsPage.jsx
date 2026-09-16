@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Audits & Governance Compliance
+ * KaarTech ITMS Control Tower — Audits & Governance Compliance
  * Route: /governance/audits
  * Sections 1–10:
  * Complete Governance Traceability Workflow:
@@ -28,6 +28,7 @@ import DataTable from '../../components/common/DataTable';
 import DetailModal from '../../components/common/DetailModal';
 import { StatusBadge } from '../../components/common/Badges';
 import { useGovernanceStore } from '../../data/governanceStore';
+import { SERVICE_DOMAINS } from '../../data/serviceDomains';
 
 export default function AuditsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -50,7 +51,7 @@ export default function AuditsPage() {
 
   // Form State
   const [auditTitle, setAuditTitle] = useState('');
-  const [auditDomain, setAuditDomain] = useState('R2R');
+  const [auditDomain, setAuditDomain] = useState(SERVICE_DOMAINS[5].name);
   const [auditFramework, setAuditFramework] = useState('ISO 20000');
   const [auditLead, setAuditLead] = useState('Omar Al Suwaidi');
   const [auditDate, setAuditDate] = useState('2026-09-25');
@@ -62,7 +63,7 @@ export default function AuditsPage() {
 
     const created = addAudit({
       title: auditTitle.trim(),
-      businessDomain: auditDomain,
+      serviceDomain: auditDomain,
       framework: auditFramework,
       leadAuditor: auditLead.trim() || 'Omar Al Suwaidi',
       status: 'Planned',
@@ -168,13 +169,13 @@ export default function AuditsPage() {
       label: 'Audit ID',
       width: '105px',
       render: (v) => (
-        <span style={{ color: 'var(--edge-primary, #FF5622)', fontWeight: 700, letterSpacing: '0.02em' }}>
+        <span style={{ color: 'var(--brand-primary, #6B1D2A)', fontWeight: 700, letterSpacing: '0.02em' }}>
           {v}
         </span>
       ),
     },
     { key: 'title', label: 'Audit Name & Objective', wrap: true },
-    { key: 'businessDomain', label: 'Domain', width: '90px' },
+    { key: 'serviceDomain', label: 'Domain', width: '90px' },
     { key: 'type', label: 'Type', width: '110px' },
     { key: 'framework', label: 'Framework', width: '150px' },
     { key: 'leadAuditor', label: 'Lead Auditor', width: '150px' },
@@ -218,7 +219,7 @@ export default function AuditsPage() {
       label: 'Finding ID',
       width: '105px',
       render: (v) => (
-        <span style={{ color: 'var(--edge-primary, #FF5622)', fontWeight: 800 }}>
+        <span style={{ color: 'var(--brand-primary, #6B1D2A)', fontWeight: 800 }}>
           {v}
         </span>
       ),
@@ -254,7 +255,7 @@ export default function AuditsPage() {
         </span>
       ),
     },
-    { key: 'businessDomain', label: 'Business Domain', width: '130px' },
+    { key: 'serviceDomain', label: 'Service Domain', width: '130px' },
     { key: 'processGroup', label: 'Process Group', width: '160px' },
     {
       key: 'assignedTo',
@@ -288,7 +289,7 @@ export default function AuditsPage() {
       label: 'Task ID',
       width: '105px',
       render: (v) => (
-        <span style={{ color: 'var(--edge-primary, #FF5622)', fontWeight: 800, letterSpacing: '0.02em' }}>
+        <span style={{ color: 'var(--brand-primary, #6B1D2A)', fontWeight: 800, letterSpacing: '0.02em' }}>
           {v}
         </span>
       ),
@@ -318,7 +319,7 @@ export default function AuditsPage() {
       label: 'Related Finding',
       width: '125px',
       render: (v) => (
-        <span style={{ color: 'var(--edge-primary, #FF5622)', fontWeight: 700 }}>
+        <span style={{ color: 'var(--brand-primary, #6B1D2A)', fontWeight: 700 }}>
           {v}
         </span>
       ),
@@ -354,7 +355,7 @@ export default function AuditsPage() {
             <span className="badge badge-primary">SOC2 Type II Attested</span>
           </div>
           <p className="page-subtitle">
-            Formal governance reviews, audit findings register, and operational remediation task board across enterprise business domains.
+            Formal governance reviews, audit findings register, and operational remediation task board across enterprise service domains.
           </p>
         </div>
 
@@ -559,7 +560,7 @@ export default function AuditsPage() {
             setSelectedItem(item);
             setSelectedType('audit');
           }}
-          exportFilename="edge-audit-programs.csv"
+          exportFilename="itms-audit-programs.csv"
         />
       ) : activeTab === 'findings' ? (
         <DataTable
@@ -572,7 +573,7 @@ export default function AuditsPage() {
             setSelectedItem(item);
             setSelectedType('finding');
           }}
-          exportFilename="edge-audit-findings.csv"
+          exportFilename="itms-audit-findings.csv"
         />
       ) : (
         /* Section 3 & 6: Operational Remediation Task Board */
@@ -586,7 +587,7 @@ export default function AuditsPage() {
             setSelectedItem(item);
             setSelectedType('task');
           }}
-          exportFilename="edge-remediation-tasks.csv"
+          exportFilename="itms-remediation-tasks.csv"
         />
       )}
 
@@ -630,8 +631,8 @@ export default function AuditsPage() {
               boxShadow: 'var(--shadow-2xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25))',
               maxWidth: '640px',
               width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              maxHeight: '88vh',
+              overflow: 'hidden',
               margin: 'auto',
               alignSelf: 'center',
               display: 'flex',
@@ -649,10 +650,11 @@ export default function AuditsPage() {
               justifyContent: 'space-between',
               background: 'var(--bg-secondary, #f8fafc)',
               borderRadius: '16px 16px 0 0',
+              flexShrink: 0,
             }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <ShieldCheck size={18} color="var(--edge-primary, #FF5622)" />
+                  <ShieldCheck size={18} color="var(--brand-primary, #6B1D2A)" />
                   <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                     Schedule New Governance Audit
                   </h3>
@@ -671,7 +673,8 @@ export default function AuditsPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleScheduleAudit} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleScheduleAudit} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+              <div className="modal-form-scrollable-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
                   Audit Name & Objective *
@@ -697,7 +700,7 @@ export default function AuditsPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                    Business Domain
+                    Service Domain
                   </label>
                   <select
                     value={auditDomain}
@@ -712,14 +715,9 @@ export default function AuditsPage() {
                       fontSize: '13px',
                     }}
                   >
-                    <option value="R2R">R2R (Record to Report)</option>
-                    <option value="L2C">L2C (Lead to Cash)</option>
-                    <option value="O2C">O2C (Order to Cash)</option>
-                    <option value="P2P">P2P (Procure to Pay)</option>
-                    <option value="H2R">H2R (Hire to Retire)</option>
-                    <option value="S2P">S2P (Source to Pay)</option>
-                    <option value="MFG">MFG (Manufacturing)</option>
-                    <option value="CRM">CRM (Customer Mgmt)</option>
+                    {SERVICE_DOMAINS.map(d => (
+                      <option key={d.id} value={d.name}>{d.id} — {d.name}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -744,7 +742,7 @@ export default function AuditsPage() {
                     <option value="ISO 27001">ISO 27001 (InfoSec)</option>
                     <option value="SOC2 Type II">SOC2 Type II (Trust Services)</option>
                     <option value="Financial Controls">Financial Controls (SOX/COSO)</option>
-                    <option value="NESA">NESA (UAE Cyber Assurance)</option>
+                    <option value="NCA ECC">NCA ECC (Saudi Cyber Assurance)</option>
                     <option value="ITIL v4">ITIL v4 Governance</option>
                   </select>
                 </div>
@@ -813,16 +811,10 @@ export default function AuditsPage() {
                   }}
                 />
               </div>
+              </div>
 
-              {/* Action Buttons */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                marginTop: '12px',
-                paddingTop: '16px',
-                borderTop: '1px solid var(--border-primary, #e2e8f0)',
-              }}>
+              {/* Action Buttons — Sticky Footer */}
+              <div className="modal-form-sticky-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"

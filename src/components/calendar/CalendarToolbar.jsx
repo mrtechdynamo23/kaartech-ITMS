@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Global Calendar Toolbar
+﻿/**
+ * KaarTech ITMS Control Tower — Global Calendar Toolbar
  * Navigation, Quick Jump, View Mode Switcher, and Real-time Search.
  */
 import React from 'react';

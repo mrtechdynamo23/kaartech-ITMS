@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Centered Create Remediation Task Modal
+ * KaarTech ITMS Control Tower — Centered Create Remediation Task Modal
  * Section 4: Finding → Task Creation
  * Centered modal inheriting Related Audit & Related Finding automatically.
  */
@@ -118,8 +118,8 @@ export default function CreateRemediationTaskModal({
                 width: '32px',
                 height: '32px',
                 borderRadius: '8px',
-                background: 'rgba(255, 86, 34, 0.12)',
-                color: 'var(--edge-primary, #FF5622)',
+                background: 'rgba(107, 29, 42, 0.12)',
+                color: 'var(--brand-primary, #6B1D2A)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -171,7 +171,7 @@ export default function CreateRemediationTaskModal({
             >
               <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', marginBottom: '2px' }}>Related Audit</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontWeight: 800, fontSize: '11px', color: 'var(--edge-primary, #FF5622)' }}>
+                <span style={{ fontWeight: 800, fontSize: '11px', color: 'var(--brand-primary, #6B1D2A)' }}>
                   {auditId}
                 </span>
                 <span style={{ fontSize: '11px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -202,7 +202,8 @@ export default function CreateRemediationTaskModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+          <div className="modal-form-scrollable-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {error && (
             <div
               style={{
@@ -362,9 +363,10 @@ export default function CreateRemediationTaskModal({
             <strong>Governance Rule:</strong> Completing this remediation task confirms activity execution.
             The finding remains open until control effectiveness is formally verified and attested.
           </div>
+          </div>
 
-          {/* Modal Actions */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '6px' }}>
+          {/* Modal Actions — Sticky Footer */}
+          <div className="modal-form-sticky-footer">
             <button
               type="button"
               onClick={onClose}
@@ -381,8 +383,8 @@ export default function CreateRemediationTaskModal({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                background: 'var(--edge-primary, #FF5622)',
-                borderColor: 'var(--edge-primary, #FF5622)',
+                background: 'var(--brand-primary, #6B1D2A)',
+                borderColor: 'var(--brand-primary, #6B1D2A)',
                 color: '#FFFFFF',
               }}
             >

@@ -1,20 +1,18 @@
 /**
- * EDGE AMS Control Tower — Centralized Design Tokens
+ * KaarTech ITMS Control Tower — Centralized Design Tokens
  * 
- * SOURCE: EDGE public brand direction (Section 7 of Master Build Prompt)
- * CLASSIFICATION: CONFIGURABLE — approved EDGE brand assets/tokens can be substituted later
+ * CLASSIFICATION: CONFIGURABLE — brand assets/tokens can be substituted later
  * 
- * IMPORTANT: Orange is brand/action, NEVER warning/critical.
+ * IMPORTANT: Deep maroon is brand/action, NEVER warning/critical.
  */
 
 export const colors = {
-  // ── EDGE Brand ──
-  // Sampled from EDGE's public site — strong starting point, not immutable
-  primary: '#FF5622',        // Primary orange — action, active, brand highlight, selected nav
-  primaryHover: '#E84D1E',
-  primaryLight: 'rgba(255, 86, 34, 0.08)',
-  primaryMedium: 'rgba(255, 86, 34, 0.15)',
-  logoAccent: '#F05232',     // Logo-accent orange
+  // ── KaarTech Brand (Deep Maroon) ──
+  primary: '#6B1D2A',        // Primary deep maroon — action, active, brand highlight, selected nav
+  primaryHover: '#5A1824',
+  primaryLight: 'rgba(107, 29, 42, 0.08)',
+  primaryMedium: 'rgba(107, 29, 42, 0.15)',
+  logoAccent: '#7B2333',     // Logo-accent maroon
 
   // ── Neutrals ──
   charcoal: '#434B51',       // Headings / primary text

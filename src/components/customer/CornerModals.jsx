@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Customer Corner Modals
+ * KaarTech ITMS Control Tower — Customer Corner Modals
  *
  * Four enterprise modals for the collaboration workspace:
  * 1. NewTicketThreadModal — Tag a ticket (start conversation on an INC/SR)
@@ -7,7 +7,7 @@
  * 3. EditCTAModal — Update CTA fields
  * 4. ConvertCTAModal — Link a CTA to an existing ticket
  *
- * Aligned with the EDGE dark & light enterprise design system.
+ * Aligned with the KaarTech dark & light enterprise design system.
  * Zero native <select> elements — all dropdowns use CustomerCornerDropdown.
  */
 import React, { useMemo, useState } from 'react';
@@ -68,6 +68,7 @@ function FieldError({ message }) {
 function Footer({ onClose, submitLabel, disabled, isSubmitting = false, submittingLabel = 'Starting thread…' }) {
   return (
     <div
+      className="modal-form-sticky-footer"
       style={{
         display: 'flex',
         justifyContent: 'flex-end',
@@ -75,7 +76,12 @@ function Footer({ onClose, submitLabel, disabled, isSubmitting = false, submitti
         gap: 10,
         marginTop: 20,
         paddingTop: 16,
+        paddingBottom: 4,
         borderTop: '1px solid var(--border-secondary, #21262E)',
+        position: 'sticky',
+        bottom: 0,
+        background: 'var(--bg-secondary, #14181E)',
+        zIndex: 20,
       }}
     >
       <button
@@ -97,7 +103,7 @@ function Footer({ onClose, submitLabel, disabled, isSubmitting = false, submitti
           ...primaryButtonStyle,
           opacity: disabled || isSubmitting ? 0.5 : 1,
           cursor: disabled || isSubmitting ? 'not-allowed' : 'pointer',
-          background: disabled || isSubmitting ? 'rgba(255, 255, 255, 0.06)' : 'var(--edge-primary, #FF5622)',
+          background: disabled || isSubmitting ? 'rgba(255, 255, 255, 0.06)' : 'var(--brand-primary, #6B1D2A)',
           color: disabled || isSubmitting ? 'var(--text-tertiary, #6B7280)' : '#FFFFFF',
           border: disabled || isSubmitting ? '1px solid var(--border-secondary, #21262E)' : '1px solid transparent',
           minWidth: 120,

@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Customer Actions & SteerCom
+ * KaarTech ITMS Control Tower — Customer Actions & SteerCom
  * Route: /customer/actions
  */
 import React from 'react';
@@ -8,10 +8,10 @@ import KPICard from '../../components/common/KPICard';
 
 export default function CustomerActionsPage() {
   const actions = [
-    { id: 'CX-001', entity: 'Halcon', title: 'Enhance E2M shopfloor batch response time', owner: 'Priya Nair', status: 'In Progress', target: 'End of Month', progress: 75 },
-    { id: 'CX-002', entity: 'ADASI', title: 'Automate Ariba guided sourcing supplier approvals', owner: 'Noura Al Shamsi', status: 'Completed', target: 'Closed', progress: 100 },
-    { id: 'CX-003', entity: 'EDGE HQ', title: 'Implement executive self-service SAC dashboard', owner: 'Fatima Al Zaabi', status: 'In Progress', target: 'Next Sprint', progress: 60 },
-    { id: 'CX-004', entity: 'Lahab', title: 'Dedicated plant maintenance offline mobile app', owner: 'Tariq Al Dhaheri', status: 'Planning', target: 'Q4 2026', progress: 30 },
+    { id: 'CX-001', entity: 'KaarTech Advanced Manufacturing', title: 'Enhance E2M shopfloor batch response time', owner: 'Priya Nair', status: 'In Progress', target: 'End of Month', progress: 75 },
+    { id: 'CX-002', entity: 'KaarTech Autonomous Systems', title: 'Automate Ariba guided sourcing supplier approvals', owner: 'Noura Al Shamsi', status: 'Completed', target: 'Closed', progress: 100 },
+    { id: 'CX-003', entity: 'KaarTech HQ', title: 'Implement executive self-service SAC dashboard', owner: 'Fatima Al-Otaibi', status: 'In Progress', target: 'Next Sprint', progress: 60 },
+    { id: 'CX-004', entity: 'KaarTech Materials Technology', title: 'Dedicated plant maintenance offline mobile app', owner: 'Tariq Al Dhaheri', status: 'Planning', target: 'Q4 2026', progress: 30 },
   ];
 
   return (
@@ -33,7 +33,7 @@ export default function CustomerActionsPage() {
           <div key={act.id} className="chart-card" style={{ padding: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
               <div>
-                <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary)' }}>{act.id} • {act.entity}</span>
+                <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary)' }}>{act.id} • {act.entity}</span>
                 <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)', margin: '4px 0 0' }}>{act.title}</h4>
               </div>
               <span className={`badge ${act.status === 'Completed' ? 'badge-success' : 'badge-primary'}`}>{act.status}</span>
@@ -44,7 +44,7 @@ export default function CustomerActionsPage() {
             </div>
 
             <div style={{ height: '6px', width: '100%', background: 'var(--bg-tertiary)', borderRadius: '3px', overflow: 'hidden', marginBottom: '6px' }}>
-              <div style={{ height: '100%', width: `${act.progress}%`, background: act.progress === 100 ? 'var(--color-emerald)' : 'var(--edge-primary)', borderRadius: '3px' }} />
+              <div style={{ height: '100%', width: `${act.progress}%`, background: act.progress === 100 ? 'var(--color-emerald)' : 'var(--brand-primary)', borderRadius: '3px' }} />
             </div>
             <div style={{ textAlign: 'right', fontSize: '11px', color: 'var(--text-tertiary)' }}>{act.progress}% Completed</div>
           </div>

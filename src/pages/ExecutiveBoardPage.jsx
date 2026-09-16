@@ -1,13 +1,23 @@
 /**
- * EDGE AMS Control Tower — Executive Board (Section 16)
- * Recomposed executive control tower with strong visual hierarchy, 
- * compact KPI strip, multi-dimensional analytics, and critical exceptions.
+ * KaarTech ITMS Control Tower — Executive Board
+ * Aligned with RFP Master Specification Section 30
+ * 
+ * Features:
+ * - Direct SteerCom Executive Dashboard
+ * - 12 Centralized Dashboard KPIs:
+ *   Total Resources, Active Resources, Available Resources, On Leave,
+ *   Open Requests, Active Assignments, Open SLA Breaches, Overall SLA Compliance,
+ *   Resource Availability, First Pass Quality, Timesheet Compliance, Pending Approvals
+ * - Service Domain Operational Distribution across the 7 RFP Service Domains with drill-down
+ * - SLA compliance trend & operational distribution charts
+ * - Active SteerCom priority exception watchlist
  */
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck, Activity, Clock, CheckCircle2, AlertTriangle, Users,
-  Layers, ArrowUpRight, TrendingUp, Monitor, Zap, ArrowRight, Filter
+  Layers, ArrowUpRight, TrendingUp, Monitor, Zap, ArrowRight, Filter,
+  FileCheck, CalendarClock, Briefcase, Award, CheckCircle, ChevronRight
 } from 'lucide-react';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, Legend,
@@ -16,13 +26,20 @@ import {
 import KPICard from '../components/common/KPICard';
 import ChartCard from '../components/common/ChartCard';
 import { getExecutiveBoardData } from '../data/analyticsSelectors';
-import { ENTITIES, BUSINESS_DOMAINS } from '../data/masterData';
+import {  ENTITIES } from '../data/masterData';
+import { SERVICE_DOMAINS } from '../data/serviceDomains';
+import { useResourceManagement } from '../data/resourceManagementStore';
+import { RESOURCES } from '../data/demoData';
 
 export default function ExecutiveBoardPage() {
   const navigate = useNavigate();
   const [period, setPeriod] = useState('q2_2026');
   const [selectedEntity, setSelectedEntity] = useState('all');
   const [selectedDomain, setSelectedDomain] = useState('all');
+
+  const { getSLAKPIs, getAssignmentKPIs, requests, assignments, measurements } = useResourceManagement();
+  const slaKpis = useMemo(() => getSLAKPIs(), [getSLAKPIs]);
+  const asgnKpis = useMemo(() => getAssignmentKPIs(), [getAssignmentKPIs]);
 
   const boardData = useMemo(() => {
     return getExecutiveBoardData({
@@ -32,32 +49,79 @@ export default function ExecutiveBoardPage() {
     });
   }, [period, selectedEntity, selectedDomain]);
 
+  // 12 Centralized KPIs per Section 30
+  const totalResourcesCount = RESOURCES.length;
+  const activeResourcesCount = RESOURCES.filter(r => r.status === 'Active').length;
+  const availableResourcesCount = RESOURCES.filter(r => r.status !== 'On Leave' && (!r.availability || r.availability.available !== false)).length;
+  const onLeaveCount = RESOURCES.filter(r => r.status === 'On Leave' || r.availability?.status === 'On Leave').length;
+  const openRequestsCount = requests.filter(r => !['Closed', 'Rejected'].includes(r.status)).length;
+  const activeAssignmentsCount = assignments.filter(a => a.status === 'Active').length;
+  const openBreachesCount = measurements.filter(m => m.status === 'BREACH').length;
+  const overallComplianceRate = `${slaKpis.complianceRate}%`;
+  const resourceAvailabilityPct = '96.8%';
+  const firstPassQualityPct = '92.4%';
+  const timesheetCompliancePct = '98.6%';
+  const pendingApprovalsCount = requests.filter(r => r.status === 'Pending Approval' || r.status === 'Requested').length;
+
+  // 7 RFP Service Domains distribution with drill-down (Section 30)
+  const serviceDomainDistribution = useMemo(() => {
+    return SERVICE_DOMAINS.map(sd => {
+      const dResources = RESOURCES.filter(r => r.serviceDomainId === sd.id);
+      const dActive = dResources.filter(r => r.status === 'Active').length;
+      return {
+        id: sd.id,
+        name: sd.name,
+        code: sd.code,
+        count: dResources.length,
+        active: dActive,
+        sharePct: Math.round((dResources.length / totalResourcesCount) * 100),
+      };
+    });
+  }, [totalResourcesCount]);
+
   return (
-    <div className="executive-board-page animate-fade-in">
-      {/* ── Page Header & Context Filter Bar (Section 16) ── */}
-      <div style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        marginBottom: '20px', gap: '16px', flexWrap: 'wrap'
-      }}>
+    <div className="executive-board-page animate-fade-in" style={{ paddingBottom: '30px' }}>
+      {/* ── Page Header & Context Filter Bar ── */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '20px',
+          gap: '16px',
+          flexWrap: 'wrap',
+        }}
+      >
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <h1 className="page-title" style={{ margin: 0 }}>Executive Board</h1>
             <span className="badge badge-success" style={{ textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               SteerCom Ready
             </span>
+            <span className="badge badge-primary">
+              KAARTECH ITMS
+            </span>
           </div>
           <p className="page-subtitle" style={{ margin: '4px 0 0' }}>
-            Integrated AMS operational intelligence across 34 Enterprise operating entities and 26 in-scope enterprise applications.
+            Operational telemetry & governance control across 7 Service Domains, 34 operating entities, and 26 enterprise systems.
           </p>
         </div>
 
-        {/* Compact Executive Filters */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-card)',
-          padding: '6px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)', flexWrap: 'wrap'
-        }}>
+        {/* Scope Filters */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'var(--bg-card)',
+            padding: '6px 12px',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--border-secondary)',
+            flexWrap: 'wrap',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 600 }}>
-            <Filter size={12} style={{ color: 'var(--edge-primary)' }} />
+            <Filter size={12} style={{ color: 'var(--brand-primary)' }} />
             <span>Scope:</span>
           </div>
 
@@ -65,20 +129,18 @@ export default function ExecutiveBoardPage() {
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
             style={{
-              padding: '4px 8px', fontSize: '11px', borderRadius: '4px', border: '1px solid var(--border-primary)',
-              background: 'var(--bg-primary)', color: 'var(--text-primary)'
+              padding: '4px 8px',
+              fontSize: '11px',
+              borderRadius: '4px',
+              border: '1px solid var(--border-primary)',
+              background: 'var(--bg-primary)',
+              color: 'var(--text-primary)',
             }}
           >
             <optgroup label="Month">
               <option value="m_sep">September 2026</option>
               <option value="m_aug">August 2026</option>
               <option value="m_jul">July 2026</option>
-              <option value="m_jun">June 2026</option>
-              <option value="m_may">May 2026</option>
-              <option value="m_apr">April 2026</option>
-              <option value="m_mar">March 2026</option>
-              <option value="m_feb">February 2026</option>
-              <option value="m_jan">January 2026</option>
             </optgroup>
             <optgroup label="Quarter">
               <option value="q3_2026">Q3 2026 (Jul – Sep)</option>
@@ -94,12 +156,17 @@ export default function ExecutiveBoardPage() {
             value={selectedEntity}
             onChange={(e) => setSelectedEntity(e.target.value)}
             style={{
-              padding: '4px 8px', fontSize: '11px', borderRadius: '4px', border: '1px solid var(--border-primary)',
-              background: 'var(--bg-primary)', color: 'var(--text-primary)', maxWidth: '140px'
+              padding: '4px 8px',
+              fontSize: '11px',
+              borderRadius: '4px',
+              border: '1px solid var(--border-primary)',
+              background: 'var(--bg-primary)',
+              color: 'var(--text-primary)',
+              maxWidth: '140px',
             }}
           >
             <option value="all">All Entities (34)</option>
-            {ENTITIES.slice(0, 12).map(ent => (
+            {ENTITIES.slice(0, 10).map(ent => (
               <option key={ent.id} value={ent.name}>{ent.name}</option>
             ))}
           </select>
@@ -108,186 +175,220 @@ export default function ExecutiveBoardPage() {
             value={selectedDomain}
             onChange={(e) => setSelectedDomain(e.target.value)}
             style={{
-              padding: '4px 8px', fontSize: '11px', borderRadius: '4px', border: '1px solid var(--border-primary)',
-              background: 'var(--bg-primary)', color: 'var(--text-primary)', maxWidth: '140px'
+              padding: '4px 8px',
+              fontSize: '11px',
+              borderRadius: '4px',
+              border: '1px solid var(--border-primary)',
+              background: 'var(--bg-primary)',
+              color: 'var(--text-primary)',
+              maxWidth: '140px',
             }}
           >
             <option value="all">All Domains (8)</option>
-            {BUSINESS_DOMAINS.map(d => (
-              <option key={d.key} value={d.key}>{d.key} — {d.label}</option>
+            {SERVICE_DOMAINS.map(d => (
+              <option key={d.id} value={d.id}>{d.id} — {d.name}</option>
             ))}
           </select>
         </div>
       </div>
 
-      {/* ── 1. Compact KPI Strip (Section 16 & Changes) ── */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '12px',
-        marginBottom: '20px'
-      }}>
-        <KPICard
-          title="Overall AMS Health"
-          value={`${boardData.overallHealth}%`}
-          status="success"
-          trend={+1.8}
-          sparklineData={[93.5, 94.2, 95.8, boardData.overallHealth]}
-          onClick={() => navigate('/service-operation/overview')}
-        />
-        <KPICard
-          title="Contractual SLA"
-          value={`${boardData.slaScore}%`}
-          target="88.0%"
-          status={boardData.slaScore >= 88 ? 'success' : 'warning'}
-          trend={+(boardData.slaScore - 88).toFixed(1)}
-          sparklineData={[91, 93, 94.5, boardData.slaScore]}
-          onClick={() => navigate('/reporting/sla')}
-        />
-        <KPICard
-          title="Total Tickets"
-          value={boardData.totalTickets}
-          subtitle="Scope Total Volume"
-          status="normal"
-          accentColor="var(--edge-primary)"
-          sparklineData={[Math.max(1, boardData.totalTickets - 8), Math.max(2, boardData.totalTickets - 3), boardData.totalTickets]}
-          onClick={() => navigate('/command-center')}
-        />
-        <KPICard
-          title="P1 Critical"
-          value={boardData.p1Count}
-          status={boardData.p1Count > 0 ? (boardData.p1Sla < 100 ? 'danger' : 'warning') : 'success'}
-          subtitle={`SLA: ${boardData.p1Sla}% Met`}
-          sparklineData={[1, 0, 1, boardData.p1Count]}
-          onClick={() => navigate('/command-center/incidents')}
-        />
-        <KPICard
-          title="P2 High"
-          value={boardData.p2Count}
-          status={boardData.p2Count > 0 ? (boardData.p2Sla < 90 ? 'warning' : 'success') : 'success'}
-          subtitle={`SLA: ${boardData.p2Sla}% Met`}
-          sparklineData={[3, 2, 4, boardData.p2Count]}
-          onClick={() => navigate('/command-center/incidents')}
-        />
-
-        {/* Executive CSAT Visual Card */}
-        <div
-          className="kpi-card interactive"
-          style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-secondary)',
-            borderTop: '2px solid var(--color-green)',
-            borderRadius: 'var(--radius-lg)',
-            padding: '14px 18px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            cursor: 'pointer',
-            transition: 'all var(--transition-fast)',
-          }}
-          onClick={() => navigate('/customer/feedback')}
-          role="button"
-          tabIndex={0}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-            <span style={{
-              fontSize: '11px',
-              fontWeight: 600,
-              color: 'var(--text-tertiary)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
-              lineHeight: 1.2
-            }}>
-              Executive CSAT
-            </span>
-            <span className="badge badge-neutral" style={{ fontSize: '9px', padding: '1px 5px' }}>
-              Benchmark
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-              <span style={{
-                fontSize: 'var(--text-2xl)',
-                fontWeight: 700,
-                color: 'var(--text-primary)',
-                letterSpacing: '-0.02em',
-                lineHeight: 1.1
-              }}>
-                95%
-              </span>
-              <span style={{ fontSize: '11px', color: 'var(--color-green)', fontWeight: 600 }}>
-                Target: 90%
-              </span>
-            </div>
-          </div>
-
-          {/* Segmented distribution bar */}
-          <div style={{ marginTop: '8px' }}>
-            <div style={{
-              display: 'flex',
-              height: '7px',
-              borderRadius: '4px',
-              overflow: 'hidden',
-              background: 'var(--bg-tertiary)',
-              gap: '1px'
-            }}>
-              <div title="Excellent: 82%" style={{ width: '82%', background: '#0D9F6E' }} />
-              <div title="Very Good: 9%" style={{ width: '9%', background: '#2563EB' }} />
-              <div title="Good: 5%" style={{ width: '5%', background: '#6366F1' }} />
-              <div title="Average: 2%" style={{ width: '2%', background: '#D97706' }} />
-              <div title="Poor: 2%" style={{ width: '2%', background: '#DC2626' }} />
-            </div>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              fontSize: '11px',
-              color: 'var(--text-primary)',
-              marginTop: '5px',
-              fontWeight: 600
-            }}>
-              <span style={{ color: 'var(--color-green)' }}>Excellent 82%</span>
-              <span style={{ color: 'var(--color-red)' }}>Poor 2%</span>
-            </div>
-          </div>
-
-          <div style={{
-            fontSize: '9px',
-            color: 'var(--text-tertiary)',
-            fontStyle: 'italic',
-            marginTop: '4px',
-            textAlign: 'right'
-          }}>
-            Demo benchmark · 100% total
-          </div>
+      {/* ── 1. The 12 Mandatory Dashboard KPIs (Section 30) ── */}
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-tertiary)', letterSpacing: '0.04em', marginBottom: '10px' }}>
+          Executive Health & Delivery Indicators (Centralized Telemetry)
         </div>
-
-        <KPICard
-          title="Application Uptime"
-          value={`${boardData.appEstateHealth}%`}
-          status="success"
-          subtitle="26 / 26 Core Systems Healthy"
-          sparklineData={[99.92, 99.95, 99.97, boardData.appEstateHealth]}
-          onClick={() => navigate('/technology/application-health')}
-        />
-        <KPICard
-          title="Resource Staffing"
-          value={`${boardData.resourceCoverage}%`}
-          status="success"
-          subtitle="30 Dedicated FTEs Active"
-          sparklineData={[100, 100, 100, 100]}
-          onClick={() => navigate('/resources/directory')}
-        />
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+            gap: '10px',
+          }}
+        >
+          <KPICard
+            title="Total Resources"
+            value={totalResourcesCount}
+            subtitle="Central Personnel Pool"
+            accentColor="var(--brand-primary)"
+            sparklineData={[30, 32, 34, totalResourcesCount]}
+            onClick={() => navigate('/resources/directory')}
+          />
+          <KPICard
+            title="Active Resources"
+            value={activeResourcesCount}
+            subtitle={`${Math.round((activeResourcesCount / totalResourcesCount) * 100)}% Deployed`}
+            status="success"
+            sparklineData={[28, 30, 31, activeResourcesCount]}
+            onClick={() => navigate('/resources/directory')}
+          />
+          <KPICard
+            title="Available Resources"
+            value={availableResourcesCount}
+            subtitle="Ready for Allocation"
+            status="normal"
+            sparklineData={[3, 4, 3, availableResourcesCount]}
+            onClick={() => navigate('/resources/directory')}
+          />
+          <KPICard
+            title="On Leave"
+            value={onLeaveCount}
+            subtitle="Scheduled Absences"
+            status={onLeaveCount > 4 ? 'warning' : 'normal'}
+            sparklineData={[1, 2, 1, onLeaveCount]}
+            onClick={() => navigate('/leave-timesheet')}
+          />
+          <KPICard
+            title="Open Requests"
+            value={openRequestsCount}
+            subtitle="Active Staffing Pipeline"
+            status="normal"
+            accentColor="var(--color-blue)"
+            sparklineData={[6, 8, 9, openRequestsCount]}
+            onClick={() => navigate('/resources/requests')}
+          />
+          <KPICard
+            title="Active Assignments"
+            value={activeAssignmentsCount}
+            subtitle="Operational Pods"
+            status="success"
+            sparklineData={[12, 13, 13, activeAssignmentsCount]}
+            onClick={() => navigate('/resources/assignments')}
+          />
+          <KPICard
+            title="Open SLA Breaches"
+            value={openBreachesCount}
+            subtitle={openBreachesCount === 0 ? 'Zero Breaches' : 'Action In Progress'}
+            status={openBreachesCount === 0 ? 'success' : 'danger'}
+            sparklineData={[3, 2, 1, openBreachesCount]}
+            onClick={() => navigate('/sla-governance')}
+          />
+          <KPICard
+            title="Overall SLA Compliance"
+            value={overallComplianceRate}
+            target="95.0%"
+            status={slaKpis.complianceRate >= 95 ? 'success' : 'warning'}
+            trend={+(slaKpis.complianceRate - 95).toFixed(1)}
+            subtitle={`${slaKpis.met} Met • ${slaKpis.breached} Breached`}
+            sparklineData={[92, 94, 95.5, slaKpis.complianceRate]}
+            onClick={() => navigate('/sla-governance')}
+          />
+          <KPICard
+            title="Resource Availability"
+            value={resourceAvailabilityPct}
+            target=">= 95.0%"
+            status="success"
+            subtitle="Contractual Commitment"
+            sparklineData={[95.2, 95.8, 96.4, 96.8]}
+            onClick={() => navigate('/sla-governance')}
+          />
+          <KPICard
+            title="First Pass Quality"
+            value={firstPassQualityPct}
+            target=">= 90.0%"
+            status="success"
+            subtitle="Candidate Shortlist QA"
+            sparklineData={[89, 90.5, 91.8, 92.4]}
+            onClick={() => navigate('/resources/requests')}
+          />
+          <KPICard
+            title="Timesheet Compliance"
+            value={timesheetCompliancePct}
+            target=">= 98.0%"
+            status="success"
+            subtitle="3rd Business Day Pack"
+            sparklineData={[97.2, 98.0, 98.4, 98.6]}
+            onClick={() => navigate('/leave-timesheet')}
+          />
+          <KPICard
+            title="Pending Approvals"
+            value={pendingApprovalsCount}
+            subtitle="Requisition Queue"
+            status={pendingApprovalsCount > 4 ? 'warning' : 'normal'}
+            sparklineData={[2, 4, 3, pendingApprovalsCount]}
+            onClick={() => navigate('/resources/requests')}
+          />
+        </div>
       </div>
 
-      {/* ── 2. Primary Visual Analytics (SLA Performance + Ticket Mix) ── */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))',
-        gap: '16px',
-        marginBottom: '20px'
-      }}>
+      {/* ── 2. Primary Service Domain Operational Distribution (Section 30) ── */}
+      <div className="card" style={{ padding: '20px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+          <div>
+            <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Layers size={18} style={{ color: 'var(--brand-primary)' }} />
+              Primary Service Domain Distribution (7 RFP Service Domains)
+            </h3>
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', margin: '4px 0 0' }}>
+              Contractual personnel allocation, operational delivery pods, and live drill-down into Resource Directory
+            </p>
+          </div>
+          <span className="badge badge-primary">
+            Click any domain to filter Resource Directory
+          </span>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px' }}>
+          {serviceDomainDistribution.map(sd => (
+            <div
+              key={sd.id}
+              onClick={() => navigate(`/resources/directory?domain=${sd.id}`)}
+              style={{
+                padding: '14px',
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border-secondary)',
+                cursor: 'pointer',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'var(--brand-primary)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 14px rgba(107, 29, 42, 0.15)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'var(--border-secondary)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--brand-primary)', fontFamily: 'var(--font-mono)' }}>
+                    {sd.id}
+                  </span>
+                  <span className="badge badge-neutral" style={{ fontSize: '10px' }}>
+                    {sd.sharePct}%
+                  </span>
+                </div>
+                <div style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3 }}>
+                  {sd.name}
+                </div>
+              </div>
+
+              <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderTop: '1px solid var(--border-primary)', paddingTop: '8px' }}>
+                <div style={{ fontSize: 'var(--text-lg)', fontWeight: 800, color: 'var(--text-primary)' }}>
+                  {sd.count} <span style={{ fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: 500 }}>FTEs</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '11px', color: 'var(--brand-primary)', fontWeight: 600 }}>
+                  Inspect <ChevronRight size={13} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 3. Primary Visual Analytics (SLA Performance + Ticket Mix) ── */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))',
+          gap: '16px',
+          marginBottom: '20px',
+        }}
+      >
         {/* SLA Performance Trend */}
         <ChartCard
           title="Contractual SLA Performance Trend"
@@ -323,7 +424,7 @@ export default function ExecutiveBoardPage() {
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '6px' }} />
               <Area type="monotone" dataKey="Resolution" stroke="#0D9F6E" fillOpacity={1} fill="url(#slaResGrad)" strokeWidth={2} name="Resolution SLA %" />
               <Area type="monotone" dataKey="Response" stroke="#2563EB" fillOpacity={1} fill="url(#slaRespGrad)" strokeWidth={1.5} name="Response SLA %" />
-              <Area type="monotone" dataKey="Target" stroke="#FF5622" strokeDasharray="3 3" fill="none" strokeWidth={1.5} name="Contract Target (88%)" />
+              <Area type="monotone" dataKey="Target" stroke="#6B1D2A" strokeDasharray="3 3" fill="none" strokeWidth={1.5} name="Contract Target (88%)" />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -363,80 +464,15 @@ export default function ExecutiveBoardPage() {
         </ChartCard>
       </div>
 
-      {/* ── 3. Secondary Visual Analytics (App Health + Resource Compliance) ── */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))',
-        gap: '16px',
-        marginBottom: '20px'
-      }}>
-        {/* Application Health Distribution */}
-        <ChartCard
-          title="Application Estate Health Status"
-          subtitle="Real-time availability status across 26 enterprise systems"
-          height={240}
-          actions={
-            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/technology/applications')} style={{ fontSize: '11px' }}>
-              App Portfolio <ArrowRight size={11} />
-            </button>
-          }
-        >
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', height: '100%', alignItems: 'center' }}>
-            <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)', textAlign: 'center' }}>
-              <div style={{ fontSize: '11px', color: 'var(--color-emerald)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>Healthy (Green)</div>
-              <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, color: 'var(--text-primary)' }}>24</div>
-              <div style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>92.3% of Estate</div>
-            </div>
-
-            <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)', textAlign: 'center' }}>
-              <div style={{ fontSize: '11px', color: 'var(--color-amber)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>Degraded (Amber)</div>
-              <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, color: 'var(--text-primary)' }}>2</div>
-              <div style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>Under Patch Fix</div>
-            </div>
-
-            <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)', textAlign: 'center' }}>
-              <div style={{ fontSize: '11px', color: 'var(--color-red)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>Critical Outage</div>
-              <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, color: 'var(--text-primary)' }}>0</div>
-              <div style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>Zero Down Time</div>
-            </div>
-          </div>
-        </ChartCard>
-
-        {/* Resource Staffing Compliance Plan vs Actual */}
-        <ChartCard
-          title="Resource Staffing Compliance (Plan vs Actual)"
-          subtitle="Contractual dedicated delivery pods (30 Total Specialists)"
-          height={240}
-          actions={
-            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/resources/organization')} style={{ fontSize: '11px' }}>
-              Organization Map <ArrowRight size={11} />
-            </button>
-          }
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={boardData.resourceCompliance} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <XAxis dataKey="track" stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
-              <YAxis stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
-              <Tooltip
-                contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '11px', boxShadow: 'var(--shadow-lg)' }}
-                labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
-                itemStyle={{ color: 'var(--text-primary)' }}
-              />
-              <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }} />
-              <Bar dataKey="Plan" fill="#71777C" radius={[4, 4, 0, 0]} name="Plan Required" />
-              <Bar dataKey="Actual" fill="#FF5622" radius={[4, 4, 0, 0]} name="Actual Deployed" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-      </div>
-
-      {/* ── 4. Critical Exceptions & Governance Action Strip (Section 16) ── */}
-      <div style={{
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border-secondary)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '18px 22px'
-      }}>
+      {/* ── 4. Critical Exceptions & Governance Action Strip ── */}
+      <div
+        style={{
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-secondary)',
+          borderRadius: 'var(--radius-lg)',
+          padding: '18px 22px',
+        }}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <AlertTriangle size={15} style={{ color: 'var(--color-amber)' }} />
@@ -452,21 +488,30 @@ export default function ExecutiveBoardPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px' }}>
           {[
             { tag: 'TRANSITION', title: 'Wave 3 S/4HANA Go-Live Gate Check', target: 'Nov 2026', badge: 'On Track', link: '/governance/transition' },
-            { tag: 'SECURITY AUDIT', title: 'ISO 27001 Surveillance Audit Findings (2 OFIs)', target: 'Due in 14 Days', badge: 'In Remediation', link: '/governance/audits' },
+            { tag: 'SECURITY AUDIT', title: 'Surveillance Audit Remediation (2 OFIs)', target: 'Due in 14 Days', badge: 'In Remediation', link: '/governance/audits' },
             { tag: 'INNOVATION', title: '320 Unused Ticket Hours converted to ENH-OF-RUN', target: 'Contractual Q2', badge: 'Approved', link: '/service-innovation/ticket-reduction' },
           ].map((exc, idx) => (
             <div
               key={idx}
               onClick={() => navigate(exc.link)}
               style={{
-                background: 'var(--bg-secondary)', padding: '10px 14px', borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-secondary)', cursor: 'pointer',
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                background: 'var(--bg-secondary)',
+                padding: '10px 14px',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-secondary)',
+                cursor: 'pointer',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
               }}
             >
               <div>
-                <span style={{ fontSize: '9px', fontWeight: 700, color: 'var(--edge-primary)', letterSpacing: '0.04em' }}>{exc.tag}</span>
-                <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-primary)', marginTop: '2px' }}>{exc.title}</div>
+                <span style={{ fontSize: '9px', fontWeight: 700, color: 'var(--brand-primary)', letterSpacing: '0.04em' }}>
+                  {exc.tag}
+                </span>
+                <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-primary)', marginTop: '2px' }}>
+                  {exc.title}
+                </div>
                 <div style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>Target: {exc.target}</div>
               </div>
               <span className="badge badge-neutral" style={{ fontSize: '10px' }}>{exc.badge}</span>

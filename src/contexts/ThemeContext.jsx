@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Theme Context
+﻿/**
+ * KaarTech ITMS Control Tower — Theme Context
  * Manages light/dark mode with localStorage persistence.
  * Dark mode is intentionally designed (not inversion) per Section 14.
  * Supports prefers-reduced-motion per Section 9.
@@ -11,13 +11,13 @@ const ThemeContext = createContext(null);
 export function ThemeProvider({ children }) {
   const [theme, setThemeState] = useState(() => {
     try {
-      const version = localStorage.getItem('edge-ams-theme-version');
+      const version = localStorage.getItem('kaartech-itms-theme-version');
       if (version !== '2.1') {
-        localStorage.setItem('edge-ams-theme-version', '2.1');
-        localStorage.setItem('edge-ams-theme', 'light');
+        localStorage.setItem('kaartech-itms-theme-version', '2.1');
+        localStorage.setItem('kaartech-itms-theme', 'light');
         return 'light';
       }
-      const stored = localStorage.getItem('edge-ams-theme');
+      const stored = localStorage.getItem('kaartech-itms-theme');
       if (stored === 'dark' || stored === 'light') return stored;
     } catch {}
     return 'light'; // Light mode is primary
@@ -29,7 +29,7 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    try { localStorage.setItem('edge-ams-theme', theme); } catch {}
+    try { localStorage.setItem('kaartech-itms-theme', theme); } catch {}
   }, [theme]);
 
   useEffect(() => {

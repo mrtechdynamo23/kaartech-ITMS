@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Daily Flash Report (DFR)
+﻿/**
+ * KaarTech ITMS Control Tower — Daily Flash Report (DFR)
  * Route: /reporting/dfr
  * 
  * Production DFR Dashboard & PDF Export:
@@ -96,7 +96,7 @@ export default function DFRReportPage() {
         {/* Date Selector & Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-card)', padding: '6px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)' }}>
-            <Calendar size={15} style={{ color: 'var(--edge-primary)' }} />
+            <Calendar size={15} style={{ color: 'var(--brand-primary)' }} />
             <span style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--text-secondary)' }}>Reporting Date:</span>
             <input
               type="date"
@@ -184,8 +184,8 @@ export default function DFRReportPage() {
                 width: 40,
                 height: 40,
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(255, 86, 34, 0.12)',
-                color: 'var(--edge-primary)',
+                background: 'rgba(107, 29, 42, 0.12)',
+                color: 'var(--brand-primary)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -246,7 +246,7 @@ export default function DFRReportPage() {
           >
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--edge-primary)', letterSpacing: '0.04em' }}>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--brand-primary)', letterSpacing: '0.04em' }}>
                   IRT
                 </div>
                 <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
@@ -304,7 +304,7 @@ export default function DFRReportPage() {
           >
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--edge-primary)', letterSpacing: '0.04em' }}>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--brand-primary)', letterSpacing: '0.04em' }}>
                   MPT
                 </div>
                 <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
@@ -357,8 +357,8 @@ export default function DFRReportPage() {
             padding: '10px 18px',
             background: 'none',
             border: 'none',
-            borderBottom: activeTab === 'summary' ? '2px solid var(--edge-primary)' : '2px solid transparent',
-            color: activeTab === 'summary' ? 'var(--edge-primary)' : 'var(--text-secondary)',
+            borderBottom: activeTab === 'summary' ? '2px solid var(--brand-primary)' : '2px solid transparent',
+            color: activeTab === 'summary' ? 'var(--brand-primary)' : 'var(--text-secondary)',
             fontWeight: activeTab === 'summary' ? 700 : 500,
             fontSize: 'var(--text-sm)',
             cursor: 'pointer',
@@ -377,8 +377,8 @@ export default function DFRReportPage() {
             padding: '10px 18px',
             background: 'none',
             border: 'none',
-            borderBottom: activeTab === 'exceptions' ? '2px solid var(--edge-primary)' : '2px solid transparent',
-            color: activeTab === 'exceptions' ? 'var(--edge-primary)' : 'var(--text-secondary)',
+            borderBottom: activeTab === 'exceptions' ? '2px solid var(--brand-primary)' : '2px solid transparent',
+            color: activeTab === 'exceptions' ? 'var(--brand-primary)' : 'var(--text-secondary)',
             fontWeight: activeTab === 'exceptions' ? 700 : 500,
             fontSize: 'var(--text-sm)',
             cursor: 'pointer',
@@ -472,7 +472,7 @@ export default function DFRReportPage() {
 
               return (
                 <div style={{ marginBottom: '32px' }}>
-                  <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--edge-primary)', marginBottom: '10px' }}>
+                  <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--brand-primary)', marginBottom: '10px' }}>
                     {sectionTitle}
                   </h4>
                   <div
@@ -589,7 +589,7 @@ export default function DFRReportPage() {
                                   textAlign: 'left',
                                   padding: '7px 14px',
                                   color: row.isTotal
-                                    ? (isDark ? 'var(--edge-primary)' : '#92400E')
+                                    ? (isDark ? 'var(--brand-primary)' : '#92400E')
                                     : 'var(--text-primary)',
                                   fontWeight: row.isTotal ? 800 : 600,
                                   borderRight: periodBorder,
@@ -689,7 +689,7 @@ export default function DFRReportPage() {
               <tbody>
                 {snapshot.slaAlertTickets.map((t, i) => (
                   <tr key={i} style={{ borderBottom: '1px solid var(--border-secondary)' }}>
-                    <td style={{ padding: '8px', fontWeight: 600, color: 'var(--edge-primary)' }}>{t.ticketNo}</td>
+                    <td style={{ padding: '8px', fontWeight: 600, color: 'var(--brand-primary)' }}>{t.ticketNo}</td>
                     <td style={{ padding: '8px', color: 'var(--text-secondary)' }}>{t.assignedTo}</td>
                     <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700, color: t.timeLeftHrs < 5 ? 'var(--color-crimson)' : 'var(--text-primary)' }}>
                       {t.timeLeftHrs.toFixed(1)} hrs
@@ -724,7 +724,7 @@ export default function DFRReportPage() {
                 <tbody>
                   {snapshot.breachedTickets.map((t, i) => (
                     <tr key={i} style={{ borderBottom: '1px solid var(--border-secondary)' }}>
-                      <td style={{ padding: '8px', fontWeight: 600, color: 'var(--edge-primary)' }}>{t.ticketNo}</td>
+                      <td style={{ padding: '8px', fontWeight: 600, color: 'var(--brand-primary)' }}>{t.ticketNo}</td>
                       <td style={{ padding: '8px', color: 'var(--text-secondary)' }}>{t.assignedTo}</td>
                       <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700, color: '#DC2626' }}>
                         +{t.extraHours.toFixed(2)} hrs
@@ -760,7 +760,7 @@ export default function DFRReportPage() {
                 <tbody>
                   {snapshot.holdTickets.map((t, i) => (
                     <tr key={i} style={{ borderBottom: '1px solid var(--border-secondary)' }}>
-                      <td style={{ padding: '8px', fontWeight: 600, color: 'var(--edge-primary)' }}>{t.ticketNo}</td>
+                      <td style={{ padding: '8px', fontWeight: 600, color: 'var(--brand-primary)' }}>{t.ticketNo}</td>
                       <td style={{ padding: '8px', color: 'var(--text-secondary)' }}>{t.name}</td>
                       <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700, color: '#B45309' }}>
                         {t.holdHours.toFixed(2)} hrs

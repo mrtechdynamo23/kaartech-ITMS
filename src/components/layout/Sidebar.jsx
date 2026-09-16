@@ -1,17 +1,15 @@
 /**
- * EDGE AMS Control Tower — Sidebar Navigation
+ * KaarTech ITMS Control Tower — Sidebar Navigation
  * Collapsible, active route, nested navigation, keyboard accessible,
- * tooltips in collapsed state, true RTL mirroring (Section 13).
+ * tooltips in collapsed state, true RTL mirroring.
  */
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import {
   BarChart3, Layout, Shield, Users, Monitor, HeadphonesIcon, Activity,
-  Lightbulb, FileText, ChevronDown, ChevronRight, PanelLeftClose, PanelLeftOpen,
-  AlertTriangle, FileCheck, Key, Milestone, GitBranch, Clock, Phone,
-  Award, UserCheck, ListChecks, Cpu, Link2, Package, BarChart, Zap,
-  Bot, GraduationCap, TrendingUp, BookOpen, Wrench, Target, Calendar
+  Lightbulb, FileText, ChevronDown, PanelLeftClose, PanelLeftOpen,
+  CalendarClock, ShieldCheck, Settings, Calendar
 } from 'lucide-react';
 
 const navItems = [
@@ -20,6 +18,12 @@ const navItems = [
     path: '/executive-board',
     icon: BarChart3,
     labelKey: 'executiveBoard.title',
+  },
+  {
+    key: 'calendar',
+    path: '/calendar',
+    icon: Calendar,
+    labelKey: 'calendar.title',
   },
   {
     key: 'command-center',
@@ -35,20 +39,8 @@ const navItems = [
     ],
   },
   {
-    key: 'customer',
-    path: '/customer',
-    icon: HeadphonesIcon,
-    labelKey: 'customerConnect.title',
-    children: [
-      { key: 'cust-corner', path: '/customer/corner', labelKey: 'customerConnect.corner' },
-      { key: 'cust-feedback', path: '/customer/feedback', labelKey: 'customerConnect.feedback' },
-      { key: 'cust-actions', path: '/customer/actions', labelKey: 'customerConnect.actions' },
-      { key: 'cust-issues', path: '/customer/issues', labelKey: 'customerConnect.issues' },
-    ],
-  },
-  {
     key: 'governance',
-    path: '/governance',
+    path: '/governance/audits',
     icon: Shield,
     labelKey: 'governance.title',
     children: [
@@ -62,20 +54,35 @@ const navItems = [
   },
   {
     key: 'resources',
-    path: '/resources',
+    path: '/resources/directory',
     icon: Users,
     labelKey: 'resource.title',
     children: [
       { key: 'res-directory', path: '/resources/directory', labelKey: 'resource.directory' },
+      { key: 'res-requests', path: '/resources/requests', labelKey: 'resource.requests' },
+      { key: 'res-assignments', path: '/resources/assignments', labelKey: 'resource.assignments' },
       { key: 'res-organization', path: '/resources/organization', labelKey: 'resource.organization' },
       { key: 'res-time', path: '/resources/time', labelKey: 'resource.time' },
       { key: 'res-contact', path: '/resources/contact', labelKey: 'resource.contact' },
       { key: 'res-skills', path: '/resources/skills', labelKey: 'resource.skills' },
+      { key: 'res-coverage', path: '/resources/coverage', labelKey: 'resource.coverage' },
     ],
   },
   {
+    key: 'leave-timesheet',
+    path: '/leave-timesheet',
+    icon: CalendarClock,
+    labelKey: 'leaveTimesheet.title',
+  },
+  {
+    key: 'sla-governance',
+    path: '/sla-governance',
+    icon: ShieldCheck,
+    labelKey: 'slaGovernance.title',
+  },
+  {
     key: 'technology',
-    path: '/technology',
+    path: '/technology/applications',
     icon: Monitor,
     labelKey: 'technology.title',
     children: [
@@ -88,8 +95,20 @@ const navItems = [
     ],
   },
   {
+    key: 'customer',
+    path: '/customer/corner',
+    icon: HeadphonesIcon,
+    labelKey: 'customerConnect.title',
+    children: [
+      { key: 'cust-corner', path: '/customer/corner', labelKey: 'customerConnect.corner' },
+      { key: 'cust-feedback', path: '/customer/feedback', labelKey: 'customerConnect.feedback' },
+      { key: 'cust-actions', path: '/customer/actions', labelKey: 'customerConnect.actions' },
+      { key: 'cust-issues', path: '/customer/issues', labelKey: 'customerConnect.issues' },
+    ],
+  },
+  {
     key: 'service-operation',
-    path: '/service-operation',
+    path: '/service-operation/overview',
     icon: Activity,
     labelKey: 'serviceOperation.title',
     children: [
@@ -102,7 +121,7 @@ const navItems = [
   },
   {
     key: 'service-innovation',
-    path: '/service-innovation',
+    path: '/service-innovation/ticket-reduction',
     icon: Lightbulb,
     labelKey: 'serviceInnovation.title',
     children: [
@@ -115,7 +134,7 @@ const navItems = [
   },
   {
     key: 'reporting',
-    path: '/reporting',
+    path: '/reporting/dfr',
     icon: FileText,
     labelKey: 'reporting.title',
     children: [
@@ -127,17 +146,27 @@ const navItems = [
       { key: 'rpt-exec', path: '/reporting/executive', labelKey: 'reporting.executive' },
     ],
   },
+  {
+    key: 'settings',
+    path: '/settings',
+    icon: Settings,
+    labelKey: 'settings.title',
+  },
 ];
 
 export default function Sidebar({ collapsed, onToggle }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const [expandedItems, setExpandedItems] = useState({});
 
   const isActive = (path) => location.pathname === path;
   const isParentActive = (item) => {
-    if (isActive(item.path)) return true;
+    if (location.pathname === item.path) return true;
+    const basePrefix = item.path.split('/')[1];
+    if (basePrefix && location.pathname.startsWith(`/${basePrefix}`)) {
+      return true;
+    }
     return item.children?.some(child => isActive(child.path));
   };
 
@@ -153,12 +182,23 @@ export default function Sidebar({ collapsed, onToggle }) {
     setExpandedItems(prev => ({ ...prev, [key]: !current }));
   };
 
-  const handleItemClick = (item, currentExpanded) => {
+  const handleItemClick = (item, currentExpanded, e) => {
+    // If user clicked directly on the chevron toggle button, just toggle expand without navigating
+    if (e?.target?.closest('.sidebar-chevron-btn')) {
+      e.stopPropagation();
+      toggleExpand(item.key, currentExpanded);
+      return;
+    }
+
+    // Direct navigation + expand
     if (item.children) {
       if (collapsed) {
         navigate(item.children[0].path);
       } else {
-        toggleExpand(item.key, currentExpanded);
+        if (!currentExpanded) {
+          toggleExpand(item.key, currentExpanded);
+        }
+        navigate(item.path || item.children[0].path);
       }
     } else {
       navigate(item.path);
@@ -194,8 +234,8 @@ export default function Sidebar({ collapsed, onToggle }) {
         </div>
         {!collapsed && (
           <div className="sidebar-brand-text">
-            <span className="sidebar-brand-title" style={{ letterSpacing: '0.04em', fontWeight: 700 }}>AMS CONTROL</span>
-            <span className="sidebar-brand-subtitle" style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>TOWER PLATFORM</span>
+            <span className="sidebar-brand-title" style={{ letterSpacing: '0.04em', fontWeight: 700 }}>ITMS CONTROL</span>
+            <span className="sidebar-brand-subtitle" style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>TOWER</span>
           </div>
         )}
       </div>
@@ -211,8 +251,8 @@ export default function Sidebar({ collapsed, onToggle }) {
             <div className="sidebar-section" key={item.key}>
               <div
                 className={`sidebar-item ${active ? 'active' : ''}`}
-                onClick={() => handleItemClick(item, expanded)}
-                onKeyDown={(e) => e.key === 'Enter' && handleItemClick(item, expanded)}
+                onClick={(e) => handleItemClick(item, expanded, e)}
+                onKeyDown={(e) => e.key === 'Enter' && handleItemClick(item, expanded, e)}
                 tabIndex={0}
                 role="button"
                 aria-expanded={item.children ? expanded : undefined}
@@ -220,14 +260,49 @@ export default function Sidebar({ collapsed, onToggle }) {
                 <div className="sidebar-item-icon"><Icon size={18} /></div>
                 <span className="sidebar-item-label">{t(item.labelKey)}</span>
                 {item.children && !collapsed && (
-                  <ChevronDown size={14} style={{ transform: expanded ? 'rotate(0)' : 'rotate(-90deg)', transition: 'transform 0.2s', opacity: 0.5 }} />
+                  <button
+                    type="button"
+                    className="sidebar-chevron-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleExpand(item.key, expanded);
+                    }}
+                    aria-label={expanded ? 'Collapse section' : 'Expand section'}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '4px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'inherit',
+                      borderRadius: '4px',
+                    }}
+                  >
+                    <ChevronDown
+                      size={14}
+                      style={{
+                        transform: expanded ? 'rotate(0)' : isRTL ? 'rotate(90deg)' : 'rotate(-90deg)',
+                        transition: 'transform 0.2s',
+                        opacity: 0.6,
+                      }}
+                    />
+                  </button>
                 )}
                 {collapsed && <span className="sidebar-tooltip">{t(item.labelKey)}</span>}
               </div>
 
               {/* Sub-items */}
               {item.children && !collapsed && (
-                <div className="sidebar-submenu" style={{ maxHeight: expanded ? `${item.children.length * 36}px` : '0px' }}>
+                <div
+                  className="sidebar-submenu"
+                  style={{
+                    maxHeight: expanded ? `${Math.max(item.children.length * 44, 380)}px` : '0px',
+                    overflow: 'hidden',
+                    transition: 'max-height 0.25s ease-in-out',
+                  }}
+                >
                   {item.children.map(child => (
                     <div
                       key={child.key}

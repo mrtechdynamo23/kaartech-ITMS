@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Dedicated PDF-Safe High-Resolution Chart Renderer
+﻿/**
+ * KaarTech ITMS Control Tower — Dedicated PDF-Safe High-Resolution Chart Renderer
  * Renders deterministic, crystal-clear 300-DPI charts onto an offscreen canvas
  * using standard pixel-space metrics and returns PNG Data URLs for lossless jsPDF embedding.
  *

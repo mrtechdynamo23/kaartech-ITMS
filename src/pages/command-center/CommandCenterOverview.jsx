@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Command Center Overview (Section 17)
+ * KaarTech ITMS Control Tower — Command Center Overview (Section 17)
  * True operational control tower with P1/P2 visibility, SLA compliance,
  * time-series velocity trends, domain load distribution, and live exception queue.
  */
@@ -20,13 +20,14 @@ import DataTable from '../../components/common/DataTable';
 import DetailDrawer from '../../components/common/DetailDrawer';
 import CreateTicketModal from '../../components/common/CreateTicketModal';
 import { getIncidentAnalytics, getServiceRequestAnalytics } from '../../data/analyticsSelectors';
-import { BUSINESS_DOMAINS } from '../../data/masterData';
+import { SERVICE_DOMAINS } from '../../data/serviceDomains';
 
 export default function CommandCenterOverview() {
   const navigate = useNavigate();
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [filters, setFilters] = useState({
+    serviceDomain: 'all',
     entity: 'all',
     domain: 'all',
     priority: 'all',
@@ -37,26 +38,49 @@ export default function CommandCenterOverview() {
   const incAnalytics = useMemo(() => getIncidentAnalytics(filters), [filters]);
   const srAnalytics = useMemo(() => getServiceRequestAnalytics(filters), [filters]);
 
-  // Domain volume data for Recharts
-  const domainData = BUSINESS_DOMAINS.map(d => {
-    const incs = incAnalytics.filteredList.filter(i => i.businessDomain === d.key);
-    const srs = srAnalytics.filteredList.filter(s => s.businessDomain === d.key);
-    return {
-      domain: d.key,
-      label: d.label,
-      Incidents: incs.length,
-      ServiceRequests: srs.length,
-      Total: incs.length + srs.length,
-    };
-  });
+  // Service Domain volume data across the 7 Primary Service Domains
+  const serviceDomainData = useMemo(() => {
+    return SERVICE_DOMAINS.map(sd => {
+      const incs = incAnalytics.filteredList.filter(i => i.serviceDomainId === sd.id || i.serviceDomain === sd.name);
+      const srs = srAnalytics.filteredList.filter(s => s.serviceDomainId === sd.id || s.serviceDomain === sd.name);
+      return {
+        id: sd.id,
+        code: sd.code,
+        name: sd.shortName || sd.name,
+        fullName: sd.name,
+        Incidents: incs.length,
+        ServiceRequests: srs.length,
+        Total: incs.length + srs.length,
+      };
+    });
+  }, [incAnalytics.filteredList, srAnalytics.filteredList]);
 
   const columns = [
     { key: 'id', label: 'Ticket ID', width: '110px' },
-    { key: 'priority', label: 'Priority', type: 'priority', width: '130px' },
+    { key: 'priority', label: 'Priority', type: 'priority', width: '120px' },
     { key: 'shortDescription', label: 'Summary', wrap: true },
-    { key: 'application', label: 'Application', width: '160px' },
-    { key: 'businessDomain', label: 'Domain', width: '90px' },
-    { key: 'entity', label: 'Entity', width: '140px' },
+    {
+      key: 'serviceDomain',
+      label: 'Service Domain',
+      width: '180px',
+      render: (val, item) => (
+        <span
+          className="badge"
+          style={{
+            fontSize: '11px',
+            fontWeight: 700,
+            background: 'rgba(107, 29, 42, 0.08)',
+            color: 'var(--brand-primary)',
+            border: '1px solid rgba(107, 29, 42, 0.2)',
+          }}
+          title={val || item.serviceDomainId}
+        >
+          {val || item.serviceDomainId || 'IT Helpdesk'}
+        </span>
+      ),
+    },
+    { key: 'application', label: 'Application', width: '150px' },
+{ key: 'entity', label: 'Entity', width: '140px' },
     { key: 'assignedTo', label: 'Assigned Resolver', width: '150px' },
     { key: 'status', label: 'Status', type: 'status', width: '120px' },
     { key: 'slaStatus', label: 'SLA Status', type: 'sla', width: '130px' },
@@ -217,8 +241,8 @@ export default function CommandCenterOverview() {
             <AreaChart data={incAnalytics.monthlyTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="createdGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FF5622" stopOpacity={0.35}/>
-                  <stop offset="95%" stopColor="#FF5622" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#6B1D2A" stopOpacity={0.35}/>
+                  <stop offset="95%" stopColor="#6B1D2A" stopOpacity={0}/>
                 </linearGradient>
                 <linearGradient id="closedGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#0D9F6E" stopOpacity={0.35}/>
@@ -233,16 +257,16 @@ export default function CommandCenterOverview() {
                 itemStyle={{ color: 'var(--text-primary)' }}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }} />
-              <Area type="monotone" dataKey="Created" stroke="#FF5622" fillOpacity={1} fill="url(#createdGrad)" strokeWidth={2} name="Created Inflow" />
+              <Area type="monotone" dataKey="Created" stroke="#6B1D2A" fillOpacity={1} fill="url(#createdGrad)" strokeWidth={2} name="Created Inflow" />
               <Area type="monotone" dataKey="Closed" stroke="#0D9F6E" fillOpacity={1} fill="url(#closedGrad)" strokeWidth={2} name="Resolved / Closed" />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Operational Load by Business Domain */}
+        {/* Operational Load by Service Domain */}
         <ChartCard
-          title="Operational Volume by Business Domain"
-          subtitle="Load balancing across 8 core business domains"
+          title="Operational Volume by Service Domain (7 RFP Domains)"
+          subtitle="Real-time incident & service request allocation across the 7 Primary Service Domains"
           height={260}
           actions={
             <button className="btn btn-ghost btn-sm" onClick={() => navigate('/command-center/service-requests')} style={{ fontSize: '11px' }}>
@@ -251,16 +275,17 @@ export default function CommandCenterOverview() {
           }
         >
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={domainData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <XAxis dataKey="domain" stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
+            <BarChart data={serviceDomainData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
+              <XAxis dataKey="name" stroke="var(--text-tertiary)" fontSize={10} tickLine={false} interval={0} angle={-15} textAnchor="end" height={45} />
               <YAxis stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
               <Tooltip
                 contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '11px', boxShadow: 'var(--shadow-lg)' }}
                 labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
                 itemStyle={{ color: 'var(--text-primary)' }}
+                formatter={(val, name, entry) => [`${val} tickets`, `${entry.payload.fullName} (${name})`]}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }} />
-              <Bar dataKey="Incidents" fill="#FF5622" radius={[4, 4, 0, 0]} name="Incidents" />
+              <Bar dataKey="Incidents" fill="#6B1D2A" radius={[4, 4, 0, 0]} name="Incidents" />
               <Bar dataKey="ServiceRequests" fill="#2563EB" radius={[4, 4, 0, 0]} name="Service Requests" />
             </BarChart>
           </ResponsiveContainer>

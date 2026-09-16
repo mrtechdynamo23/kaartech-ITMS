@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Compact Enterprise KPICard
+ * KaarTech ITMS Control Tower — Compact Enterprise KPICard
  * Features: Refined typography, compact padding, sparklines, trend delta, targets, and drilldown.
  */
 import React from 'react';
@@ -53,7 +53,7 @@ export default function KPICard({
       ? 'var(--color-amber)'
       : status === 'success'
       ? 'var(--color-emerald)'
-      : 'var(--edge-primary)';
+      : 'var(--brand-primary)';
 
     return (
       <svg width={width} height={height} style={{ overflow: 'visible', flexShrink: 0 }}>
@@ -82,7 +82,7 @@ export default function KPICard({
       className={`kpi-card ${onClick ? 'interactive' : ''} ${className}`}
       style={{
         background: 'var(--bg-card)',
-        border: '1px solid var(--border-secondary)',
+        border: '1px solid var(--border-primary)',
         borderTop: status !== 'normal' || accentColor ? `2px solid ${getStatusColor()}` : undefined,
         borderRadius: 'var(--radius-lg)',
         padding: '14px 18px',
@@ -98,14 +98,14 @@ export default function KPICard({
     >
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {Icon && (
             <div style={{
-              width: '22px', height: '22px', borderRadius: '4px',
-              background: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center',
-              justifyContent: 'center', color: 'var(--edge-primary)', flexShrink: 0
+              width: '24px', height: '24px', borderRadius: '6px',
+              background: 'rgba(107, 29, 42, 0.08)', display: 'flex', alignItems: 'center',
+              justifyContent: 'center', color: 'var(--brand-primary)', flexShrink: 0
             }}>
-              <Icon size={13} />
+              <Icon size={14} />
             </div>
           )}
           <span style={{

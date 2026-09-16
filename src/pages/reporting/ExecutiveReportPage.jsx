@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Executive C-Level Briefing
+ * KaarTech ITMS Control Tower — Executive C-Level Briefing
  * Route: /reporting/executive
  */
 import React from 'react';
@@ -59,7 +59,7 @@ export default function ExecutiveReportPage() {
         />
         <KPICard
           title="Annual Cost Savings"
-          value="AED 1.8M"
+          value="SAR 1.8M"
           status="success"
           subtitle="CIP & Automation Value"
           icon={DollarSign}
@@ -68,8 +68,8 @@ export default function ExecutiveReportPage() {
 
       {/* Strategic Summary Document */}
       <div className="chart-card" style={{ padding: '28px' }}>
-        <div style={{ borderBottom: '2px solid var(--edge-primary)', paddingBottom: '16px', marginBottom: '20px' }}>
-          <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--edge-primary)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+        <div style={{ borderBottom: '2px solid var(--brand-primary)', paddingBottom: '16px', marginBottom: '20px' }}>
+          <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--brand-primary)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
             KaarTech AMS — Operational Intelligence
           </span>
           <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--text-primary)', margin: '4px 0 0' }}>
@@ -85,7 +85,7 @@ export default function ExecutiveReportPage() {
             <ul style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', lineHeight: 1.8, paddingLeft: '18px', margin: 0 }}>
               <li><strong>Zero Operational Penalties:</strong> Full contractual compliance maintained across all 34 entities with 0 SLA penalties.</li>
               <li><strong>Proactive Shift-Left:</strong> Incident inflow reduced by 32.4% via automated self-healing and KEDB deflection.</li>
-              <li><strong>Workforce Localization:</strong> 43% UAE National representation achieved across Onsite delivery pods.</li>
+              <li><strong>Workforce Localization:</strong> 43% Saudi National representation (Saudization) achieved across Onsite delivery pods.</li>
             </ul>
           </div>
 

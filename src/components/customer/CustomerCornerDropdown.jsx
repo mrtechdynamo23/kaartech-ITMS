@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — CustomerCornerDropdown
+ * KaarTech ITMS Control Tower — CustomerCornerDropdown
  *
  * Custom fully-controlled enterprise dropdown component.
  * Replaces all native <select> elements across Customer Corner.
@@ -9,7 +9,7 @@
  * - Grouped & flat options support
  * - Keyboard navigation (ArrowDown, ArrowUp, Enter, Escape, Home, End)
  * - Click outside & Escape listeners to close
- * - Active / hover / selected states with subtle EDGE orange accent bar
+ * - Active / hover / selected states with subtle KaarTech maroon accent bar
  * - High z-index (1050) to prevent clipping
  * - Full accessibility attributes (role="combobox", aria-expanded, aria-activedescendant)
  */
@@ -298,7 +298,7 @@ export default function CustomerCornerDropdown({
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                         {opt.side && <SideBadge side={opt.side} compact />}
-                        {isSelected && <Check size={14} style={{ color: 'var(--edge-primary, #FF5622)' }} />}
+                        {isSelected && <Check size={14} style={{ color: 'var(--brand-primary, #6B1D2A)' }} />}
                       </div>
                     </div>
                   );
@@ -333,7 +333,7 @@ export default function CustomerCornerDropdown({
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                     {opt.side && <SideBadge side={opt.side} compact />}
-                    {isSelected && <Check size={14} style={{ color: 'var(--edge-primary, #FF5622)' }} />}
+                    {isSelected && <Check size={14} style={{ color: 'var(--brand-primary, #6B1D2A)' }} />}
                   </div>
                 </div>
               );

@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Architecture Landscape
+ * KaarTech ITMS Control Tower — Architecture Landscape
  * Route: /technology/landscape
  */
 import React from 'react';
@@ -11,7 +11,7 @@ export default function LandscapePage() {
     {
       name: 'Layer 1: User Experience & Digital Portals',
       icon: Globe,
-      color: '#D13212',
+      color: '#6B1D2A',
       items: [
         { name: 'SAP Analytics Cloud (SAC) Boardroom', tech: 'Cloud', type: 'Executive Analytics' },
         { name: 'eVendor Supplier Portal', tech: 'Web / BTP', type: 'Procurement Interface' },
@@ -20,7 +20,7 @@ export default function LandscapePage() {
       ]
     },
     {
-      name: 'Layer 2: Core Enterprise Applications & Business Engines',
+      name: 'Layer 2: Core Applications & Business Engines',
       icon: Layers,
       color: '#2563eb',
       items: [
@@ -89,7 +89,7 @@ export default function LandscapePage() {
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-tertiary)' }}>
                       <span>{it.tech}</span>
-                      <span style={{ color: 'var(--edge-primary)', fontWeight: 500 }}>{it.type}</span>
+                      <span style={{ color: 'var(--brand-primary)', fontWeight: 500 }}>{it.type}</span>
                     </div>
                   </div>
                 ))}

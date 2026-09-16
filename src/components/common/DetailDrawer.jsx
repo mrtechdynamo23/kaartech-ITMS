@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Detail Component Adapter
+﻿/**
+ * KaarTech ITMS Control Tower — Detail Component Adapter
  * Renders the centered DetailModal for primary record inspection (Section 23, 59).
  */
 import React from 'react';

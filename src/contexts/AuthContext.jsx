@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Authentication Context
+﻿/**
+ * KaarTech ITMS Control Tower — Authentication Context
  * 
  * Session-based auth using sessionStorage (no backend user DB yet).
  * Demo credentials centralized as a named config constant.
@@ -104,7 +104,7 @@ const ROLE_PERMISSIONS = {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
-      const stored = sessionStorage.getItem('edge-ams-user');
+      const stored = sessionStorage.getItem('kaartech-itms-user');
       return stored ? JSON.parse(stored) : null;
     } catch { return null; }
   });
@@ -131,16 +131,16 @@ export function AuthProvider({ children }) {
       trimmedId === DEMO_CREDENTIALS.id.toLowerCase() ||
       trimmedId === 'kaar.admin' ||
       trimmedId === 'admin@kaartech.com' ||
-      trimmedId === 'edge.admin';
+      (trimmedId === 'kaartech.admin' || trimmedId === 'admin' || trimmedId === 'itms.admin' || trimmedId === 'edge.admin');
     const isPasswordMatch =
       password === DEMO_CREDENTIALS.password ||
       password === 'Kaar@2026' ||
-      password === 'Edge@2026';
+      (password === 'Kaar@2026' || password === 'admin' || password === 'Edge@2026');
 
     if (isIdMatch && isPasswordMatch) {
       const userData = { ...DEMO_CREDENTIALS.user };
       setUser(userData);
-      try { sessionStorage.setItem('edge-ams-user', JSON.stringify(userData)); } catch {}
+      try { sessionStorage.setItem('kaartech-itms-user', JSON.stringify(userData)); } catch {}
       setIsLoading(false);
       return { success: true };
     }
@@ -153,7 +153,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     setUser(null);
     setError(null);
-    try { sessionStorage.removeItem('edge-ams-user'); } catch {}
+    try { sessionStorage.removeItem('kaartech-itms-user'); } catch {}
   }, []);
 
   /**

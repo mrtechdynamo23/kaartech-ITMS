@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Organization Header & Command Toolbar
+﻿/**
+ * KaarTech ITMS Control Tower — Organization Header & Command Toolbar
  * 
  * Implements Section 12 & 48 of specifications:
  * - Title & context subtitle
@@ -14,7 +14,8 @@ import {
   Search, Filter, GitFork, Users, Layers, X,
   Maximize2, Minimize2, RotateCcw, History, ChevronDown
 } from 'lucide-react';
-import { BUSINESS_DOMAINS, TRACKS } from '../../../data/masterData';
+import { TRACKS  } from '../../../data/masterData';
+import { SERVICE_DOMAINS } from '../../../data/serviceDomains';
 
 export default function OrganizationHeader({
   activeView,
@@ -56,9 +57,9 @@ export default function OrganizationHeader({
             <span
               className="badge badge-primary"
               style={{
-                background: 'rgba(255, 86, 34, 0.12)',
-                color: 'var(--edge-primary)',
-                border: '1px solid rgba(255, 86, 34, 0.3)',
+                background: 'rgba(107, 29, 42, 0.12)',
+                color: 'var(--brand-primary)',
+                border: '1px solid rgba(107, 29, 42, 0.3)',
                 fontWeight: 700,
                 fontSize: '11px',
               }}
@@ -94,7 +95,7 @@ export default function OrganizationHeader({
                 fontSize: 'var(--text-xs)',
                 fontWeight: activeView === 'structure' ? 700 : 500,
                 background: activeView === 'structure' ? 'var(--bg-card)' : 'transparent',
-                color: activeView === 'structure' ? 'var(--edge-primary)' : 'var(--text-secondary)',
+                color: activeView === 'structure' ? 'var(--brand-primary)' : 'var(--text-secondary)',
                 border: activeView === 'structure' ? '1px solid var(--border-primary)' : '1px solid transparent',
                 boxShadow: activeView === 'structure' ? 'var(--shadow-xs)' : 'none',
                 cursor: 'pointer',
@@ -117,7 +118,7 @@ export default function OrganizationHeader({
                 fontSize: 'var(--text-xs)',
                 fontWeight: activeView === 'teams' ? 700 : 500,
                 background: activeView === 'teams' ? 'var(--bg-card)' : 'transparent',
-                color: activeView === 'teams' ? 'var(--edge-primary)' : 'var(--text-secondary)',
+                color: activeView === 'teams' ? 'var(--brand-primary)' : 'var(--text-secondary)',
                 border: activeView === 'teams' ? '1px solid var(--border-primary)' : '1px solid transparent',
                 boxShadow: activeView === 'teams' ? 'var(--shadow-xs)' : 'none',
                 cursor: 'pointer',
@@ -140,7 +141,7 @@ export default function OrganizationHeader({
                 fontSize: 'var(--text-xs)',
                 fontWeight: activeView === 'roster' ? 700 : 500,
                 background: activeView === 'roster' ? 'var(--bg-card)' : 'transparent',
-                color: activeView === 'roster' ? 'var(--edge-primary)' : 'var(--text-secondary)',
+                color: activeView === 'roster' ? 'var(--brand-primary)' : 'var(--text-secondary)',
                 border: activeView === 'roster' ? '1px solid var(--border-primary)' : '1px solid transparent',
                 boxShadow: activeView === 'roster' ? 'var(--shadow-xs)' : 'none',
                 cursor: 'pointer',
@@ -160,7 +161,7 @@ export default function OrganizationHeader({
             style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 'var(--text-xs)' }}
             title="View Recent Organization Changes & Movements"
           >
-            <History size={14} style={{ color: 'var(--edge-primary)' }} />
+            <History size={14} style={{ color: 'var(--brand-primary)' }} />
             <span>Org Changes</span>
           </button>
         </div>
@@ -236,8 +237,8 @@ export default function OrganizationHeader({
               style={{
                 fontSize: '11px',
                 fontWeight: 700,
-                color: 'var(--edge-primary)',
-                background: 'rgba(255, 86, 34, 0.1)',
+                color: 'var(--brand-primary)',
+                background: 'rgba(107, 29, 42, 0.1)',
                 padding: '3px 8px',
                 borderRadius: 'var(--radius-sm)',
                 whiteSpace: 'nowrap',
@@ -267,8 +268,8 @@ export default function OrganizationHeader({
             }}
           >
             <option value="all">All Domains (8)</option>
-            {BUSINESS_DOMAINS.map(d => (
-              <option key={d.key} value={d.key}>{d.key} — {d.label}</option>
+            {SERVICE_DOMAINS.map(d => (
+              <option key={d.id} value={d.id}>{d.id} — {d.name}</option>
             ))}
           </select>
 
@@ -289,7 +290,7 @@ export default function OrganizationHeader({
             }}
           >
             <option value="all">All Locations</option>
-            <option value="Onsite">Onsite (Abu Dhabi)</option>
+            <option value="Onsite">Onsite (Riyadh)</option>
             <option value="Offshore">Offshore Centers</option>
           </select>
 
@@ -325,9 +326,9 @@ export default function OrganizationHeader({
                 gap: '4px',
                 padding: '6px 10px',
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(255, 86, 34, 0.08)',
-                color: 'var(--edge-primary)',
-                border: '1px solid rgba(255, 86, 34, 0.25)',
+                background: 'rgba(107, 29, 42, 0.08)',
+                color: 'var(--brand-primary)',
+                border: '1px solid rgba(107, 29, 42, 0.25)',
                 fontSize: 'var(--text-xs)',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -354,10 +355,10 @@ export default function OrganizationHeader({
                   gap: '4px',
                   height: '36px',
                   fontSize: 'var(--text-xs)',
-                  color: 'var(--edge-primary)',
+                  color: 'var(--brand-primary)',
                   fontWeight: 700,
-                  background: 'rgba(255, 86, 34, 0.08)',
-                  borderColor: 'rgba(255, 86, 34, 0.3)',
+                  background: 'rgba(107, 29, 42, 0.08)',
+                  borderColor: 'rgba(107, 29, 42, 0.3)',
                 }}
                 title="Auto-Fit entire organization structure into screen"
               >

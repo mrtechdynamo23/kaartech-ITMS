@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — AI & Machine Learning Hub
+﻿/**
+ * KaarTech ITMS Control Tower — AI & Machine Learning Hub
  * Route: /service-innovation/ai
  */
 import React from 'react';
@@ -68,10 +68,10 @@ export default function AIHubPage() {
             <div key={idx} style={{ background: 'var(--bg-secondary)', padding: '18px 22px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
               <div style={{ maxWidth: '600px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <Sparkles size={16} style={{ color: 'var(--edge-primary)' }} />
+                  <Sparkles size={16} style={{ color: 'var(--brand-primary)' }} />
                   <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{eng.name}</h4>
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--edge-primary)', fontWeight: 600, marginBottom: '6px' }}>Model: {eng.model}</div>
+                <div style={{ fontSize: '11px', color: 'var(--brand-primary)', fontWeight: 600, marginBottom: '6px' }}>Model: {eng.model}</div>
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>{eng.description}</p>
               </div>
 

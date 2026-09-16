@@ -1,5 +1,5 @@
 /**
- * EDGE AMS Control Tower — Service Requests
+ * KaarTech ITMS Control Tower — Service Requests
  * Route: /command-center/service-requests
  * Standard (<16h) vs Major (≥16h) classification per Section 19 & 21.
  * Complete with all 4 required operational visual analytics:
@@ -31,6 +31,7 @@ export default function ServiceRequestsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(null);
   const [filters, setFilters] = useState({
+    serviceDomain: 'all',
     entity: 'all',
     domain: 'all',
     status: 'all',
@@ -66,9 +67,28 @@ export default function ServiceRequestsPage() {
       )
     },
     { key: 'shortDescription', label: 'Request Summary', wrap: true },
+    {
+      key: 'serviceDomain',
+      label: 'Service Domain',
+      width: '180px',
+      render: (val, item) => (
+        <span
+          className="badge"
+          style={{
+            fontSize: '11px',
+            fontWeight: 700,
+            background: 'rgba(107, 29, 42, 0.08)',
+            color: 'var(--brand-primary)',
+            border: '1px solid rgba(107, 29, 42, 0.2)',
+          }}
+          title={val || item.serviceDomainId}
+        >
+          {val || item.serviceDomainId || 'IT Helpdesk'}
+        </span>
+      ),
+    },
     { key: 'category', label: 'Category', width: '130px' },
     { key: 'application', label: 'Application', width: '140px' },
-    { key: 'businessDomain', label: 'Domain', width: '80px' },
     { key: 'processGroup', label: 'Process Group', width: '120px' },
     { key: 'assignedTo', label: 'Resolver', width: '140px' },
     { key: 'timeCountHrs', label: 'Effort', width: '80px', render: (val) => <span>{val || 8}h</span> },
@@ -82,20 +102,19 @@ export default function ServiceRequestsPage() {
       {/* Header */}
       <div className="page-header" style={{ marginBottom: 0 }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <h1 className="page-title">Service Requests</h1>
-            <span className="badge badge-primary">{analytics.total} Registered</span>
-            <span className="badge badge-neutral">Standard &lt;16h / Major ≥16h</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h1 className="page-title" style={{ margin: 0 }}>Service Requests</h1>
+            <span className="badge badge-primary">{analytics.filteredList.length} Active Records</span>
           </div>
-          <p className="page-subtitle">
-            Contractual service fulfilment across enterprise business domains with effort-bounded SLA tracking.
+          <p className="page-subtitle" style={{ margin: '4px 0 0' }}>
+            Contractual service fulfilment across enterprise Service Domains with effort-bounded SLA tracking.
           </p>
         </div>
 
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
             className="btn btn-secondary"
-            onClick={() => setFilters({ entity: 'all', domain: 'all', status: 'all', app: 'all' })}
+            onClick={() => setFilters({ serviceDomain: 'all', entity: 'all', domain: 'all', status: 'all', app: 'all' })}
             style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
           >
             <RefreshCw size={14} />
@@ -112,14 +131,12 @@ export default function ServiceRequestsPage() {
         </div>
       </div>
 
-      {/* Compact Context Filter Bar */}
+      {/* Context Filter Bar */}
       <FilterBar
         filters={filters}
         onChange={setFilters}
-        onReset={() => {
-          setFilters({ entity: 'all', domain: 'all', status: 'all', app: 'all' });
-          setSelectedCategoryFilter(null);
-        }}
+        onReset={() => setFilters({ serviceDomain: 'all', entity: 'all', domain: 'all', status: 'all', app: 'all' })}
+        showServiceDomain={true}
         showEntity={true}
         showDomain={true}
         showPriority={false}
@@ -351,6 +368,42 @@ export default function ServiceRequestsPage() {
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
+
+        {/* Visual 5: Service Requests by Service Domain */}
+        <ChartCard
+          title="Service Requests by Service Domain (7 RFP Domains)"
+          subtitle="Click bar to filter active service request queue"
+          height={260}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={analytics.serviceDomainDistribution}
+              margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
+            >
+              <XAxis dataKey="code" stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
+              <YAxis stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
+              <Tooltip
+                contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '11px', boxShadow: 'var(--shadow-lg)' }}
+                labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
+                itemStyle={{ color: 'var(--text-primary)' }}
+                formatter={(val, name, entry) => [`${val} requests`, entry.payload.name]}
+              />
+              <Bar
+                dataKey="count"
+                fill="var(--brand-primary)"
+                radius={[4, 4, 0, 0]}
+                name="Requests"
+                cursor="pointer"
+                onClick={(entry) => {
+                  setFilters(prev => ({
+                    ...prev,
+                    serviceDomain: prev.serviceDomain === entry.id ? 'all' : entry.id
+                  }));
+                }}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
       </div>
 
       {/* Filter active chip if segment selected */}
@@ -359,20 +412,20 @@ export default function ServiceRequestsPage() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: 'rgba(209, 50, 18, 0.08)',
-          border: '1px solid rgba(209, 50, 18, 0.25)',
+          background: 'rgba(107, 29, 42, 0.08)',
+          border: '1px solid rgba(107, 29, 42, 0.25)',
           padding: '8px 16px',
           borderRadius: 'var(--radius-md)',
           fontSize: 'var(--text-xs)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Filter size={14} color="var(--edge-primary)" />
+            <Filter size={14} color="var(--brand-primary)" />
             <span>Filtering table by classification: <strong>{selectedCategoryFilter}</strong> ({displayList.length} records)</span>
           </div>
           <button
             onClick={() => setSelectedCategoryFilter(null)}
             className="btn btn-ghost btn-sm"
-            style={{ fontSize: '11px', color: 'var(--edge-primary)', textDecoration: 'underline' }}
+            style={{ fontSize: '11px', color: 'var(--brand-primary)', textDecoration: 'underline' }}
           >
             Clear Filter
           </button>
@@ -386,7 +439,7 @@ export default function ServiceRequestsPage() {
         columns={columns}
         data={displayList}
         onRowClick={(item) => setSelectedTicket(item)}
-        exportFilename="edge-service-requests.csv"
+        exportFilename="itms-service-requests.csv"
       />
 
       {/* Centered Record Detail Modal (Section 23) */}

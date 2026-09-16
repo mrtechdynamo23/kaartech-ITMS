@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Service Performance Analytics
+﻿/**
+ * KaarTech ITMS Control Tower — Service Performance Analytics
  * Route: /service-operation/performance
  */
 import React from 'react';
@@ -79,7 +79,7 @@ export default function PerformancePage() {
                 itemStyle={{ color: 'var(--text-primary)' }}
               />
               <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-              <Bar dataKey="Incidents" fill="#D13212" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Incidents" fill="#6B1D2A" radius={[4, 4, 0, 0]} />
               <Bar dataKey="ServiceRequests" fill="#2563eb" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>

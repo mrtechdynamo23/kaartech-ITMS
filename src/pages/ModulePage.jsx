@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Module Page (Functional placeholder for in-progress modules)
+﻿/**
+ * KaarTech ITMS Control Tower — Module Page (Functional placeholder for in-progress modules)
  * NOT a generic placeholder screen — provides real module navigation and context.
  */
 import React from 'react';
@@ -69,12 +69,12 @@ export default function ModulePage() {
       </div>
 
       <div className="state-container" style={{ padding: 'var(--space-4xl) var(--space-xl)', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-secondary)' }}>
-        <div className="state-icon" style={{ background: 'var(--edge-primary-light)', color: 'var(--edge-primary)' }}>
+        <div className="state-icon" style={{ background: 'var(--brand-primary-light)', color: 'var(--brand-primary)' }}>
           <Construction size={28} />
         </div>
         <h2 className="state-title">Module Under Construction</h2>
         <p className="state-description">
-          This module is being implemented as part of the AMS Control Tower build.
+          This module is being implemented as part of the ITMS Control Tower build.
           The data architecture, relationships, and master data are already in place.
         </p>
         <div style={{ display: 'flex', gap: 'var(--space-sm)', marginTop: 'var(--space-base)' }}>

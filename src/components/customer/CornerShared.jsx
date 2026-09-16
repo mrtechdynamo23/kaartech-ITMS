@@ -1,9 +1,9 @@
 /**
- * EDGE AMS Control Tower — Customer Corner Shared Components
+ * KaarTech ITMS Control Tower — Customer Corner Shared Components
  *
  * Reusable UI pieces for the Customer Corner collaboration workspace:
  * badges, chips, form helpers, modal shell, @-mention textarea, and custom dropdowns.
- * Aligned with the EDGE dark & light enterprise design system.
+ * Aligned with the KaarTech dark & light enterprise design system.
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { cornerStakeholders, stakeholderById, SIDE_META } from '../../data/customerCornerData';
@@ -31,7 +31,7 @@ export const primaryButtonStyle = {
   height: 38,
   padding: '0 16px',
   borderRadius: 6,
-  background: 'var(--edge-primary, #FF5622)',
+  background: 'var(--brand-primary, #6B1D2A)',
   color: '#FFFFFF',
   border: '1px solid transparent',
   fontWeight: 600,
@@ -221,7 +221,7 @@ export function ModalShell({ title, subtitle, icon, onClose, children, width = 6
           style={{
             height: 2,
             width: '100%',
-            background: 'linear-gradient(90deg, var(--edge-primary, #FF5622) 0%, rgba(255, 86, 34, 0.3) 60%, transparent 100%)',
+            background: 'linear-gradient(90deg, var(--brand-primary, #6B1D2A) 0%, rgba(107, 29, 42, 0.3) 60%, transparent 100%)',
           }}
         />
 
@@ -243,12 +243,12 @@ export function ModalShell({ title, subtitle, icon, onClose, children, width = 6
               height: 36,
               borderRadius: 8,
               flexShrink: 0,
-              background: 'rgba(255, 86, 34, 0.08)',
-              border: '1px solid rgba(255, 86, 34, 0.2)',
+              background: 'rgba(107, 29, 42, 0.08)',
+              border: '1px solid rgba(107, 29, 42, 0.2)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--edge-primary, #FF5622)',
+              color: 'var(--brand-primary, #6B1D2A)',
             }}
           >
             {icon}

@@ -1,5 +1,5 @@
-/**
- * EDGE AMS Control Tower — Dependencies & Impact Analysis
+﻿/**
+ * KaarTech ITMS Control Tower — Dependencies & Impact Analysis
  * Route: /technology/dependencies
  */
 import React from 'react';
@@ -30,7 +30,7 @@ export default function DependenciesPage() {
       source: 'SAP SuccessFactors',
       target: 'SAP S/4HANA 2025',
       protocol: 'CPI / Standard EC-ERP Package',
-      frequency: 'Daily Batch (02:00 GST)',
+      frequency: 'Daily Batch (02:00 AST)',
       criticality: 'High',
       impact: 'Employee Mini-Master & Cost Centers',
       status: 'Healthy',
