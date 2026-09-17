@@ -184,6 +184,7 @@
   line-height: 1.2;
 }
 
+.corner-side-badge-kaartech,
 .corner-side-badge-edge {
   background: rgba(37, 99, 235, 0.14);
   color: #93C5FD;
@@ -591,6 +592,7 @@
   color: #9CA3AF;
 }
 
+[data-theme="light"] .corner-side-badge-kaartech,
 [data-theme="light"] .corner-side-badge-edge {
   background: #EFF6FF;
   color: #1E40AF;
@@ -652,6 +654,7 @@
   background: #FFFFFF;
   border-color: #E4E7EC;
 }
+[data-theme="light"] .corner-message-card.accent-kaartech,
 [data-theme="light"] .corner-message-card.accent-edge {
   border-left-color: #2563EB;
 }
@@ -748,6 +751,7 @@
   border-right: 3px solid transparent;
 }
 
+[dir="rtl"] .corner-message-card.accent-kaartech,
 [dir="rtl"] .corner-message-card.accent-edge {
   border-left: none;
   border-right: 3px solid rgba(59, 130, 246, 0.7);

@@ -15,7 +15,7 @@ import { useCustomerCorner } from '../../contexts/CustomerCornerContext';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   cornerStakeholders, stakeholderById, SIDE_META, CORNER_FORUMS, STAKEHOLDER_SIDES,
-  lastActivityAt, waitingOn, isCtaOverdue, buildTicketRefs,
+  lastActivityAt, waitingOn, isCtaOverdue, buildTicketRefs, getCustomerActionsFromThreads,
 } from '../../data/customerCornerData';
 import {
   SideBadge, formatCornerTime, relativeTime, MentionTextarea, extractMentions,
@@ -221,14 +221,15 @@ export default function CustomerCornerPage() {
     markCornerThreadRead(id);
   };
 
-  // KPIs calculation
+  // KPIs calculation derived from single source of truth
   const kpis = useMemo(() => {
     const open = cornerThreads.filter((t) => t.status === 'Open');
+    const actions = getCustomerActionsFromThreads(cornerThreads);
     return {
       open: open.length,
       ticketThreads: open.filter((t) => t.type === 'Ticket').length,
-      openCtas: cornerThreads.filter((t) => t.cta && t.cta.status !== 'Closed').length,
-      overdueCtas: cornerThreads.filter((t) => isCtaOverdue(t)).length,
+      openCtas: actions.filter((a) => a.status !== 'Completed').length,
+      overdueCtas: actions.filter((a) => a.status === 'Overdue').length,
       unread: cornerThreads.filter(isUnread).length,
     };
   }, [cornerThreads, isUnread]);

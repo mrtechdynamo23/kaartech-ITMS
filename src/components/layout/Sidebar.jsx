@@ -9,7 +9,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import {
   BarChart3, Layout, Shield, Users, Monitor, HeadphonesIcon, Activity,
   Lightbulb, FileText, ChevronDown, PanelLeftClose, PanelLeftOpen,
-  CalendarClock, ShieldCheck, Settings, Calendar
+  CalendarClock, ShieldCheck, Settings, ClipboardCheck
 } from 'lucide-react';
 
 const navItems = [
@@ -18,12 +18,6 @@ const navItems = [
     path: '/executive-board',
     icon: BarChart3,
     labelKey: 'executiveBoard.title',
-  },
-  {
-    key: 'calendar',
-    path: '/calendar',
-    icon: Calendar,
-    labelKey: 'calendar.title',
   },
   {
     key: 'command-center',
@@ -40,10 +34,11 @@ const navItems = [
   },
   {
     key: 'governance',
-    path: '/governance/audits',
+    path: '/governance/sla-governance',
     icon: Shield,
     labelKey: 'governance.title',
     children: [
+      { key: 'gov-sla', path: '/governance/sla-governance', labelKey: 'governance.slaGovernance' },
       { key: 'gov-audits', path: '/governance/audits', labelKey: 'governance.audits' },
       { key: 'gov-risks', path: '/governance/risks', labelKey: 'governance.risks' },
       { key: 'gov-licenses', path: '/governance/licenses', labelKey: 'governance.licenses' },
@@ -62,23 +57,15 @@ const navItems = [
       { key: 'res-requests', path: '/resources/requests', labelKey: 'resource.requests' },
       { key: 'res-assignments', path: '/resources/assignments', labelKey: 'resource.assignments' },
       { key: 'res-organization', path: '/resources/organization', labelKey: 'resource.organization' },
-      { key: 'res-time', path: '/resources/time', labelKey: 'resource.time' },
-      { key: 'res-contact', path: '/resources/contact', labelKey: 'resource.contact' },
       { key: 'res-skills', path: '/resources/skills', labelKey: 'resource.skills' },
-      { key: 'res-coverage', path: '/resources/coverage', labelKey: 'resource.coverage' },
+      { key: 'res-timesheet', path: '/resources/timesheet-approval', labelKey: 'resource.timesheetApproval' },
     ],
   },
   {
-    key: 'leave-timesheet',
-    path: '/leave-timesheet',
-    icon: CalendarClock,
-    labelKey: 'leaveTimesheet.title',
-  },
-  {
-    key: 'sla-governance',
-    path: '/sla-governance',
-    icon: ShieldCheck,
-    labelKey: 'slaGovernance.title',
+    key: 'unified-approval',
+    path: '/unified-approval',
+    icon: ClipboardCheck,
+    labelKey: 'unifiedApproval.title',
   },
   {
     key: 'technology',
@@ -88,6 +75,7 @@ const navItems = [
     children: [
       { key: 'tech-apps', path: '/technology/applications', labelKey: 'technology.applications' },
       { key: 'tech-health', path: '/technology/application-health', labelKey: 'technology.applicationHealth' },
+      { key: 'tech-infra-health', path: '/technology/infrastructure-health', labelKey: 'technology.infrastructureHealth' },
       { key: 'tech-landscape', path: '/technology/landscape', labelKey: 'technology.landscape' },
       { key: 'tech-deps', path: '/technology/dependencies', labelKey: 'technology.dependencies' },
       { key: 'tech-licenses', path: '/technology/licenses', labelKey: 'technology.licenses' },
@@ -98,12 +86,12 @@ const navItems = [
     key: 'customer',
     path: '/customer/corner',
     icon: HeadphonesIcon,
-    labelKey: 'customerConnect.title',
+    labelKey: 'customerCorner.title',
     children: [
-      { key: 'cust-corner', path: '/customer/corner', labelKey: 'customerConnect.corner' },
-      { key: 'cust-feedback', path: '/customer/feedback', labelKey: 'customerConnect.feedback' },
-      { key: 'cust-actions', path: '/customer/actions', labelKey: 'customerConnect.actions' },
-      { key: 'cust-issues', path: '/customer/issues', labelKey: 'customerConnect.issues' },
+      { key: 'cust-overview', path: '/customer/corner', labelKey: 'customerCorner.overview' },
+      { key: 'cust-feedback', path: '/customer/feedback', labelKey: 'customerCorner.feedback' },
+      { key: 'cust-actions', path: '/customer/actions', labelKey: 'customerCorner.actions' },
+      { key: 'cust-issues', path: '/customer/issues', labelKey: 'customerCorner.issues' },
     ],
   },
   {
@@ -139,7 +127,6 @@ const navItems = [
     labelKey: 'reporting.title',
     children: [
       { key: 'rpt-dfr', path: '/reporting/dfr', labelKey: 'reporting.dfr' },
-      { key: 'rpt-dsr', path: '/reporting/dsr', labelKey: 'reporting.dsr' },
       { key: 'rpt-wsr', path: '/reporting/wsr', labelKey: 'reporting.wsr' },
       { key: 'rpt-msr', path: '/reporting/msr', labelKey: 'reporting.msr' },
       { key: 'rpt-sla', path: '/reporting/sla', labelKey: 'reporting.sla' },

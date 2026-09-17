@@ -17,7 +17,7 @@
  * - Training & Enablement (TRAINING_CLINICS)
  * - Knowledge Reviews (knowledgeArticles)
  * - SLA Governance Reviews (SLA_REVIEWS)
- * - Customer Connect Meetings (CUSTOMER_CONNECT_SESSIONS)
+ * - Customer Corner Meetings (CUSTOMER_CORNER_SESSIONS)
  * - Critical Business Periods / Freezes (CRITICAL_BUSINESS_WINDOWS)
  * 
  * Maps all into normalized CalendarEvent structure with clean title/shortTitle.
@@ -101,7 +101,7 @@ const RELEASE_PIPELINE_DATA = [
  * Critical Business Windows & Change Freezes (aligned with /technology/releases)
  */
 const CRITICAL_BUSINESS_WINDOWS = [
-  { id: 'CBW-001', name: 'Mid-Year Fiscal Close & VAT Freeze', startDate: '2026-06-25', endDate: '2026-07-03', scope: 'All Financial (R2R, L2C, P2P) Systems', owner: 'Group CFO & CAB Lead', status: 'Mandatory Policy', desc: 'No production transports or schema modifications allowed during statutory mid-year financial close.' },
+  { id: 'CBW-001', name: 'Mid-Year Fiscal Close & VAT Freeze', startDate: '2026-06-25', endDate: '2026-07-03', scope: 'All Financial & Enterprise ERP Systems', owner: 'Group CFO & CAB Lead', status: 'Mandatory Policy', desc: 'No production transports or schema modifications allowed during statutory mid-year financial close.' },
   { id: 'CBW-002', name: 'Q3 Critical Period & Financial Freeze', startDate: '2026-09-24', endDate: '2026-10-02', scope: 'All Financial & Supply Chain Systems', owner: 'Executive SteerCom & CAB', status: 'Mandatory Policy', desc: 'Strict deployment freeze during Q3 quarterly financial reconciliation and audit sampling.' },
   { id: 'CBW-003', name: 'Saudi National Day Operational Freeze', startDate: '2026-11-28', endDate: '2026-12-05', scope: 'All KaarTech Enterprise Production Systems', owner: 'KaarTech Group Operations', status: 'Mandatory Policy', desc: 'Statutory public holiday stability window. Only emergency P1 break-fixes permitted with VP approval.' },
   { id: 'CBW-004', name: 'Year-End Financial Closing & Moratorium', startDate: '2026-12-18', endDate: '2027-01-05', scope: 'All Production ERP, Cloud & Integration Systems', owner: 'Group Executive Committee', status: 'Mandatory Policy', desc: 'Annual change moratorium. All infrastructure modifications and application transports frozen for fiscal year-end.' },
@@ -130,8 +130,8 @@ const TRANSITION_GATES = [
   { id: 'TRN-GATE-01', name: 'Phase 1: Knowledge Acquisition Gate', date: '2026-06-18', status: 'Completed', progress: 100, owner: 'Transition Director', domain: 'Cross-Domain', desc: 'Initial architecture scoping, landscape mapping, and baseline SLA verification.' },
   { id: 'TRN-GATE-02', name: 'Phase 2: Comprehensive KT Gate', date: '2026-07-24', status: 'Completed', progress: 100, owner: 'Transition Director', domain: 'Cross-Domain', desc: '142 documented standard operating procedures (SOPs) and runbooks validated by domain leads.' },
   { id: 'TRN-GATE-03', name: 'Phase 3: Primary Shadow Gate', date: '2026-08-21', status: 'Completed', progress: 100, owner: 'Service Delivery Lead', domain: 'Cross-Domain', desc: '1,240 hands-on shadow hours completed with zero SLA escalations during handover.' },
-  { id: 'TRN-GATE-04', name: 'Phase 4: S2P & H2R Reverse Shadow Gate', date: '2026-09-18', status: 'Scheduled', progress: 96, owner: 'Transition Director', domain: 'S2P, H2R', desc: 'Final reverse shadow sign-off for Strategic Sourcing and Hire-to-Retire domain support.' },
-  { id: 'TRN-GATE-05', name: 'Phase 4: Steady-State Acceptance Gate', date: '2026-10-16', status: 'Scheduled', progress: 98, owner: 'Dr. Tariq Al Nuaimi', domain: 'All 8 Domains', desc: 'Formal contractual acceptance of AMS steady-state operations across all 34 entities.' },
+  { id: 'TRN-GATE-04', name: 'Phase 4: Sourcing & HR Reverse Shadow Gate', date: '2026-09-18', status: 'Scheduled', progress: 96, owner: 'Transition Director', domain: 'SAP ERP and SuccessFactors', desc: 'Final reverse shadow sign-off for Strategic Sourcing and Hire-to-Retire domain support.' },
+  { id: 'TRN-GATE-05', name: 'Phase 5: Steady-State Acceptance Gate', date: '2026-10-16', status: 'Scheduled', progress: 98, owner: 'Dr. Tariq Al Nuaimi', domain: 'All 7 Service Domains', desc: 'Formal contractual acceptance of AMS steady-state operations across all 34 entities.' },
 ];
 
 /**
@@ -162,9 +162,9 @@ const SLA_REVIEWS = [
 ];
 
 /**
- * Customer Connect Sessions (Customer Corner)
+ * Customer Corner Sessions
  */
-const CUSTOMER_CONNECT_SESSIONS = [
+const CUSTOMER_CORNER_SESSIONS = [
   { id: 'CUST-SES-01', title: 'Customer Review with KaarTech Precision Systems', date: '2026-06-18', time: '11:00 – 12:00 AST', owner: 'Customer Success Lead', customer: 'KaarTech Precision Systems', status: 'Completed', desc: 'Review of shopfloor ticket volume, user sentiment, and automated resolution feedback.' },
   { id: 'CUST-SES-02', title: 'Customer Alignment with KaarTech Heavy Mobility', date: '2026-07-16', time: '14:00 – 15:30 AST', owner: 'Customer Success Lead', customer: 'KaarTech Heavy Mobility', status: 'Completed', desc: 'Discussion on S/4HANA variant configuration performance and field technician satisfaction.' },
   { id: 'CUST-SES-03', title: 'Quarterly CSAT Survey Debrief', date: '2026-08-19', time: '15:00 – 16:30 AST', owner: 'Customer Experience Lead', customer: 'KaarTech Corp.', status: 'Completed', desc: 'Analysis of 180+ verified survey responses. CSAT score: 4.62 / 5.0 across entities.' },
@@ -729,8 +729,8 @@ export function normalizeCalendarEvents() {
     });
   });
 
-  // 14. CUSTOMER CONNECT SESSIONS (Source: CUSTOMER_CONNECT_SESSIONS)
-  CUSTOMER_CONNECT_SESSIONS.forEach(cust => {
+  // 14. CUSTOMER CORNER SESSIONS (Source: CUSTOMER_CORNER_SESSIONS)
+  CUSTOMER_CORNER_SESSIONS.forEach(cust => {
     const cfg = EVENT_TYPE_CONFIG[EVENT_TYPES.CUSTOMER_MEETING];
     const { title, shortTitle } = normalizeTitleAndShort(EVENT_TYPES.CUSTOMER_MEETING, cust.title);
 

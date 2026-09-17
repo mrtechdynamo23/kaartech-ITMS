@@ -18,6 +18,7 @@ import {
   subscribeTimeManagement,
   isResourceAvailable
 } from '../../data/timeManagementStore';
+import { SERVICE_DOMAINS } from '../../data/serviceDomains';
 import {
   ApplyLeaveModal,
   ApprovalsModal,
@@ -90,7 +91,7 @@ export default function TimeEffortPage() {
       // Type
       if (typeFilter !== 'all' && item.leaveType !== typeFilter) return false;
       // Domain
-      if (domainFilter !== 'all' && item.serviceDomain !== domainFilter) return false;
+      if (domainFilter !== 'all' && item.serviceDomain !== domainFilter && item.serviceDomainId !== domainFilter) return false;
       // Location
       if (locationFilter !== 'all' && item.location !== locationFilter) return false;
       // Resource
@@ -630,14 +631,9 @@ export default function TimeEffortPage() {
           }}
         >
           <option value="all">All Domains</option>
-          <option value="L2C">L2C (Lead-to-Cash)</option>
-          <option value="E2M">E2M (Engineer-to-Manufacture)</option>
-          <option value="P2P">P2P (Plan-to-Produce)</option>
-          <option value="D2S">D2S (Demand-to-Supply)</option>
-          <option value="S2P">S2P (Source-to-Pay)</option>
-          <option value="A2D">A2D (Acquire-to-Dispose)</option>
-          <option value="R2R">R2R (Record-to-Report)</option>
-          <option value="H2R">H2R (Hire-to-Retire)</option>
+          {SERVICE_DOMAINS.map(d => (
+            <option key={d.id} value={d.name}>{d.name}</option>
+          ))}
         </select>
 
         {/* Location Filter */}

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * KaarTech ITMS Control Tower — Release & Deployment Governance
  * Route: /technology/releases
  */
@@ -15,7 +15,7 @@ export default function ReleasesPage() {
   ];
 
   const freezeWindows = [
-    { name: 'Year-End Financial Closing Freeze', dates: '20 Dec 2026 – 05 Jan 2027', scope: 'All Financial (R2R, L2C, P2P) Systems', status: 'Mandatory Policy' },
+    { name: 'Year-End Financial Closing Freeze', dates: '20 Dec 2026 – 05 Jan 2027', scope: 'All Financial & Enterprise ERP Systems', status: 'Mandatory Policy' },
     { name: 'Saudi National Day Operational Freeze', dates: '30 Nov 2026 – 04 Dec 2026', scope: 'All Production Systems', status: 'Mandatory Policy' },
   ];
 

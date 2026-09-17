@@ -525,8 +525,8 @@ export const RESOURCES = [
     certifications: ['SAP S/4HANA Sales', 'SAP Certified Application Associate'],
     technologies: ['SAP SD', 'S/4HANA 2025', 'SAP Fiori', 'SAP CPI', 'SAP BRF+'],
     comparableClientExperience: 'Lead SAP SD Consultant for Saudi Basic Industries Corporation (SABIC) & Tasnee.',
-    keyAssignments: ['Lead-to-Cash Business Process Streamlining', 'Automated Pricing Procedure Reconfiguration'],
-    languages: ['Arabic', 'English'], availability: 96, slaHealth: 98, currentAssignment: 'L2C AMS Functional Operations'
+    keyAssignments: ['Sales & Order Management Process Streamlining', 'Automated Pricing Procedure Reconfiguration'],
+    languages: ['Arabic', 'English'], availability: 96, slaHealth: 98, currentAssignment: 'SAP SD AMS Functional Operations'
   },
   {
     id: 'RES-003', resourceId: 'RES-003', positionId: 'POS-003', name: 'Ravi Shankar',
@@ -544,8 +544,8 @@ export const RESOURCES = [
     certifications: ['SAP S/4HANA Sourcing & Procurement', 'SAP Certified Associate MM'],
     technologies: ['SAP MM', 'S/4HANA', 'SAP Ariba', 'SAP SRM', 'LSMW / Migration Cockpit'],
     comparableClientExperience: 'SAP MM Lead at Larsen & Toubro & Bapco Bahrain.',
-    keyAssignments: ['P2P Automated Purchase Order Release Workflow', 'Material Master Governance & Data Cleansing'],
-    languages: ['English', 'Hindi', 'Tamil'], availability: 95, slaHealth: 96, currentAssignment: 'P2P AMS Functional Operations'
+    keyAssignments: ['Procurement & Purchase Order Release Workflow', 'Material Master Governance & Data Cleansing'],
+    languages: ['English', 'Hindi', 'Tamil'], availability: 95, slaHealth: 96, currentAssignment: 'SAP MM AMS Functional Operations'
   },
   {
     id: 'RES-004', resourceId: 'RES-004', positionId: 'POS-004', name: 'Sara Al Marzouqi',
@@ -563,8 +563,8 @@ export const RESOURCES = [
     certifications: ['SF Employee Central Certified', 'SF Recruiting Certified', 'ITIL v4 Foundation'],
     technologies: ['SAP SuccessFactors HXM', 'SAP BTP', 'SAP CPI', 'Qualtrics Employee Experience'],
     comparableClientExperience: 'SuccessFactors Lead at Almarai & Saudi Arabian Mining Company.',
-    keyAssignments: ['H2R Enterprise Succession & Appraisal Cycle Configuration', 'Saudi Labor Law EC Rulebook Update'],
-    languages: ['Arabic', 'English'], availability: 97, slaHealth: 97, currentAssignment: 'H2R AMS Operations & SuccessFactors'
+    keyAssignments: ['Enterprise Succession & Appraisal Cycle Configuration', 'Saudi Labor Law EC Rulebook Update'],
+    languages: ['Arabic', 'English'], availability: 97, slaHealth: 97, currentAssignment: 'SuccessFactors AMS Operations'
   },
   {
     id: 'RES-005', resourceId: 'RES-005', positionId: 'POS-005', name: 'Priya Nair',
@@ -583,7 +583,7 @@ export const RESOURCES = [
     technologies: ['SAP PP', 'SAP QM', 'SAP MES/MII', 'S/4HANA', 'MRP Live'],
     comparableClientExperience: 'Senior SAP PP/QM Consultant for Tata Motors & Jindal Steel.',
     keyAssignments: ['Discrete Manufacturing Plant Integration', 'Quality Inspection Lot Automation'],
-    languages: ['English', 'Hindi', 'Malayalam'], availability: 94, slaHealth: 95, currentAssignment: 'E2M Manufacturing AMS Operations'
+    languages: ['English', 'Hindi', 'Malayalam'], availability: 94, slaHealth: 95, currentAssignment: 'SAP PP/QM Manufacturing AMS Operations'
   },
   {
     id: 'RES-006', resourceId: 'RES-006', positionId: 'POS-006', name: 'Omar Bashar',
@@ -734,7 +734,7 @@ function generateIncidents() {
     incidents.push({
       id: `INC-${String(i).padStart(5, '0')}`,
       priority,
-      shortDescription: getIncidentDescription(i, domain.key),
+      shortDescription: getIncidentDescription(i, domain.code || domain.shortCode || 'ERP'),
       serviceDomainId: resolver.serviceDomainId || app.serviceDomainId || 'TWR-01',
       serviceDomain: resolver.serviceDomain || app.serviceDomain || 'IT Helpdesk & End User Services',
       serviceDomain: domain.name,
@@ -766,18 +766,17 @@ function generateIncidents() {
   return incidents;
 }
 
-function getIncidentDescription(i, domain) {
+function getIncidentDescription(i, domainCode) {
   const descriptions = {
-    L2C: ['Sales order pricing calculation error', 'Credit memo posting failure', 'Delivery document blocked', 'Billing run incomplete', 'Customer master update issue'],
-    E2M: ['Production order scheduling error', 'BOM explosion failure', 'MES interface timeout', 'Quality notification stuck', 'Routing master data inconsistency'],
-    P2P: ['Purchase requisition approval stuck', 'Invoice verification mismatch', 'Vendor payment blocked', 'GR/IR clearing issue', 'Contract release order failure'],
-    D2S: ['EWM stock placement error', 'Transportation route optimization failed', 'MRP exception messages overflow', 'Warehouse task confirmation error', 'Demand forecast calculation delay'],
-    S2P: ['Ariba sourcing event creation error', 'Supplier qualification workflow stuck', 'Contract compliance violation alert', 'Sourcing approval routing failure', 'Vendor evaluation scoring error'],
-    A2D: ['Asset capitalization posting error', 'Depreciation run calculation issue', 'Maintenance order scheduling conflict', 'Equipment master update failure', 'Asset transfer posting blocked'],
-    R2R: ['Period-end closing step failed', 'Intercompany reconciliation mismatch', 'Cost allocation cycle error', 'Financial statement consolidation issue', 'GL account master inconsistency'],
-    H2R: ['Employee onboarding workflow stuck', 'Payroll calculation discrepancy', 'Time evaluation error for shift workers', 'Performance review form not generating', 'Leave request approval pending system error'],
+    EUS: ['VIP user workstation boot failure', 'Outlook modern authentication failure', 'VPN multi-factor authentication token expired', 'Endpoint security agent synchronization error', 'Local print queue spooler service crashed'],
+    ICP: ['Azure VM CPU throttle threshold exceeded', 'Core switch SD-WAN link flap detected', 'Storage volume IOPS degradation alert', 'Datacenter backup replication job timeout', 'Linux kernel memory panic on host node'],
+    ADI: ['ServiceNow API gateway connection timeout', 'Customer portal SSO handshake failure', 'Enterprise webhook payload delivery failed', 'Mobile app session termination issue', 'Custom integration middleware broker blocked'],
+    DAA: ['PowerBI gateway refresh timeout', 'SAP Analytics Cloud model data load error', 'ETL pipeline schema validation failure', 'RPA bot worker node unresponsive', 'Data warehouse partition lock collision'],
+    AQT: ['Automated regression test suite failed', 'SonarQube quality gate threshold breach', 'UAT environment test data provisioning error', 'Performance test latency regression detected', 'Security vulnerability scan report failed gate'],
+    ERP: ['SAP S/4HANA sales order pricing error', 'Production order scheduling calculation failure', 'Purchase requisition release workflow stuck', 'SuccessFactors employee replication mismatch', 'General ledger intercompany settlement variance'],
+    SMG: ['SLA escalation threshold reached on P2 ticket', 'Change Advisory Board emergency request review', 'Service desk shift handover log unassigned', 'Configuration item CMDB relationship orphaned', 'Major incident communication broadcast delay'],
   };
-  const domainDescs = descriptions[domain] || descriptions.R2R;
+  const domainDescs = descriptions[domainCode] || descriptions.ERP;
   return domainDescs[i % domainDescs.length];
 }
 
@@ -2466,7 +2465,7 @@ function generateLeaveRecords() {
   return [
     { id: 'LV-001', employeeId: 'RES-001', employeeName: 'Khalid Al Hashimi', leaveType: 'Annual Leave', startDate: '2026-06-18', endDate: '2026-06-25', status: 'Approved', backupResourceId: 'RES-002', backupResourceName: 'Fatima Al-Otaibi', coverageNotes: 'Primary queue coverage assigned to Fatima Al-Otaibi. On-call escalation routed to General Shift lead.' },
     { id: 'LV-002', employeeId: 'RES-003', employeeName: 'Ravi Shankar', leaveType: 'Technical Training', startDate: '2026-07-06', endDate: '2026-07-10', status: 'Approved', backupResourceId: 'RES-021', backupResourceName: 'Abdulrahman Darwish', coverageNotes: 'Attending SAP S/4HANA Sourcing certification boot-camp.' },
-    { id: 'LV-003', employeeId: 'RES-005', employeeName: 'Priya Nair', leaveType: 'Annual Leave', startDate: '2026-07-15', endDate: '2026-07-24', status: 'Approved', backupResourceId: 'RES-013', backupResourceName: 'Hassan Al Nuaimi', coverageNotes: 'E2M manufacturing plant tickets delegated to Hassan Al Nuaimi.' },
+    { id: 'LV-003', employeeId: 'RES-005', employeeName: 'Priya Nair', leaveType: 'Annual Leave', startDate: '2026-07-15', endDate: '2026-07-24', status: 'Approved', backupResourceId: 'RES-013', backupResourceName: 'Hassan Al Nuaimi', coverageNotes: 'Manufacturing plant tickets delegated to Hassan Al Nuaimi.' },
     { id: 'LV-004', employeeId: 'RES-008', employeeName: 'Noura Al Shamsi', leaveType: 'Certification Exam', startDate: '2026-08-03', endDate: '2026-08-05', status: 'Approved', backupResourceId: 'RES-010', backupResourceName: 'Aisha Khalfan', coverageNotes: 'Ariba Guided Sourcing specialist exam leave.' },
     { id: 'LV-005', employeeId: 'RES-004', employeeName: 'Sara Al Marzouqi', leaveType: 'Annual Leave', startDate: '2026-08-16', endDate: '2026-08-27', status: 'Approved', backupResourceId: 'RES-016', backupResourceName: 'Raj Malhotra', coverageNotes: 'SuccessFactors HXM queue monitored by Raj Malhotra and Layla Al Qassimi.' },
     { id: 'LV-006', employeeId: 'RES-007', employeeName: 'Deepak Kumar', leaveType: 'Annual Leave', startDate: '2026-09-01', endDate: '2026-09-10', status: 'Approved', backupResourceId: 'RES-025', backupResourceName: 'Mansour Al Hosani', coverageNotes: 'R2R financial controlling escalation delegated to Mansour Al Hosani.' },

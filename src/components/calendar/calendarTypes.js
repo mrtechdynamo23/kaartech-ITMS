@@ -43,7 +43,7 @@ export const EVENT_TYPE_CONFIG = {
     cssClass: 'cal-type-MEETING',
     dotColor: '#64748B', // Blue-gray
     badgeClass: 'badge-neutral',
-    sourceModule: 'Customer Connect',
+    sourceModule: 'Customer Corner',
     sourceRoute: '/customer/corner',
   },
   [EVENT_TYPES.MOM]: {
@@ -181,13 +181,13 @@ export const EVENT_TYPE_CONFIG = {
   },
   [EVENT_TYPES.CUSTOMER_MEETING]: {
     key: EVENT_TYPES.CUSTOMER_MEETING,
-    label: 'Customer Connect Sessions',
-    labelAr: 'جلسات التواصل مع العملاء',
+    label: 'Customer Corner Sessions',
+    labelAr: 'جلسات ركن العملاء',
     group: 'Customer',
     cssClass: 'cal-type-CUSTOMER_MEETING',
     dotColor: '#0891B2', // Cyan
     badgeClass: 'badge-info',
-    sourceModule: 'Customer Connect',
+    sourceModule: 'Customer Corner',
     sourceRoute: '/customer/corner',
   },
   [EVENT_TYPES.CRITICAL_BUSINESS_PERIOD]: {

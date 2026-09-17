@@ -4,12 +4,12 @@
  * Main visualization canvas implementing Sections 14, 15, 16, 17, 18, 21, 22, 32, 33:
  * - 4-tier interactive hierarchy:
  *     Tier 1: AMS Leadership & SteerCom
- *     Tier 2: Service Domains (8 Core Streams)
+ *     Tier 2: Service Domains (7 Canonical Domains)
  *     Tier 3: Capability / Process Teams
  *     Tier 4: Individual Specialized Resources
  * - Intelligent Auto-Fit: Automatically calculates scale to fit the entire flow to the screen on load
- * - Layout Modes: Panoramic Tree (horizontal branching) vs Compact Grid Flow (4x2 multi-row, fits without scaling)
- * - Quick Domain Focus pills (All, L2C, E2M, P2P, D2S, S2P, A2D, R2R, H2R)
+ * - Layout Modes: Panoramic Tree (horizontal branching) vs Compact Grid Flow (fits without scaling)
+ * - Quick Domain Focus pills (All + 7 Service Domains)
  * - Orthogonal/curved SVG connectors with active path illumination
  * - Floating controls: Fit to Screen, Zoom In, Zoom Out, Reset, Layout Toggle
  * - Direct drill-down triggers for TeamDetailModal and ResourceDetailModal

@@ -44,11 +44,14 @@ import CoveragePage from './pages/resources/CoveragePage';
 import ResourceRequestsPage from './pages/resources/ResourceRequestsPage';
 import ResourceAssignmentsPage from './pages/resources/ResourceAssignmentsPage';
 
-// ── Leave & Timesheet ──
+// ── Timesheet Approval (was Leave & Timesheet) ──
 import LeaveTimesheetPage from './pages/leave-timesheet/LeaveTimesheetPage';
 
-// ── Resource SLA Governance ──
+// ── SLA Governance ──
 import ResourceSLAGovernancePage from './pages/sla-governance/ResourceSLAGovernancePage';
+
+// ── Unified Approval ──
+import UnifiedApprovalPage from './pages/unified-approval/UnifiedApprovalPage';
 
 // ── Resource Profile & Settings ──
 import ResourceProfilePage from './pages/resources/ResourceProfilePage';
@@ -57,12 +60,13 @@ import SettingsPage from './pages/SettingsPage';
 // ── Technology Pages ──
 import ApplicationsPage from './pages/technology/ApplicationsPage';
 import AppHealthPage from './pages/technology/AppHealthPage';
+import InfrastructureHealthPage from './pages/technology/InfrastructureHealthPage';
 import LandscapePage from './pages/technology/LandscapePage';
 import DependenciesPage from './pages/technology/DependenciesPage';
 import TechLicensesPage from './pages/technology/TechLicensesPage';
 import ReleasesPage from './pages/technology/ReleasesPage';
 
-// ── Customer Connect Pages ──
+// ── Customer Corner Pages ──
 import CustomerCornerPage from './pages/customer/CustomerCornerPage';
 import FeedbackPage from './pages/customer/FeedbackPage';
 import CustomerActionsPage from './pages/customer/CustomerActionsPage';
@@ -84,7 +88,6 @@ import ContinuousImprovementPage from './pages/innovation/ContinuousImprovementP
 
 // ── Reporting Pages ──
 import DFRReportPage from './pages/reporting/DFRReportPage';
-import DSRReportPage from './pages/reporting/DSRReportPage';
 import WSRReportPage from './pages/reporting/WSRReportPage';
 import MSRReportPage from './pages/reporting/MSRReportPage';
 import SLAPerformancePage from './pages/reporting/SLAPerformancePage';
@@ -261,8 +264,9 @@ export default function App() {
                 <Route path="/command-center/enhancements" element={<EnhancementsPage />} />
                 <Route path="/command-center/problems" element={<ProblemsPage />} />
 
-                {/* Governance & Compliance (accessible via routes) */}
-                <Route path="/governance" element={<Navigate to="/governance/audits" replace />} />
+                {/* Governance & Compliance */}
+                <Route path="/governance" element={<Navigate to="/governance/sla-governance" replace />} />
+                <Route path="/governance/sla-governance" element={<ResourceSLAGovernancePage />} />
                 <Route path="/governance/audits" element={<AuditsPage />} />
                 <Route path="/governance/risks" element={<RiskRegisterPage />} />
                 <Route path="/governance/licenses" element={<LicensesPage />} />
@@ -281,13 +285,17 @@ export default function App() {
                 <Route path="/resources/contact" element={<ContactMatrixPage />} />
                 <Route path="/resources/skills" element={<SkillsMatrixPage />} />
                 <Route path="/resources/coverage" element={<CoveragePage />} />
+                <Route path="/resources/timesheet-approval" element={<LeaveTimesheetPage />} />
 
-                {/* Leave & Timesheet */}
-                <Route path="/leave-timesheet" element={<LeaveTimesheetPage />} />
+                {/* Timesheet backward compat */}
+                <Route path="/leave-timesheet" element={<Navigate to="/resources/timesheet-approval" replace />} />
 
-                {/* Resource SLA Governance & Aliases */}
-                <Route path="/sla-governance" element={<ResourceSLAGovernancePage />} />
-                <Route path="/sla" element={<Navigate to="/sla-governance" replace />} />
+                {/* Unified Approval */}
+                <Route path="/unified-approval" element={<UnifiedApprovalPage />} />
+
+                {/* SLA Governance backward compat */}
+                <Route path="/sla-governance" element={<Navigate to="/governance/sla-governance" replace />} />
+                <Route path="/sla" element={<Navigate to="/governance/sla-governance" replace />} />
                 <Route path="/sla/overview" element={<ResourceSLAGovernancePage initialTab="overview" />} />
                 <Route path="/sla/measurements" element={<ResourceSLAGovernancePage initialTab="measurements" />} />
                 <Route path="/sla/admin" element={<ResourceSLAGovernancePage initialTab="management" />} />
@@ -299,12 +307,14 @@ export default function App() {
                 <Route path="/technology" element={<Navigate to="/technology/applications" replace />} />
                 <Route path="/technology/applications" element={<ApplicationsPage />} />
                 <Route path="/technology/application-health" element={<AppHealthPage />} />
+                <Route path="/technology/infrastructure-health" element={<InfrastructureHealthPage />} />
+                <Route path="/application-technology/infrastructure-health" element={<Navigate to="/technology/infrastructure-health" replace />} />
                 <Route path="/technology/landscape" element={<LandscapePage />} />
                 <Route path="/technology/dependencies" element={<DependenciesPage />} />
                 <Route path="/technology/licenses" element={<TechLicensesPage />} />
                 <Route path="/technology/releases" element={<ReleasesPage />} />
 
-                {/* Customer Connect */}
+                {/* Customer Corner */}
                 <Route path="/customer" element={<Navigate to="/customer/corner" replace />} />
                 <Route path="/customer/corner" element={<CustomerCornerPage />} />
                 <Route path="/customer/feedback" element={<FeedbackPage />} />
@@ -330,7 +340,7 @@ export default function App() {
                 {/* Reporting */}
                 <Route path="/reporting" element={<Navigate to="/reporting/dfr" replace />} />
                 <Route path="/reporting/dfr" element={<DFRReportPage />} />
-                <Route path="/reporting/dsr" element={<DSRReportPage />} />
+                <Route path="/reporting/dsr" element={<Navigate to="/reporting/dfr" replace />} />
                 <Route path="/reporting/wsr" element={<WSRReportPage />} />
                 <Route path="/reporting/msr" element={<MSRReportPage />} />
                 <Route path="/reporting/sla" element={<SLAPerformancePage />} />
@@ -343,8 +353,8 @@ export default function App() {
                 <Route path="/estate/*" element={<Navigate to="/technology/applications" replace />} />
                 <Route path="/customer/csat" element={<Navigate to="/customer/feedback" replace />} />
                 <Route path="/innovation/*" element={<Navigate to="/service-innovation/ticket-reduction" replace />} />
-                <Route path="/sla/contract" element={<Navigate to="/sla-governance" replace />} />
-                <Route path="/sla/governance" element={<Navigate to="/sla-governance" replace />} />
+                <Route path="/sla/contract" element={<Navigate to="/governance/sla-governance" replace />} />
+                <Route path="/sla/governance" element={<Navigate to="/governance/sla-governance" replace />} />
               </Route>
 
               {/* ── Catch-all ── */}

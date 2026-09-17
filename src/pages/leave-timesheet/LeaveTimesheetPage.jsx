@@ -118,7 +118,7 @@ export default function LeaveTimesheetPage() {
     <div style={{ padding: 'var(--space-xl)', animation: 'fadeInUp 0.4s ease' }}>
       {/* Header */}
       <div style={{ marginBottom: 'var(--space-lg)' }}>
-        <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--text-primary)' }}>Leave & Timesheet</h1>
+        <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--text-primary)' }}>Timesheet Approval</h1>
         <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)', marginTop: '4px' }}>Leave management and monthly timesheet tracking</p>
       </div>
 

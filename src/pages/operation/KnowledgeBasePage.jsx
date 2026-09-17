@@ -1,10 +1,10 @@
-﻿/**
+/**
  * KaarTech ITMS Control Tower — Document-Oriented Knowledge Base Repository
  * Route: /service-operation/knowledge
  *
  * Implements full document repository per Head Feedback requirement:
  * - Predefined knowledge documents across FAQ, User Manual, Operational Guide, Troubleshooting, SOP, Reference
- * - Filterable by Service Domain (L2C, E2M, P2P, D2S, S2P, A2D, R2R, H2R)
+ * - Filterable by Service Domain (7 Canonical Domains)
  * - Filterable by Document Type, Application, Status, and Search
  * - Structured table/list view with rich metadata
  * - Centered detail inspection modal with procedure steps, summaries, and linked tickets

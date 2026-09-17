@@ -650,7 +650,7 @@ export const ROLES = [
     level: 'L2', roleType: 'Common',
     skills: ['Sales Orders', 'Pricing Procedures', 'Billing & Invoicing', 'Credit Management', 'S/4HANA Sales'],
     certifications: ['SAP Certified Application Associate - SAP S/4HANA Sales'],
-    description: 'Configures and supports end-to-end Lead-to-Cash (L2C) processes in SAP S/4HANA.'
+    description: 'Configures and supports end-to-end sales and order-to-cash processes in SAP S/4HANA.'
   },
   {
     roleId: 'ROLE-059', role: 'SAP FICO Functional Consultant', roleName: 'SAP FICO Functional Consultant', roleCode: 'FC-FICO',
@@ -658,7 +658,7 @@ export const ROLES = [
     level: 'L2', roleType: 'Common',
     skills: ['General Ledger (GL)', 'Accounts Payable/Receivable (AP/AR)', 'Asset Accounting (AA)', 'Cost Center Accounting', 'Financial Closing'],
     certifications: ['SAP Certified Application Associate - SAP S/4HANA Finance'],
-    description: 'Oversees Record-to-Report (R2R) financial accounting, treasury, and controlling configurations.'
+    description: 'Oversees financial accounting, treasury, and controlling configurations in SAP S/4HANA.'
   },
   {
     roleId: 'ROLE-060', role: 'SAP MM Functional Consultant', roleName: 'SAP MM Functional Consultant', roleCode: 'FC-MM',
@@ -666,7 +666,7 @@ export const ROLES = [
     level: 'L2', roleType: 'Common',
     skills: ['Purchasing', 'Inventory Management', 'Valuation & Account Determination', 'MRP', 'Vendor Evaluation'],
     certifications: ['SAP Certified Application Associate - Sourcing & Procurement'],
-    description: 'Manages Source-to-Pay (S2P) procurement, purchase requisition workflows, and goods movement.'
+    description: 'Manages materials management, procurement, purchase requisition workflows, and goods movement.'
   },
   {
     roleId: 'ROLE-061', role: 'SAP PP/QM Functional Consultant', roleName: 'SAP PP/QM Functional Consultant', roleCode: 'FC-PP',
@@ -674,7 +674,7 @@ export const ROLES = [
     level: 'L2', roleType: 'Common',
     skills: ['Bill of Materials (BOM)', 'Routings & Work Centers', 'Shop Floor Control', 'Inspection Lots', 'Quality Certificates'],
     certifications: ['SAP Certified Application Associate - S/4HANA Manufacturing'],
-    description: 'Implements Plan-to-Produce (P2P) manufacturing operations and quality assurance workflows.'
+    description: 'Implements production planning, manufacturing operations, and quality assurance workflows.'
   },
   {
     roleId: 'ROLE-062', role: 'SAP EWM/TM Functional Consultant', roleName: 'SAP EWM/TM Functional Consultant', roleCode: 'FC-EWM',
@@ -682,7 +682,7 @@ export const ROLES = [
     level: 'L2', roleType: 'Specialist',
     skills: ['Wave Management', 'Slotting & Rearrangement', 'RF Integration', 'Freight Orders', 'Carrier Selection'],
     certifications: ['SAP Certified Application Associate - Extended Warehouse Management'],
-    description: 'Directs Demand-to-Supply (D2S) warehouse automation and multi-modal logistics transport.'
+    description: 'Directs extended warehouse automation and multi-modal logistics transport.'
   },
   {
     roleId: 'ROLE-063', role: 'SAP Ariba Consultant', roleName: 'SAP Ariba Consultant', roleCode: 'FC-Ariba',
@@ -698,7 +698,7 @@ export const ROLES = [
     level: 'L2', roleType: 'Specialist',
     skills: ['Employee Central (EC)', 'Performance & Goals', 'Succession & Development', 'MDF / Rules Engine', 'Role-Based Permissions (RBP)'],
     certifications: ['SAP Certified Application Associate - SAP SuccessFactors Employee Central'],
-    description: 'Drives Hire-to-Retire (H2R) core HR data models, employee master management, and talent lifecycles.'
+    description: 'Drives core HR data models, employee master management, and talent lifecycles in SuccessFactors.'
   },
   {
     roleId: 'ROLE-065', role: 'SAP PM/EAM Consultant', roleName: 'SAP PM/EAM Consultant', roleCode: 'FC-PM',

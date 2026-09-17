@@ -515,6 +515,13 @@ export default function ResourceSLAGovernancePage({ initialTab = 'overview' }) {
   const kpis = useMemo(() => getSLAKPIs(), [slas, measurements]);
   const breaches = useMemo(() => getBreaches(), [slas, measurements]);
 
+  // Synchronize activeTab if initialTab changes (e.g. navigation to /sla/breaches)
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
+
   // Handle route param slaId to open drawer
   useEffect(() => {
     if (slaId) {
@@ -564,14 +571,14 @@ export default function ResourceSLAGovernancePage({ initialTab = 'overview' }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <h1 className="page-title" style={{ margin: 0 }}>Resource SLA Governance</h1>
+            <h1 className="page-title" style={{ margin: 0 }}>SLA Governance</h1>
             <span className="badge badge-primary">{kpis.totalSLAs} Defined SLAs</span>
             <span className={`badge ${kpis.breached === 0 ? 'badge-success' : 'badge-danger'}`}>
               {kpis.breached} Breaches
             </span>
           </div>
           <p className="page-subtitle" style={{ margin: '4px 0 0' }}>
-            Canonical governance of resource SLAs across Mobilization, Continuity, Performance, and Reporting. Sourced from contract baselines.
+            Canonical governance of SLAs across Mobilization, Continuity, Performance, and Reporting. Sourced from contract baselines.
           </p>
         </div>
 
@@ -1145,30 +1152,66 @@ export default function ResourceSLAGovernancePage({ initialTab = 'overview' }) {
                     <tr style={{ background: 'var(--bg-secondary)', borderBottom: '2px solid var(--border-primary)', textAlign: 'left' }}>
                       <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>Breach ID</th>
                       <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>SLA</th>
+                      <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>Service Domain</th>
                       <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>Period</th>
                       <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>Target</th>
                       <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>Actual</th>
                       <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>Variance</th>
                       <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>Owner</th>
+                      <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>Status</th>
                       <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>Remediation Notes</th>
+                      <th style={{ padding: '12px 14px', color: 'var(--text-tertiary)' }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {breaches.map(b => (
-                      <tr key={b.measurementId} style={{ borderBottom: '1px solid var(--border-secondary)' }}>
-                        <td style={{ padding: '12px 14px', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--color-red)' }}>{b.measurementId}</td>
-                        <td style={{ padding: '12px 14px' }}>
-                          <div style={{ fontWeight: 700 }}>{b.slaName}</div>
-                          <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>{b.slaId}</div>
-                        </td>
-                        <td style={{ padding: '12px 14px', fontWeight: 600 }}>{b.period}</td>
-                        <td style={{ padding: '12px 14px' }}>{b.target}</td>
-                        <td style={{ padding: '12px 14px', fontWeight: 800, color: 'var(--color-red)' }}>{b.actual}</td>
-                        <td style={{ padding: '12px 14px', fontWeight: 700 }}>{b.breachAmount}</td>
-                        <td style={{ padding: '12px 14px', color: 'var(--text-secondary)' }}>{b.owner}</td>
-                        <td style={{ padding: '12px 14px', color: 'var(--text-secondary)', fontSize: '11px' }}>{b.notes || 'Under review with delivery team.'}</td>
-                      </tr>
-                    ))}
+                    {breaches.map(b => {
+                      const matchedSla = slas.find(s => s.id === b.slaId);
+                      return (
+                        <tr key={b.measurementId} style={{ borderBottom: '1px solid var(--border-secondary)' }}>
+                          <td style={{ padding: '12px 14px', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--color-red)' }}>{b.measurementId}</td>
+                          <td style={{ padding: '12px 14px' }}>
+                            <div style={{ fontWeight: 700 }}>{b.slaName}</div>
+                            <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>{b.slaId}</div>
+                          </td>
+                          <td style={{ padding: '12px 14px' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--brand-primary)' }}>
+                              {b.serviceDomain || matchedSla?.serviceDomain || 'Service Management, Governance, and Delivery'}
+                            </span>
+                          </td>
+                          <td style={{ padding: '12px 14px', fontWeight: 600 }}>{b.period}</td>
+                          <td style={{ padding: '12px 14px' }}>{b.target}</td>
+                          <td style={{ padding: '12px 14px', fontWeight: 800, color: 'var(--color-red)' }}>{b.actual}</td>
+                          <td style={{ padding: '12px 14px', fontWeight: 700 }}>{b.breachAmount}</td>
+                          <td style={{ padding: '12px 14px', color: 'var(--text-secondary)' }}>{b.owner}</td>
+                          <td style={{ padding: '12px 14px' }}>
+                            <span className="badge badge-danger">BREACH</span>
+                          </td>
+                          <td style={{ padding: '12px 14px', color: 'var(--text-secondary)', fontSize: '11px' }}>{b.notes || 'Under review with delivery team.'}</td>
+                          <td style={{ padding: '12px 14px' }}>
+                            <div style={{ display: 'flex', gap: '6px' }}>
+                              {matchedSla && (
+                                <>
+                                  <button
+                                    onClick={() => setDetailSla(matchedSla)}
+                                    title="View SLA Specification"
+                                    style={{ padding: '4px 8px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-primary)', background: 'var(--bg-card)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px' }}
+                                  >
+                                    <Eye size={12} /> Detail
+                                  </button>
+                                  <button
+                                    onClick={() => setTargetModalSla(matchedSla)}
+                                    title="Revise SLA Target"
+                                    style={{ padding: '4px 8px', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--brand-primary)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 600 }}
+                                  >
+                                    <Target size={12} /> Target
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

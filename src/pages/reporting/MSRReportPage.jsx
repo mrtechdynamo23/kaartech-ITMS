@@ -17,6 +17,28 @@ export default function MSRReportPage() {
     status: 'Met All SLAs',
   }));
 
+  const handleExportMSR = async () => {
+    try {
+      const response = await fetch('/reports/MSR%20for%20CT.pdf');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'MSR for CT.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      const link = document.createElement('a');
+      link.href = '/reports/MSR%20for%20CT.pdf';
+      link.download = 'MSR for CT.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   return (
     <div className="msr-report-page animate-fade-in">
       {/* Header */}
@@ -29,9 +51,9 @@ export default function MSRReportPage() {
           <p className="page-subtitle">Executive SteerCom reporting deck, monthly financial service credits, and SLA compliance sign-offs.</p>
         </div>
 
-        <button className="btn btn-primary" onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <button className="btn btn-primary" onClick={handleExportMSR} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Download size={15} />
-          <span>Export MSR Deck</span>
+          <span>Export MSR</span>
         </button>
       </div>
 

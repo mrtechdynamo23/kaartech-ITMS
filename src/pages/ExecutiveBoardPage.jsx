@@ -184,7 +184,7 @@ export default function ExecutiveBoardPage() {
               maxWidth: '140px',
             }}
           >
-            <option value="all">All Domains (8)</option>
+            <option value="all">All Domains (7)</option>
             {SERVICE_DOMAINS.map(d => (
               <option key={d.id} value={d.id}>{d.id} — {d.name}</option>
             ))}
@@ -234,7 +234,7 @@ export default function ExecutiveBoardPage() {
             subtitle="Scheduled Absences"
             status={onLeaveCount > 4 ? 'warning' : 'normal'}
             sparklineData={[1, 2, 1, onLeaveCount]}
-            onClick={() => navigate('/leave-timesheet')}
+            onClick={() => navigate('/resources/timesheet-approval')}
           />
           <KPICard
             title="Open Requests"
@@ -259,7 +259,7 @@ export default function ExecutiveBoardPage() {
             subtitle={openBreachesCount === 0 ? 'Zero Breaches' : 'Action In Progress'}
             status={openBreachesCount === 0 ? 'success' : 'danger'}
             sparklineData={[3, 2, 1, openBreachesCount]}
-            onClick={() => navigate('/sla-governance')}
+            onClick={() => navigate('/sla/breaches')}
           />
           <KPICard
             title="Overall SLA Compliance"
@@ -269,7 +269,7 @@ export default function ExecutiveBoardPage() {
             trend={+(slaKpis.complianceRate - 95).toFixed(1)}
             subtitle={`${slaKpis.met} Met • ${slaKpis.breached} Breached`}
             sparklineData={[92, 94, 95.5, slaKpis.complianceRate]}
-            onClick={() => navigate('/sla-governance')}
+            onClick={() => navigate('/governance/sla-governance')}
           />
           <KPICard
             title="Resource Availability"
@@ -278,7 +278,7 @@ export default function ExecutiveBoardPage() {
             status="success"
             subtitle="Contractual Commitment"
             sparklineData={[95.2, 95.8, 96.4, 96.8]}
-            onClick={() => navigate('/sla-governance')}
+            onClick={() => navigate('/governance/sla-governance')}
           />
           <KPICard
             title="First Pass Quality"
@@ -296,7 +296,7 @@ export default function ExecutiveBoardPage() {
             status="success"
             subtitle="3rd Business Day Pack"
             sparklineData={[97.2, 98.0, 98.4, 98.6]}
-            onClick={() => navigate('/leave-timesheet')}
+            onClick={() => navigate('/resources/timesheet-approval')}
           />
           <KPICard
             title="Pending Approvals"

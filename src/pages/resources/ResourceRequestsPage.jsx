@@ -335,7 +335,7 @@ function RequestModal({ isOpen, onClose, type, onSubmit }) {
 
           <div>
             <label style={labelStyle}>Service Domain</label>
-            <input style={inputStyle('')} value={form.serviceDomain} onChange={e => handleChange('serviceDomain', e.target.value)} placeholder="e.g. L2C, Cloud, Workplace" />
+            <input style={inputStyle('')} value={form.serviceDomain} onChange={e => handleChange('serviceDomain', e.target.value)} placeholder="e.g. SAP ERP, Cloud Platform, Helpdesk" />
           </div>
 
           <div>
@@ -508,11 +508,11 @@ export default function ResourceRequestsPage() {
   };
 
   const kpiCards = [
-    { label: 'Total Requests', value: kpis.total, color: 'var(--brand-primary)' },
+    { label: 'Total Request', value: kpis.total, color: 'var(--brand-primary)' },
     { label: 'Active / Open', value: kpis.activeOpen, color: 'var(--color-blue)' },
-    { label: 'Candidate Shortlist', value: kpis.candidateSearch, color: 'var(--color-amber)' },
+    { label: 'Candidate Shortlisted', value: kpis.candidateShortlisted, color: 'var(--color-amber)' },
     { label: 'In Mobilization', value: kpis.mobilization, color: '#7c3aed' },
-    { label: 'Assigned / Fulfilled', value: kpis.fulfilled, color: 'var(--color-green)' },
+    { label: 'Assigned & Fulfilled', value: kpis.assignedFulfilled, color: 'var(--color-green)' },
     { label: 'Rejected', value: kpis.rejected, color: 'var(--color-red)' },
   ];
 

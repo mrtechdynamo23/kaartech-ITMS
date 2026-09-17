@@ -859,21 +859,25 @@ export const resourceManagementStore = {
   // ── Computed KPIs ──
   getRequestKPIs: () => {
     const reqs = globalRequests;
+    const assignedCount = reqs.filter(r => ['Assigned', 'Fulfilled', 'Onboarded'].includes(r.status)).length;
     return {
       total: reqs.length,
       requested: reqs.filter(r => r.status === 'Requested').length,
       acknowledged: reqs.filter(r => r.status === 'Acknowledged').length,
       candidateShortlisted: reqs.filter(r => r.status === 'Candidate Shortlisted').length,
+      candidateSearch: reqs.filter(r => r.status === 'Candidate Shortlisted').length,
       pendingApproval: reqs.filter(r => r.status === 'Pending Approval').length,
       approved: reqs.filter(r => r.status === 'Approved').length,
       mobilization: reqs.filter(r => r.status === 'Mobilization').length,
       onboarded: reqs.filter(r => r.status === 'Onboarded').length,
       assigned: reqs.filter(r => r.status === 'Assigned').length,
+      assignedFulfilled: assignedCount,
+      fulfilled: assignedCount,
       closed: reqs.filter(r => r.status === 'Closed').length,
       rejected: reqs.filter(r => r.status === 'Rejected').length,
       newRequests: reqs.filter(r => r.type === 'New').length,
       replacements: reqs.filter(r => r.type === 'Replacement').length,
-      activeOpen: reqs.filter(r => !['Onboarded', 'Assigned', 'Closed', 'Rejected'].includes(r.status)).length,
+      activeOpen: reqs.filter(r => !['Onboarded', 'Assigned', 'Fulfilled', 'Closed', 'Rejected'].includes(r.status)).length,
     };
   },
 

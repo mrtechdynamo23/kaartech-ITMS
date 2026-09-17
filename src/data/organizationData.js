@@ -81,16 +81,7 @@ export const SERVICE_DOMAIN_LEADS = {
   'TWR-06': 'RES-001', // Khalid Al Hashimi (SAP ERP & SuccessFactors)
   'TWR-07': 'RES-002', // Fatima Al-Otaibi (Service Management, Governance & Delivery)
 };
-export const DOMAIN_LEADS = {
-  L2C: 'RES-001', // Khalid Al Hashimi
-  E2M: 'RES-005', // Priya Nair
-  P2P: 'RES-003', // Ravi Shankar
-  D2S: 'RES-006', // Omar Bashar
-  S2P: 'RES-008', // Noura Al Shamsi
-  A2D: 'RES-015', // Tariq Al Dhaheri
-  R2R: 'RES-002', // Fatima Al-Otaibi (Overall Lead; Deepak Kumar RES-007 is domain co-lead)
-  H2R: 'RES-004', // Sara Al Marzouqi
-};
+export const DOMAIN_LEADS = SERVICE_DOMAIN_LEADS;
 
 // ── Helper: Get Entity Object by ID ──
 export function getEntityById(entityId) {
@@ -180,7 +171,7 @@ export function getOrganizationMetrics() {
 
   // Managers/Leads: Delivery lead + domain leads + anyone with direct reports
   const managerIds = new Set(
-    enriched.filter(r => r.directReports.length > 0 || Object.values(DOMAIN_LEADS).includes(r.id)).map(r => r.id)
+    enriched.filter(r => r.directReports.length > 0 || Object.values(SERVICE_DOMAIN_LEADS).includes(r.id) || Object.values(DOMAIN_LEADS).includes(r.id)).map(r => r.id)
   );
 
   // Teams: unique domain + processGroup combinations
@@ -214,34 +205,46 @@ export function getOrganizationMetrics() {
 /**
  * Tracks documented personnel and assignment movements per team/posting.
  * Connects directly with RECENT_ORGANIZATION_CHANGES governance log:
- * - E2M Production Planning: 3 member changes (Hassan Al Nuaimi onsite shift, Suresh Krishnan ENH track transition, Priya Nair lead rotation)
- * - E2M Quality Management: 2 member changes (Sultan Al Dhahiri QM onsite assignment [CHG-006], Ankit Patel flex pool mobilization [CHG-002])
- * - S2P Strategic Sourcing: 2 member changes (Nisha Varma enhancement sprint allocation [CHG-003], Noura Al Shamsi lead rotation)
- * - S2P Vendor Management: 1 member change (Aisha Khalfan onsite rotation at Enterprise HQ [CHG-004])
- * - P2P Invoice Processing: 1 member change (Sunita Reddy dedicated sprint transition [CHG-003])
- * - R2R Financial Accounting: 1 member change (Fatima Al-Otaibi operational command handover [CHG-001])
+ * - Production Planning: 3 member changes (Hassan Al Nuaimi onsite shift, Suresh Krishnan ENH track transition, Priya Nair lead rotation)
+ * - Quality Management: 2 member changes (Sultan Al Dhahiri QM onsite assignment [CHG-006], Ankit Patel flex pool mobilization [CHG-002])
+ * - Strategic Sourcing: 2 member changes (Nisha Varma enhancement sprint allocation [CHG-003], Noura Al Shamsi lead rotation)
+ * - Vendor Management: 1 member change (Aisha Khalfan onsite rotation at Enterprise HQ [CHG-004])
+ * - Invoice Processing: 1 member change (Sunita Reddy dedicated sprint transition [CHG-003])
+ * - Financial Accounting: 1 member change (Fatima Al-Otaibi operational command handover [CHG-001])
  * - All other teams: 0 member changes (badge hidden)
  */
 export const TEAM_MEMBER_CHANGE_COUNTS = {
-  'E2M::Production Planning': 3,
-  'E2M::Quality Management': 2,
-  'S2P::Strategic Sourcing': 2,
-  'S2P::Vendor Management': 1,
-  'P2P::Invoice Processing': 1,
-  'R2R::Financial Accounting': 1,
+  'SAP ERP and SuccessFactors::Production Planning': 3,
+  'SAP ERP and SuccessFactors::Quality Management': 2,
+  'SAP ERP and SuccessFactors::Strategic Sourcing': 2,
+  'SAP ERP and SuccessFactors::Vendor Management': 1,
+  'SAP ERP and SuccessFactors::Invoice Processing': 1,
+  'SAP ERP and SuccessFactors::Financial Accounting': 1,
+  'TWR-06::Production Planning': 3,
+  'TWR-06::Quality Management': 2,
+  'TWR-06::Strategic Sourcing': 2,
+  'TWR-06::Vendor Management': 1,
+  'TWR-06::Invoice Processing': 1,
+  'TWR-06::Financial Accounting': 1,
+  'Production Planning': 3,
+  'Quality Management': 2,
+  'Strategic Sourcing': 2,
+  'Vendor Management': 1,
+  'Invoice Processing': 1,
+  'Financial Accounting': 1,
 };
 
 export const RESOURCE_MEMBER_CHANGE_COUNTS = {
-  'RES-005': 3, // Priya Nair (E2M Production Planning - 3 member changes)
-  'RES-013': 2, // Hassan Al Nuaimi (E2M Production Planning)
-  'RES-020': 1, // Suresh Krishnan (E2M)
-  'RES-009': 2, // Ankit Patel (E2M Quality Management)
-  'RES-027': 2, // Sultan Al Dhahiri (E2M Quality Management)
-  'RES-008': 1, // Noura Al Shamsi (S2P Strategic Sourcing)
-  'RES-026': 2, // Nisha Varma (S2P Strategic Sourcing)
-  'RES-010': 1, // Aisha Khalfan (S2P Vendor Management)
-  'RES-014': 1, // Sunita Reddy (P2P Invoice Processing)
-  'RES-002': 1, // Fatima Al-Otaibi (R2R Financial Accounting)
+  'RES-005': 3, // Priya Nair (Production Planning - 3 member changes)
+  'RES-013': 2, // Hassan Al Nuaimi (Production Planning)
+  'RES-020': 1, // Suresh Krishnan (Manufacturing)
+  'RES-009': 2, // Ankit Patel (Quality Management)
+  'RES-027': 2, // Sultan Al Dhahiri (Quality Management)
+  'RES-008': 1, // Noura Al Shamsi (Strategic Sourcing)
+  'RES-026': 2, // Nisha Varma (Strategic Sourcing)
+  'RES-010': 1, // Aisha Khalfan (Vendor Management)
+  'RES-014': 1, // Sunita Reddy (Invoice Processing)
+  'RES-002': 1, // Fatima Al-Otaibi (Financial Accounting)
 };
 
 export function getMemberChangeCountForResource(resourceId) {
@@ -249,9 +252,9 @@ export function getMemberChangeCountForResource(resourceId) {
   return RESOURCE_MEMBER_CHANGE_COUNTS[cleanId] || 0;
 }
 
-export function getMemberChangeCountForTeam(domainKey, processGroupName) {
-  const key = `${domainKey}::${processGroupName}`;
-  return TEAM_MEMBER_CHANGE_COUNTS[key] || 0;
+export function getMemberChangeCountForTeam(domain, teamName) {
+  const key = `${domain}::${teamName}`;
+  return TEAM_MEMBER_CHANGE_COUNTS[key] || TEAM_MEMBER_CHANGE_COUNTS[teamName] || 0;
 }
 
 // ── Build Hierarchical Organization Tree ──
@@ -491,7 +494,7 @@ export const RECENT_ORGANIZATION_CHANGES = [
     date: '2026-06-18',
     category: 'Leadership Appointment',
     title: 'Fatima Al-Otaibi Confirmed as AMS Delivery Lead',
-    description: 'Operational delivery command consolidated across all 8 ERP domains (L2C, E2M, P2P, D2S, S2P, A2D, R2R, H2R).',
+    description: 'Operational delivery command consolidated across all 7 ITMS Service Domains.',
     affectedDomain: 'Cross-Domain',
     personnel: 'Fatima Al-Otaibi (RES-002)',
     location: 'Onsite (Riyadh HQ)',

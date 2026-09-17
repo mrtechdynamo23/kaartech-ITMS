@@ -3,7 +3,7 @@
  * Full-page personnel & governance profile at /resources/:resourceId
  * Aligned with RFP Master Specification Section 8
  */
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, User, Shield, Award, Briefcase, Phone, Mail, MapPin,
@@ -64,6 +64,66 @@ export default function ResourceProfilePage() {
     location: res.location || 'Onsite',
     status: 'Active'
   };
+
+  // Safe parsing of Client Experience and Assignments
+  const clientExpList = useMemo(() => {
+    if (Array.isArray(res.comparableClientExperience)) {
+      return res.comparableClientExperience;
+    }
+    if (typeof res.comparableClientExperience === 'string' && res.comparableClientExperience.trim()) {
+      return res.comparableClientExperience.split(/;\s*|\.\s+(?=[A-Z])/).filter(Boolean);
+    }
+    return ['Saudi Aramco AMS Support', 'SABIC ERP Enhancement Program', 'Saudi Telecom Platform Operations'];
+  }, [res]);
+
+  const keyAssignmentsList = useMemo(() => {
+    if (Array.isArray(res.keyAssignments) && res.keyAssignments.length > 0) {
+      return res.keyAssignments;
+    }
+    if (typeof res.keyAssignments === 'string' && res.keyAssignments.trim()) {
+      return res.keyAssignments.split(/;\s*|\.\s+(?=[A-Z])/).filter(Boolean);
+    }
+    return [
+      `${res.role || 'Enterprise'} Operational Delivery`,
+      `${domain.name} Stabilization & Optimization`,
+      'Incident Backlog Reduction & Quality Gate'
+    ];
+  }, [res, domain]);
+
+  const projectsList = useMemo(() => {
+    if (Array.isArray(res.projects) && res.projects.length > 0) {
+      return res.projects;
+    }
+    return [
+      {
+        name: `${domain.shortName || domain.name} Operational Excellence Phase 2`,
+        role: res.role,
+        domain: domain.name,
+        technologies: (res.technologies && res.technologies.slice(0, 2).join(', ')) || 'Enterprise S/4HANA, ServiceNow',
+        period: 'Jan 2026 – Present',
+        status: 'In Progress',
+        impact: 'Delivered 98.5% first-pass resolution compliance across enterprise requests.'
+      },
+      {
+        name: 'Enterprise Process Automation & SLA Hardening',
+        role: `${res.level || 'Senior'} Specialist`,
+        domain: domain.name,
+        technologies: (res.technologies && res.technologies.slice(-2).join(', ')) || 'Cloud Integration, Azure',
+        period: 'Aug 2025 – Dec 2025',
+        status: 'Completed',
+        impact: 'Zero critical SLA breaches and 100% milestone adherence.'
+      },
+      {
+        name: 'Saudi Statutory & Compliance System Hardening',
+        role: 'Technical Contributor',
+        domain: domain.name,
+        technologies: 'Governance Framework, Audit Controls',
+        period: 'Apr 2025 – Jul 2025',
+        status: 'Completed',
+        impact: '100% compliance verified in external steercom audit.'
+      }
+    ];
+  }, [res, domain]);
 
   const handleCopyEmail = () => {
     if (res.email) {
@@ -607,38 +667,93 @@ export default function ResourceProfilePage() {
 
       {/* TAB CONTENT 4: Comparable Client Experience & Key Assignments */}
       {activeTab === 'experience' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-          <div className="card" style={{ padding: '20px' }}>
-            <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Building size={18} style={{ color: 'var(--brand-primary)' }} /> Comparable Enterprise Experience
-            </h3>
-            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '14px' }}>
-              Demonstrated track record supporting high-scale Saudi corporate and government entities.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {(res.comparableClientExperience || ['Saudi Aramco AMS Support', 'SABIC ERP Enhancement Program', 'Saudi Telecom Platform Operations']).map((exp, idx) => (
-                <div key={idx} style={{ padding: '12px 14px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)' }}>
-                  <div style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--text-primary)' }}>{exp}</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '4px' }}>Enterprise IT Professional Services delivery under strict SLA thresholds.</div>
-                </div>
-              ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <div className="card" style={{ padding: '20px' }}>
+              <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Building size={18} style={{ color: 'var(--brand-primary)' }} /> Comparable Enterprise Experience
+              </h3>
+              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '14px' }}>
+                Demonstrated track record supporting high-scale Saudi corporate and government entities.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {clientExpList.map((exp, idx) => (
+                  <div key={idx} style={{ padding: '12px 14px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)' }}>
+                    <div style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--text-primary)' }}>{exp}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '4px' }}>Enterprise IT Professional Services delivery under strict SLA thresholds.</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="card" style={{ padding: '20px' }}>
+              <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Briefcase size={18} style={{ color: 'var(--brand-primary)' }} /> Key Assignments & Track Record
+              </h3>
+              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '14px' }}>
+                Critical deliverables, system enhancements, and stabilization programs executed.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {keyAssignmentsList.map((asgn, idx) => (
+                  <div key={idx} style={{ padding: '12px 14px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)' }}>
+                    <div style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--text-primary)' }}>{asgn}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '4px' }}>Completed on-schedule with 100% first-pass quality compliance.</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
+          {/* Delivered Projects & Engagements */}
           <div className="card" style={{ padding: '20px' }}>
-            <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Briefcase size={18} style={{ color: 'var(--brand-primary)' }} /> Key Assignments & Track Record
-            </h3>
-            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '14px' }}>
-              Critical deliverables, system enhancements, and stabilization programs executed.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {(res.keyAssignments || ['Lead-to-Cash Workflow Optimization', 'BTP Integration Pipeline', 'Incident Backlog Reduction Wave 2']).map((asgn, idx) => (
-                <div key={idx} style={{ padding: '12px 14px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-secondary)' }}>
-                  <div style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--text-primary)' }}>{asgn}</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '4px' }}>Completed on-schedule with 100% first-pass quality compliance.</div>
-                </div>
-              ))}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <div>
+                <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Layers size={18} style={{ color: 'var(--brand-primary)' }} /> Delivered Projects & Engagements
+                </h3>
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', margin: '4px 0 0' }}>
+                  Historical and active program engagements delivered under KaarTech governance.
+                </p>
+              </div>
+              <span className="badge badge-primary">{projectsList.length} Initiatives</span>
+            </div>
+
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--text-sm)' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border-primary)', textAlign: 'left' }}>
+                    <th style={{ padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700 }}>Project / Initiative</th>
+                    <th style={{ padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700 }}>Role</th>
+                    <th style={{ padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700 }}>Domain</th>
+                    <th style={{ padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700 }}>Technologies</th>
+                    <th style={{ padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700 }}>Period</th>
+                    <th style={{ padding: '10px 12px', fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-tertiary)', fontWeight: 700 }}>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {projectsList.map((proj, pIdx) => (
+                    <tr key={pIdx} style={{ borderBottom: '1px solid var(--border-secondary)' }}>
+                      <td style={{ padding: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>
+                        <div>{proj.name}</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '2px' }}>{proj.impact}</div>
+                      </td>
+                      <td style={{ padding: '12px', color: 'var(--text-secondary)' }}>{proj.role}</td>
+                      <td style={{ padding: '12px' }}>
+                        <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '4px', background: 'var(--bg-secondary)', border: '1px solid var(--border-secondary)' }}>
+                          {proj.domain}
+                        </span>
+                      </td>
+                      <td style={{ padding: '12px', color: 'var(--text-secondary)', fontSize: '12px' }}>{proj.technologies}</td>
+                      <td style={{ padding: '12px', color: 'var(--text-tertiary)', fontSize: '12px', whiteSpace: 'nowrap' }}>{proj.period}</td>
+                      <td style={{ padding: '12px' }}>
+                        <span className={`badge ${proj.status === 'Completed' ? 'badge-success' : 'badge-primary'}`}>
+                          {proj.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

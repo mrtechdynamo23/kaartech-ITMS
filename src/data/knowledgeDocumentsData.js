@@ -206,7 +206,7 @@ This document guides sales coordinators and commercial operations teams through 
 This operational guide assists business superusers in correctly drafting and submitting Service Requests to avoid triage rejection.
 
 ### Procedure
-1. Navigate to Customer Connect → Service Requests.
+1. Navigate to Customer Corner → Service Requests.
 2. Select appropriate request category (Material Master, Vendor Setup, or Configuration Change).
 3. Attach required commercial entity approvals and signed compliance checklists.
 4. Review calculated SLA target turnaround before final submission.`,

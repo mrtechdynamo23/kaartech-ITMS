@@ -304,3 +304,119 @@ export const seedCornerThreads = [
     ],
   },
 ];
+
+// ─── UNIFIED CUSTOMER ACTIONS SELECTOR (SINGLE SOURCE OF TRUTH) ───────────────
+
+/**
+ * Derives actionable customer items / CTAs directly from customer threads.
+ * Single source of truth connecting Customer Threads -> Open CTAs -> Customer Actions.
+ *
+ * @param {Array} threads - The array of customer threads (from CustomerCornerContext)
+ * @param {string} [stakeholderId='all'] - Optional stakeholder ID filter
+ * @param {boolean} [onlyOpen=true] - Whether to filter only actionable / open items
+ * @returns {Array} Formatted action records with originating thread lineage
+ */
+export function getCustomerActionsFromThreads(threads = [], stakeholderId = 'all', onlyOpen = false) {
+  if (!Array.isArray(threads)) return [];
+
+  const candidateThreads = threads.filter((t) => {
+    // Stakeholder persona filter
+    if (stakeholderId && stakeholderId !== 'all') {
+      const isInvolved =
+        t.openedById === stakeholderId ||
+        t.cta?.ownerId === stakeholderId ||
+        t.participantIds?.includes(stakeholderId);
+      if (!isInvolved) return false;
+    }
+
+    if (onlyOpen) {
+      const isResolved = t.status === 'Resolved' || t.status === 'Completed';
+      const isCtaClosed = t.cta && (t.cta.status === 'Closed' || t.cta.status === 'Completed');
+      if (isResolved || isCtaClosed) return false;
+    }
+
+    return true;
+  });
+
+  return candidateThreads.map((t) => {
+    const isOverdue = isCtaOverdue(t);
+    const opener = stakeholderById(t.openedById);
+
+    // Determine action owner
+    let ownerId = t.cta?.ownerId;
+    if (!ownerId) {
+      ownerId = t.participantIds?.find((p) => p.startsWith('AMS-')) || t.participantIds?.[1] || t.openedById;
+    }
+    const owner = stakeholderById(ownerId);
+
+    // Determine status
+    let status = 'In Progress';
+    if (t.status === 'Resolved' || (t.cta && t.cta.status === 'Closed')) {
+      status = 'Completed';
+    } else if (isOverdue) {
+      status = 'Overdue';
+    } else if (t.cta?.status) {
+      status = t.cta.status;
+    } else if (t.status === 'Open' && t.messages.length <= 2) {
+      status = 'Open';
+    }
+
+    // Determine due date
+    let dueDate = t.cta?.dueDate;
+    if (!dueDate && t.openedAt) {
+      const openedDate = new Date(t.openedAt);
+      const targetDate = new Date(openedDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+      dueDate = targetDate.toISOString().slice(0, 10);
+    } else if (!dueDate) {
+      dueDate = '2026-09-10';
+    }
+
+    // Priority
+    const priority = t.cta?.priority || (t.topic === 'Escalation' ? 'Critical' : t.ticketId ? 'High' : 'Medium');
+
+    // Action summary / required
+    let actionRequired = t.title;
+    if (t.id === 'CC-1002') {
+      actionRequired = 'Execute manual replay of 214 CPI supplier confirmation messages during approved window';
+    } else if (t.id === 'CC-1004') {
+      actionRequired = 'Correct missing tax classification master data on supplier record for Ariba sourcing event';
+    } else if (t.id === 'CC-1007') {
+      actionRequired = 'Deploy catalogue assignment transport for plant maintenance supervisor role';
+    }
+
+    // Progress percentage
+    let progress = 60;
+    if (status === 'Completed') progress = 100;
+    else if (status === 'Open') progress = 25;
+    else if (status === 'Overdue') progress = 45;
+    else if (status === 'In Progress') progress = 70;
+
+    const actionId = t.cta?.ref || `ACT-${t.id.replace('CC-', '')}`;
+
+    return {
+      id: actionId,
+      actionId,
+      relatedThreadId: t.id,
+      relatedThreadTitle: t.title,
+      type: t.type,
+      topic: t.topic,
+      forum: t.forum,
+      ticketId: t.ticketId || null,
+      customer: opener?.org || 'Enterprise Corp.',
+      customerLead: opener?.name || 'Enterprise Solutions Lead',
+      customerLeadTitle: opener?.title || '',
+      ownerId: owner?.id || ownerId,
+      owner: owner?.name || ownerId,
+      ownerTitle: owner?.title || 'Lead Specialist',
+      priority,
+      dueDate,
+      status,
+      actionRequired,
+      progress,
+      thread: t,
+      messageCount: t.messages?.length || 0,
+      lastUpdated: lastActivityAt(t),
+    };
+  });
+}
+

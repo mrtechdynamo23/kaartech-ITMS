@@ -1,4 +1,4 @@
-﻿/* ---------------------------------------------------
+/* ---------------------------------------------------
    KaarTech ITMS Control Tower � Login Page Styles
    Route: /login
    Aesthetic: Aerospace Defense Command & Enterprise Control
@@ -58,12 +58,12 @@
   animation: fadeInUp 0.6s ease forwards;
 }
 
-.login-edge-logo {
+.login-brand-logo {
   filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.4));
   transition: transform 0.3s ease;
 }
 
-.login-edge-logo:hover {
+.login-brand-logo:hover {
   transform: translateY(-2px);
 }
 

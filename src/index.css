@@ -1307,6 +1307,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: var(--font-semibold); line-height: var(--l
 
 [data-theme="dark"] .btn-outline {
   background: transparent !important;
+  color: #E28290 !important;
+  border-color: #8B2635 !important;
+}
+[data-theme="dark"] .btn-outline:hover:not(:disabled) {
+  background: rgba(107, 29, 42, 0.25) !important;
+  color: #FFFFFF !important;
+  border-color: #B23B4E !important;
 }
 
 .btn-ghost {

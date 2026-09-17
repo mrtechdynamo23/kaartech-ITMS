@@ -1,4 +1,4 @@
-﻿/**
+/**
  * KaarTech ITMS Control Tower — Module Page (Functional placeholder for in-progress modules)
  * NOT a generic placeholder screen — provides real module navigation and context.
  */
@@ -45,8 +45,7 @@ const moduleInfo = {
   '/service-innovation/ai': { title: 'AI Opportunities', desc: 'AI/ML opportunity identification and tracking.' },
   '/service-innovation/user-enablement': { title: 'User Enablement', desc: 'Training and user adoption programs.' },
   '/service-innovation/continuous-improvement': { title: 'Continuous Improvement', desc: 'Service improvement initiatives and tracking.' },
-  '/reporting/dfr': { title: 'Daily Flash Report', desc: 'Daily operational snapshot with SLA status.' },
-  '/reporting/dsr': { title: 'Daily Snapshot Report', desc: 'Detailed daily service snapshot.' },
+  '/reporting/dfr': { title: 'Daily Flash Report', desc: 'Daily operational flash report with SLA status and PDF export.' },
   '/reporting/wsr': { title: 'Weekly Status Report', desc: 'Weekly operational roll-up.' },
   '/reporting/msr': { title: 'Monthly Status Report', desc: 'Monthly management report.' },
   '/reporting/sla': { title: 'SLA Report', desc: 'SLA performance analysis and trends.' },

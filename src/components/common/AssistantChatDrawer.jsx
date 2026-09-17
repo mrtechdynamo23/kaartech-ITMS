@@ -61,25 +61,24 @@ export default function AssistantChatDrawer({ isOpen, onClose }) {
       const entityIncs = incidents.filter(i => i.entity?.toLowerCase().includes('manufacturing') || i.entity?.toLowerCase().includes('precision'));
       const openCount = entityIncs.filter(i => !['Closed', 'Resolved'].includes(i.status)).length;
       return {
-        text: `Found **${entityIncs.length} incidents** associated with KaarTech Advanced Manufacturing & Precision clusters. Currently **${openCount} are active/open**, primarily in S/4HANA Manufacturing (E2M).`,
+        text: `Found **${entityIncs.length} incidents** associated with KaarTech Advanced Manufacturing & Precision clusters. Currently **${openCount} are active/open**, primarily in S/4HANA Manufacturing.`,
         actionLabel: 'Filter Manufacturing in Incidents',
         actionPath: '/command-center/incidents',
       };
     }
 
     if (q.includes('license') || q.includes('renewal')) {
-      const highRisk = licenses.filter(l => l.risk === 'High');
       return {
-        text: `There are **${highRisk.length} software licenses** with consumption exceeding 90% or renewals within the next 60 days, including SAP S/4HANA Enterprise and Opentext xECM.`,
-        actionLabel: 'Inspect License Governance',
+        text: `**License Optimization Alert**: 2 Oracle Database Enterprise edition licenses are due for renewal in 45 days. Current utilization is at 82%. Potential savings of 14% identified through core licensing consolidation.`,
+        actionLabel: 'View License Optimization',
         actionPath: '/governance/licenses',
         highlight: 'warning',
       };
     }
 
-    if (q.includes('dfr') || q.includes('flash') || q.includes('summary')) {
+    if (q.includes('dfr') || q.includes('flash') || q.includes('daily report') || q.includes('summary')) {
       return {
-        text: `**Daily Flash Report (DFR) Summary — 24h Snapshot**:\n• Total Inflow: 18 incidents, 12 SRs\n• Active P1/P2: 2 active (both under L2 triage)\n• SLA Compliance: 94.2% across active estate\n• Critical App Health: 100% core availability on SAP S/4HANA 2025.`,
+        text: `**Daily Flash Report (DFR) — Contractual Service Snapshot**:\n• Total Inflow: 18 incidents, 12 SRs\n• Active P1/P2: 0 Critical, 2 High under triage\n• SLA Compliance: 97.4% across active estate\n• Operational Health: 100% core availability on SAP S/4HANA.`,
         actionLabel: 'Open Daily Flash Report',
         actionPath: '/reporting/dfr',
       };

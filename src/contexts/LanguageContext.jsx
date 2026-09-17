@@ -122,6 +122,7 @@ const translations = {
     },
     governance: {
       title: 'Governance & Compliance',
+      slaGovernance: 'SLA Governance',
       audits: 'Audit',
       risks: 'Risk Register',
       licenses: 'License & Entitlement Health',
@@ -140,25 +141,30 @@ const translations = {
       contact: 'Contact',
       skills: 'Skills & Knowledge',
       coverage: 'Onsite Coverage Compliance',
+      timesheetApproval: 'Timesheet Approval',
     },
     leaveTimesheet: {
-      title: 'Leave & Timesheet',
+      title: 'Timesheet Approval',
     },
     slaGovernance: {
-      title: 'Resource SLA Governance',
+      title: 'SLA Governance',
+    },
+    unifiedApproval: {
+      title: 'Unified Approval',
     },
     technology: {
       title: 'Application & Technology Estate',
       applications: 'Application Portfolio',
       applicationHealth: 'Application Health',
+      infrastructureHealth: 'Infrastructure Health',
       landscape: 'Technology Landscape',
       dependencies: 'Integration & Dependencies',
       licenses: 'License & Entitlement',
       releases: 'Release / Change Health',
     },
-    customerConnect: {
-      title: 'Customer Connect',
-      corner: 'Customer Corner',
+    customerCorner: {
+      title: 'Customer Corner',
+      overview: 'Overview',
       feedback: 'Customer Feedback / CSAT',
       actions: 'Open CTAs',
       issues: 'Customer Issues',
@@ -182,7 +188,6 @@ const translations = {
     reporting: {
       title: 'Reporting',
       dfr: 'Daily Flash Report',
-      dsr: 'Daily Snapshot Report',
       wsr: 'Weekly Status Report',
       msr: 'Monthly Status Report',
       sla: 'SLA Report',
@@ -310,6 +315,7 @@ const translations = {
     },
     governance: {
       title: 'الحوكمة والامتثال',
+      slaGovernance: 'حوكمة اتفاقية مستوى الخدمة',
       audits: 'التدقيق',
       risks: 'سجل المخاطر',
       licenses: 'صحة التراخيص والاستحقاقات',
@@ -328,25 +334,30 @@ const translations = {
       contact: 'جهات الاتصال',
       skills: 'المهارات والمعرفة',
       coverage: 'امتثال التغطية الميدانية',
+      timesheetApproval: 'اعتماد الجداول الزمنية',
     },
     leaveTimesheet: {
-      title: 'الإجازات والجداول الزمنية',
+      title: 'اعتماد الجداول الزمنية',
     },
     slaGovernance: {
       title: 'حوكمة اتفاقية مستوى الخدمة',
+    },
+    unifiedApproval: {
+      title: 'الموافقة الموحدة',
     },
     technology: {
       title: 'محفظة التطبيقات والتقنية',
       applications: 'محفظة التطبيقات',
       applicationHealth: 'صحة التطبيقات',
+      infrastructureHealth: 'صحة البنية التحتية',
       landscape: 'المشهد التقني',
       dependencies: 'التكامل والتبعيات',
       licenses: 'التراخيص والاستحقاقات',
       releases: 'صحة الإصدارات والتغييرات',
     },
-    customerConnect: {
-      title: 'التواصل مع العملاء',
-      corner: 'ركن العميل',
+    customerCorner: {
+      title: 'ركن العميل',
+      overview: 'نظرة عامة',
       feedback: 'ملاحظات العملاء / CSAT',
       actions: 'إجراءات مفتوحة',
       issues: 'مشكلات العملاء',
@@ -370,7 +381,6 @@ const translations = {
     reporting: {
       title: 'التقارير',
       dfr: 'تقرير الومضة اليومي',
-      dsr: 'تقرير اللقطة اليومية',
       wsr: 'تقرير الحالة الأسبوعي',
       msr: 'تقرير الحالة الشهري',
       sla: 'تقرير اتفاقية مستوى الخدمة',

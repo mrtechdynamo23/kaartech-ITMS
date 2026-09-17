@@ -1,21 +1,19 @@
 /**
- * KaarTech ITMS Control Tower — Primary Service Domain Master
+ * KaarTech ITMS — Primary Service Domain Master (Single Source of Truth)
  * 
- * SOURCED FROM RFP SOW:
  * The 7 primary Service Domains constitute the authoritative taxonomy across the entire portal:
- * 1. IT Helpdesk & End User Services (TWR-01)
- * 2. Infrastructure, Cloud, and Platform Services (TWR-02)
- * 3. Applications, Digital, and Integration (TWR-03)
- * 4. Data, Analytics, AI, and Automation (TWR-04)
- * 5. Architecture, Quality, and Testing (TWR-05)
- * 6. SAP ERP and SuccessFactors (TWR-06)
- * 7. Service Management, Governance, and Delivery (TWR-07)
+ * 1. IT Helpdesk & End User Services
+ * 2. Infrastructure, Cloud, and Platform Services
+ * 3. Applications, Digital, and Integration
+ * 4. Data, Analytics, AI, and Automation
+ * 5. Architecture, Quality, and Testing
+ * 6. SAP ERP and SuccessFactors
+ * 7. Service Management, Governance, and Delivery
  */
 
 export const SERVICE_DOMAINS = [
   {
     id: 'TWR-01',
-    towerId: 'TWR-01',
     code: 'EUS',
     shortCode: 'EUS',
     name: 'IT Helpdesk & End User Services',
@@ -30,7 +28,6 @@ export const SERVICE_DOMAINS = [
   },
   {
     id: 'TWR-02',
-    towerId: 'TWR-02',
     code: 'ICP',
     shortCode: 'ICP',
     name: 'Infrastructure, Cloud, and Platform Services',
@@ -47,7 +44,6 @@ export const SERVICE_DOMAINS = [
   },
   {
     id: 'TWR-03',
-    towerId: 'TWR-03',
     code: 'ADI',
     shortCode: 'ADI',
     name: 'Applications, Digital, and Integration',
@@ -62,7 +58,6 @@ export const SERVICE_DOMAINS = [
   },
   {
     id: 'TWR-04',
-    towerId: 'TWR-04',
     code: 'DAA',
     shortCode: 'DAA',
     name: 'Data, Analytics, AI, and Automation',
@@ -77,7 +72,6 @@ export const SERVICE_DOMAINS = [
   },
   {
     id: 'TWR-05',
-    towerId: 'TWR-05',
     code: 'AQT',
     shortCode: 'AQT',
     name: 'Architecture, Quality, and Testing',
@@ -94,7 +88,6 @@ export const SERVICE_DOMAINS = [
   },
   {
     id: 'TWR-06',
-    towerId: 'TWR-06',
     code: 'SAP',
     shortCode: 'SAP',
     name: 'SAP ERP and SuccessFactors',
@@ -109,7 +102,6 @@ export const SERVICE_DOMAINS = [
   },
   {
     id: 'TWR-07',
-    towerId: 'TWR-07',
     code: 'SMG',
     shortCode: 'SMG',
     name: 'Service Management, Governance, and Delivery',
@@ -131,7 +123,7 @@ export const SERVICE_DOMAINS = [
 
 export function getServiceDomainById(id) {
   if (!id) return SERVICE_DOMAINS[0];
-  return SERVICE_DOMAINS.find(d => d.id === id || d.towerId === id) || SERVICE_DOMAINS[0];
+  return SERVICE_DOMAINS.find(d => d.id === id) || SERVICE_DOMAINS[0];
 }
 
 export function getServiceDomainByName(name) {
@@ -150,17 +142,17 @@ export function getServiceDomainList() {
 
 export function getServiceDomainForResource(resource) {
   if (!resource) return SERVICE_DOMAINS[0];
-  return getServiceDomainById(resource.serviceDomainId || resource.towerId);
+  return getServiceDomainById(resource.serviceDomainId);
 }
 
 export function getServiceDomainForRole(role) {
   if (!role) return SERVICE_DOMAINS[0];
-  return getServiceDomainById(role.serviceDomainId || role.tower);
+  return getServiceDomainById(role.serviceDomainId);
 }
 
 export function getServiceDomainForAssignment(assignment) {
   if (!assignment) return SERVICE_DOMAINS[0];
-  return getServiceDomainById(assignment.serviceDomainId || assignment.towerId);
+  return getServiceDomainById(assignment.serviceDomainId);
 }
 
 export function getServiceDomainForIncident(incident) {
@@ -205,5 +197,5 @@ export function groupByServiceDomain(records = [], domainKey = 'serviceDomainId'
   });
 }
 
-// Backward-compatible alias
+// Legacy alias preserved for backward compatibility in imports
 export const TOWERS = SERVICE_DOMAINS;

@@ -126,13 +126,13 @@ const CAPABILITY_DOMAINS = [
   },
   {
     id: 'customer',
-    title: 'Customer Connect & Entity Portals',
-    titleAr: 'بوابة تواصل العملاء ورضا المستفيدين',
+    title: 'Customer Corner & Entity Portals',
+    titleAr: 'ركن العملاء وبوابات الجهات المستفيدة',
     tag: 'Stakeholder Relations',
     desc: 'Entity-level CSAT scores, stakeholder engagement, quarterly reviews, and sentiment tracking across 34 entities.',
     descAr: 'مؤشرات رضا العملاء لكل جهة، ومتابعة التواصل المؤسسي والاجتماعات الدورية عبر 34 جهة.',
     metric: '4.82 / 5.00 Average CSAT',
-    route: '/customer/feedback',
+    route: '/customer/corner',
     icon: Globe,
     accent: '#EC4899',
   },
@@ -156,7 +156,7 @@ const ARCHITECTURE_TIERS = [
     tierAr: 'المستوى 1: تجربة المستخدم والتحليلات',
     badge: 'Presentation',
     color: '#3B82F6',
-    items: ['SAP Analytics Cloud (SAC) Boardrooms', 'SAP Fiori 3.0 Mobile Launchpads', 'PowerBI Executive Dashboards', 'Customer Connect Self-Service Portals']
+    items: ['SAP Analytics Cloud (SAC) Boardrooms', 'SAP Fiori 3.0 Mobile Launchpads', 'PowerBI Executive Dashboards', 'Customer Corner Self-Service Portals']
   },
   {
     tier: 'Tier 2: Business Core & Defense Suites',
@@ -207,7 +207,7 @@ const ENTERPRISE_CLUSTERS = [
     name: 'Commercial & Shared Services',
     nameAr: 'الخدمات التجارية والمشتركة',
     entities: 'KaarTech Corp. HQ • Business Services • Commercial • Global • Support Services',
-    desc: 'Unified financial accounting (R2R), Ariba strategic sourcing (S2P), SuccessFactors talent management (H2R), and billing.',
+    desc: 'Unified financial accounting, Ariba strategic sourcing, SuccessFactors talent management, and billing.',
     color: '#10B981'
   }
 ];
@@ -833,7 +833,7 @@ export default function LandingPage() {
               <ul className="landing-footer-links">
                 <li><a onClick={() => navigate('/technology/applications')}>26 Core Applications</a></li>
                 <li><a onClick={() => navigate('/resources/directory')}>Resource CoE Directory</a></li>
-                <li><a onClick={() => navigate('/customer/feedback')}>Customer Connect & CSAT</a></li>
+                <li><a onClick={() => navigate('/customer/corner')}>Customer Corner & CSAT</a></li>
                 <li><a onClick={() => navigate('/service-innovation/automation')}>AI & RPA Automation</a></li>
               </ul>
             </div>

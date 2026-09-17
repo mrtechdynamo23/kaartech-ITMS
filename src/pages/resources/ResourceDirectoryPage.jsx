@@ -567,7 +567,7 @@ export default function ResourceDirectoryPage() {
         {/* Visual 3: Service Domain Distribution */}
         <ChartCard
           title="FTE Allocation by Service Domain"
-          subtitle="Contractual distribution across 7 ITMS service towers"
+          subtitle="Contractual distribution across 7 ITMS service domains"
           badge="Domain Alignment"
           height={250}
         >
