@@ -6,6 +6,7 @@
  * Aligned with the KaarTech dark & light enterprise design system.
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { cornerStakeholders, stakeholderById, SIDE_META } from '../../data/customerCornerData';
 import './CustomerCorner.css';
 
@@ -169,41 +170,29 @@ export function ModalShell({ title, subtitle, icon, onClose, children, width = 6
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 1060,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 16,
-      }}
+      className="modal-backdrop"
+      onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="corner-modal-title"
     >
-      {/* Backdrop */}
-      <div
-        onClick={onClose}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0, 0, 0, 0.65)',
-          backdropFilter: 'blur(5px)',
-          WebkitBackdropFilter: 'blur(5px)',
-          zIndex: -1,
-        }}
-      />
-
       {/* Modal Container */}
       <div
+        className="modal-dialog-centered"
+        onClick={e => e.stopPropagation()}
         style={{
           width: `min(94vw, ${width}px)`,
+          maxWidth: `${width}px`,
           maxHeight: '90vh',
           display: 'flex',
           flexDirection: 'column',
@@ -304,7 +293,8 @@ export function ModalShell({ title, subtitle, icon, onClose, children, width = 6
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

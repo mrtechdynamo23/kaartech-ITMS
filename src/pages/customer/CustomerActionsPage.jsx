@@ -8,7 +8,8 @@
  * - Interactive action detail modal / drawer with direct Customer Corner thread drill-down
  * - Dynamic KPI calculations derived from actual thread data
  */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import {
   Target,
@@ -50,6 +51,21 @@ export default function CustomerActionsPage() {
   const [priorityFilter, setPriorityFilter] = useState('All');
   const [stakeholderFilter, setStakeholderFilter] = useState('all');
   const [selectedAction, setSelectedAction] = useState(null);
+
+  // ESC key listener & body scroll lock
+  useEffect(() => {
+    if (!selectedAction) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setSelectedAction(null);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [selectedAction]);
 
   // Derive actions from single source of truth (cornerThreads)
   const allDerivedActions = useMemo(() => {
@@ -439,31 +455,19 @@ export default function CustomerActionsPage() {
       </div>
 
       {/* ── Section 16: Interactive Action Detail Modal ── */}
-      {selectedAction && (
+      {selectedAction && createPortal(
         <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0, 0, 0, 0.65)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '20px',
-          }}
+          className="modal-backdrop"
           onClick={() => setSelectedAction(null)}
         >
           <div
-            className="card"
+            className="modal-dialog-centered"
             style={{
               width: '100%',
-              maxWidth: '640px',
+              maxWidth: '680px',
               maxHeight: '90vh',
               overflowY: 'auto',
               padding: 0,
-              boxShadow: 'var(--shadow-xl)',
-              animation: 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
             onClick={e => e.stopPropagation()}
           >
@@ -609,7 +613,8 @@ export default function CustomerActionsPage() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
