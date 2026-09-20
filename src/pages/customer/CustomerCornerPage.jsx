@@ -9,7 +9,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   MessagesSquare, Tag, Megaphone, Search, CheckCircle2, RotateCcw, PencilLine,
-  TicketCheck, Send, Users, CalendarClock, AlertTriangle, Inbox, CheckCheck,
+  TicketCheck, Send, Users, CalendarClock, AlertTriangle, Inbox, CheckCheck, Trash2,
 } from 'lucide-react';
 import { useCustomerCorner } from '../../contexts/CustomerCornerContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -89,6 +89,7 @@ export default function CustomerCornerPage() {
   const {
     cornerThreads, activeStakeholderId, setActiveStakeholderId,
     cornerReadState, createTicketThread, createCTAThread, postCornerMessage,
+    deleteCornerMessage,
     resolveCornerThread, reopenCornerThread, updateCTA, linkCtaToTicket, markCornerThreadRead,
   } = useCustomerCorner();
 
@@ -907,12 +908,42 @@ export default function CustomerCornerPage() {
                           <MessageBody body={message.body} />
                         </div>
 
-                        {/* Bubble metadata: Timestamp & Read checkmark */}
-                        <div className="corner-bubble-meta">
+                        {/* Bubble metadata: Timestamp, Read checkmark & Delete button */}
+                        <div className="corner-bubble-meta" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                           <span>{formatCornerTime(message.postedAt)}</span>
                           {isMe && (
-                            <CheckCheck size={14} style={{ color: 'var(--brand-primary, #6B1D2A)', marginLeft: 3, flexShrink: 0 }} />
+                            <CheckCheck size={14} style={{ color: 'var(--brand-primary, #6B1D2A)', marginLeft: 2, flexShrink: 0 }} />
                           )}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteCornerMessage(selected.id, message.id);
+                            }}
+                            title="Delete this comment"
+                            style={{
+                              background: 'transparent',
+                              border: 'none',
+                              padding: '1px 3px',
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              color: 'var(--text-tertiary, #6B7280)',
+                              opacity: 0.5,
+                              transition: 'opacity 0.15s, color 0.15s',
+                              borderRadius: 4,
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.opacity = '1';
+                              e.currentTarget.style.color = '#EF4444';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.opacity = '0.5';
+                              e.currentTarget.style.color = 'var(--text-tertiary, #6B7280)';
+                            }}
+                          >
+                            <Trash2 size={11} />
+                          </button>
                         </div>
                       </div>
                     </div>

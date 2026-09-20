@@ -18,12 +18,38 @@ const STORAGE_KEYS = {
 
 const CustomerCornerContext = createContext(null);
 
+// ─── Thread Sanitizer ──────────────────────────────────────────────────
+// Automatically strips out temporary/accidental test comments from state & localStorage
+const sanitizeThreads = (threads) => {
+  if (!Array.isArray(threads)) return seedCornerThreads;
+  return threads.map((t) => {
+    if (!t || !Array.isArray(t.messages)) return t;
+    const cleanMessages = t.messages.filter((m) => {
+      if (!m || !m.body) return true;
+      const text = m.body.trim().toLowerCase();
+      // Remove specific test comments
+      if (
+        text.includes('sudharrshan is the good boy') ||
+        text === 'i love u' ||
+        text.includes('sudharrshan')
+      ) {
+        return false;
+      }
+      return true;
+    });
+    return {
+      ...t,
+      messages: cleanMessages,
+    };
+  });
+};
+
 export function CustomerCornerProvider({ children }) {
   // ─── Corner threads ────────────────────────────────────────────────────
   const [cornerThreads, setCornerThreads] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.threads);
-      return saved ? JSON.parse(saved) : seedCornerThreads;
+      return saved ? sanitizeThreads(JSON.parse(saved)) : seedCornerThreads;
     } catch {
       return seedCornerThreads;
     }
@@ -47,7 +73,7 @@ export function CustomerCornerProvider({ children }) {
 
   // ─── Persistence ───────────────────────────────────────────────────────
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.threads, JSON.stringify(cornerThreads));
+    localStorage.setItem(STORAGE_KEYS.threads, JSON.stringify(sanitizeThreads(cornerThreads)));
   }, [cornerThreads]);
 
   useEffect(() => {
@@ -143,6 +169,18 @@ export function CustomerCornerProvider({ children }) {
     );
   }, []);
 
+  const deleteCornerMessage = useCallback((threadId, messageId) => {
+    setCornerThreads((prev) =>
+      prev.map((t) => {
+        if (t.id !== threadId) return t;
+        return {
+          ...t,
+          messages: t.messages.filter((m) => m.id !== messageId),
+        };
+      })
+    );
+  }, []);
+
   const resolveCornerThread = useCallback((threadId, byId) => {
     setCornerThreads((prev) =>
       prev.map((t) => {
@@ -226,6 +264,7 @@ export function CustomerCornerProvider({ children }) {
         createTicketThread,
         createCTAThread,
         postCornerMessage,
+        deleteCornerMessage,
         resolveCornerThread,
         reopenCornerThread,
         updateCTA,
