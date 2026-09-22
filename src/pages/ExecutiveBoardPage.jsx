@@ -154,7 +154,6 @@ export default function ExecutiveBoardPage() {
               <option value="q1_2026">Q1 2026 (Jan – Mar)</option>
               <option value="q2_2026">Q2 2026 (Apr – Jun)</option>
               <option value="q3_2026">Q3 2026 (Jul – Sep)</option>
-              <option value="q4_2026">Q4 2026 (Oct – Dec)</option>
             </optgroup>
             <optgroup label="YTD">
               <option value="ytd_2026">YTD 2026</option>

@@ -20,15 +20,18 @@ export const MONTH_SHORT_NAMES = [
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 
-// Canonical Period Options for Filter Dropdowns
-export const PERIOD_OPTIONS = [
+export const CURRENT_REPORTING_PERIOD = '2026-09';
+export const CURRENT_REPORTING_DATE = '2026-09-30';
+
+// Canonical Master Period Definitions
+const ALL_PERIOD_DEFINITIONS = [
   { value: 'all', label: 'All Periods', group: 'All' },
-  { value: 'ytd_2026', label: 'YTD 2026 (Jan – Dec)', group: 'YTD' },
+  { value: 'ytd_2026', label: 'YTD 2026 (Jan – Sep)', group: 'YTD' },
   // Quarters
-  { value: 'q1_2026', label: 'Q1 2026 (Jan – Mar)', group: 'Quarter' },
-  { value: 'q2_2026', label: 'Q2 2026 (Apr – Jun)', group: 'Quarter' },
-  { value: 'q3_2026', label: 'Q3 2026 (Jul – Sep)', group: 'Quarter' },
-  { value: 'q4_2026', label: 'Q4 2026 (Oct – Dec)', group: 'Quarter' },
+  { value: 'q1_2026', label: 'Q1 2026 (Jan – Mar)', group: 'Quarter', endMonth: '2026-03' },
+  { value: 'q2_2026', label: 'Q2 2026 (Apr – Jun)', group: 'Quarter', endMonth: '2026-06' },
+  { value: 'q3_2026', label: 'Q3 2026 (Jul – Sep)', group: 'Quarter', endMonth: '2026-09' },
+  { value: 'q4_2026', label: 'Q4 2026 (Oct – Dec)', group: 'Quarter', endMonth: '2026-12' },
   // Months
   { value: '2026-01', label: 'Jan 2026', group: 'Month' },
   { value: '2026-02', label: 'Feb 2026', group: 'Month' },
@@ -44,24 +47,49 @@ export const PERIOD_OPTIONS = [
   { value: '2026-12', label: 'Dec 2026', group: 'Month' },
 ];
 
+// Canonical Period Options for Filter Dropdowns (Excludes future periods based on current reporting date)
+export const PERIOD_OPTIONS = ALL_PERIOD_DEFINITIONS
+  .filter(opt => {
+    if (opt.group === 'Month') {
+      return opt.value <= CURRENT_REPORTING_PERIOD;
+    }
+    if (opt.group === 'Quarter') {
+      return opt.endMonth ? opt.endMonth <= CURRENT_REPORTING_PERIOD : true;
+    }
+    return true;
+  })
+  .map(({ endMonth, ...opt }) => opt);
+
 /**
  * Normalizes a period key to standard format.
- * Supports legacy aliases like m_jan, 2026-01, q1, q1_2026.
+ * Supports legacy aliases like m_jan, 2026-01, q1, q1_2026, and text dates like 'Sep 2026'.
  */
 export function normalizePeriodKey(period) {
   if (!period || period === 'all') return 'all';
   const p = String(period).toLowerCase().trim();
   if (p === 'ytd' || p === 'ytd_2026') return 'ytd_2026';
-  if (p === 'q1' || p === 'q1_2026') return 'q1_2026';
-  if (p === 'q2' || p === 'q2_2026') return 'q2_2026';
-  if (p === 'q3' || p === 'q3_2026') return 'q3_2026';
-  if (p === 'q4' || p === 'q4_2026') return 'q4_2026';
+  if (p === 'q1' || p === 'q1_2026' || p.includes('q1')) return 'q1_2026';
+  if (p === 'q2' || p === 'q2_2026' || p.includes('q2')) return 'q2_2026';
+  if (p === 'q3' || p === 'q3_2026' || p.includes('q3')) return 'q3_2026';
+  if (p === 'q4' || p === 'q4_2026' || p.includes('q4')) return 'q4_2026';
 
   const monthMap = {
     m_jan: '2026-01', m_feb: '2026-02', m_mar: '2026-03',
     m_apr: '2026-04', m_may: '2026-05', m_jun: '2026-06',
     m_jul: '2026-07', m_aug: '2026-08', m_sep: '2026-09',
     m_oct: '2026-10', m_nov: '2026-11', m_dec: '2026-12',
+    jan: '2026-01', feb: '2026-02', mar: '2026-03',
+    apr: '2026-04', may: '2026-05', jun: '2026-06',
+    jul: '2026-07', aug: '2026-08', sep: '2026-09',
+    oct: '2026-10', nov: '2026-11', dec: '2026-12',
+    'jan 2026': '2026-01', 'feb 2026': '2026-02', 'mar 2026': '2026-03',
+    'apr 2026': '2026-04', 'may 2026': '2026-05', 'jun 2026': '2026-06',
+    'jul 2026': '2026-07', 'aug 2026': '2026-08', 'sep 2026': '2026-09',
+    'oct 2026': '2026-10', 'nov 2026': '2026-11', 'dec 2026': '2026-12',
+    'january 2026': '2026-01', 'february 2026': '2026-02', 'march 2026': '2026-03',
+    'april 2026': '2026-04', 'may 2026': '2026-05', 'june 2026': '2026-06',
+    'july 2026': '2026-07', 'august 2026': '2026-08', 'september 2026': '2026-09',
+    'october 2026': '2026-10', 'november 2026': '2026-11', 'december 2026': '2026-12',
   };
   if (monthMap[p]) return monthMap[p];
   return p;

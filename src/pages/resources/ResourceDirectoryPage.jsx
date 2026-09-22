@@ -446,7 +446,7 @@ export default function ResourceDirectoryPage() {
         />
         <KPICard
           title="Shared Support"
-          value={`${sharedCount} Specs`}
+          value={`${sharedCount} SMEs`}
           status="primary"
           subtitle="Cross-tower shared capacity"
           icon={MapPin}

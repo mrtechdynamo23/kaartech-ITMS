@@ -811,7 +811,6 @@ export default function FeedbackPage() {
                     <option value="q1_2026">Q1 2026 (Jan – Mar)</option>
                     <option value="q2_2026">Q2 2026 (Apr – Jun)</option>
                     <option value="q3_2026">Q3 2026 (Jul – Sep)</option>
-                    <option value="q4_2026">Q4 2026 (Oct – Dec)</option>
                     <option value="2026-04">April 2026</option>
                     <option value="2026-05">May 2026</option>
                     <option value="2026-06">June 2026</option>
