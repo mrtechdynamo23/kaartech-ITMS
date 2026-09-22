@@ -121,7 +121,7 @@ export default function SkillsMatrixPage() {
             <span className="badge badge-primary">{RESOURCES.length} Dedicated FTEs</span>
           </div>
           <p className="page-subtitle">
-            Enterprise capability benchmarking, vendor professional certifications, L1/L2/L3 support tier distribution, and cross-domain redundancy governance across the 7 RFP Service Domains.
+            Enterprise capability benchmarking, vendor professional certifications, L1/L2/L3 support tier distribution, and cross-domain redundancy governance across the Service Domains.
           </p>
         </div>
       </div>
@@ -336,7 +336,7 @@ export default function SkillsMatrixPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: '16px' }}>
           <ChartCard
             title="L1 / L2 / L3 Specialist Tier Distribution by Service Domain"
-            subtitle="Contractual support tier allocation across the 7 RFP Service Domains"
+            subtitle="Contractual support tier allocation across the Service Domains"
             height={280}
           >
             <ResponsiveContainer width="100%" height="100%">

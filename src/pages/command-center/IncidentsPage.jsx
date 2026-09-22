@@ -24,11 +24,13 @@ import DataTable from '../../components/common/DataTable';
 import DetailModal from '../../components/common/DetailModal';
 import CreateTicketModal from '../../components/common/CreateTicketModal';
 import { getIncidentAnalytics } from '../../data/analyticsSelectors';
+import { OVERALL_MONTHLY_RESOLUTION_TARGET } from '../../data/config';
 
 export default function IncidentsPage() {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [filters, setFilters] = useState({
+    period: 'all',
     serviceDomain: 'all',
     entity: 'all',
     domain: 'all',
@@ -110,7 +112,8 @@ export default function IncidentsPage() {
       <FilterBar
         filters={filters}
         onChange={setFilters}
-        onReset={() => setFilters({ serviceDomain: 'all', entity: 'all', domain: 'all', priority: 'all', status: 'all', app: 'all' })}
+        onReset={() => setFilters({ period: 'all', serviceDomain: 'all', entity: 'all', domain: 'all', priority: 'all', status: 'all', app: 'all' })}
+        showPeriod={true}
         showServiceDomain={true}
         showEntity={true}
         showDomain={true}
@@ -179,10 +182,10 @@ export default function IncidentsPage() {
         <KPICard
           title="Resolution SLA"
           value={`${analytics.resolutionSla}%`}
-          target="88.0%"
-          status="success"
+          target={`${OVERALL_MONTHLY_RESOLUTION_TARGET}.0%`}
+          status={analytics.resolutionSla >= OVERALL_MONTHLY_RESOLUTION_TARGET ? 'success' : 'warning'}
           icon={Clock}
-          sparklineData={[91, 93, 94.5, analytics.resolutionSla]}
+          sparklineData={[96, 97, 98, analytics.resolutionSla]}
         />
       </div>
 
@@ -229,9 +232,9 @@ export default function IncidentsPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Visual 2: Created vs Closed (4 Months) */}
+        {/* Visual 2: Created vs Closed */}
         <ChartCard
-          title="Created vs Closed Velocity (4 Months)"
+          title="Created vs Closed Velocity (Monthly Trend)"
           subtitle="Inflow vs resolution throughput"
           height={240}
         >
@@ -273,7 +276,7 @@ export default function IncidentsPage() {
 
         {/* Visual 4: Incidents by Service Domain */}
         <ChartCard
-          title="Incidents by Service Domain (7 RFP Domains)"
+          title="Incidents by Service Domain (Service Domains)"
           subtitle="Click bar to filter active incident queue"
           height={240}
         >
@@ -364,7 +367,7 @@ export default function IncidentsPage() {
 
       {/* ── Operational Register Table ── */}
       <DataTable
-        title="Incident Operational Register"
+        title="Live Ticket Register"
         subtitle="Click any row to open incident details."
         columns={columns}
         data={analytics.filteredList}

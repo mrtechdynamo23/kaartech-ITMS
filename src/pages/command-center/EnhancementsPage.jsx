@@ -31,6 +31,7 @@ export default function EnhancementsPage() {
   const [selectedEnh, setSelectedEnh] = useState(null);
   const [selectedScaleFilter, setSelectedScaleFilter] = useState(null);
   const [filters, setFilters] = useState({
+    period: 'all',
     serviceDomain: 'all',
     entity: 'all',
     domain: 'all',
@@ -212,10 +213,11 @@ application: newApp,
         filters={filters}
         onChange={setFilters}
         onReset={() => {
-          setFilters({ serviceDomain: 'all', entity: 'all', domain: 'all', status: 'all', app: 'all' });
+          setFilters({ period: 'all', serviceDomain: 'all', entity: 'all', domain: 'all', status: 'all', app: 'all' });
           setSelectedScaleFilter(null);
         }}
         statusOptions={['Requirements', 'Design', 'Build', 'Testing', 'UAT', 'Deployed', 'Closed']}
+        showPeriod={true}
         showServiceDomain={true}
         showEntity={true}
         showDomain={true}
@@ -412,7 +414,7 @@ application: newApp,
         <ChartCard
           title="Monthly Velocity & Effort Hours"
           subtitle="Intake vs deployed releases and person-hours delivered"
-          badge="4-Month Trajectory"
+          badge="Monthly Trend"
           height={260}
         >
           <ResponsiveContainer width="100%" height="100%">

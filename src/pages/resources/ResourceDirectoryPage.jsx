@@ -35,11 +35,12 @@ export default function ResourceDirectoryPage() {
   const urlDomain = searchParams.get('domain');
 
   const [selectedResource, setSelectedResource] = useState(null);
-  const [selectedDomain, setSelectedDomain] = useState(urlDomain || 'all'); // Service Domain
-  const [selectedProcessGroup, setSelectedProcessGroup] = useState('all');
+  const [selectedDomain, setSelectedDomain] = useState(urlDomain || 'all'); // Service Domain / Tower
+  const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [selectedRole, setSelectedRole] = useState('all');
   const [selectedLevel, setSelectedLevel] = useState('all');
-  const [selectedType, setSelectedType] = useState('all'); // Saudi / Expatriate
+  const [selectedSupportModel, setSelectedSupportModel] = useState('all'); // Dedicated / Shared
+  const [selectedEmploymentType, setSelectedEmploymentType] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedAvailability, setSelectedAvailability] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
@@ -62,18 +63,37 @@ export default function ResourceDirectoryPage() {
   const stats = getResourceStats();
   const overallUtil = useMemo(() => getOverallResourceUtilization(), []);
 
+  // Generic Workforce & Support Model Metrics (NCGR Adaptation)
+  const totalFte = useMemo(() => {
+    return RESOURCES.reduce((acc, r) => acc + (r.totalFte || 1.0), 0);
+  }, []);
+
+  const dedicatedCount = useMemo(() => {
+    return RESOURCES.filter(r => r.supportModel !== 'Shared').length;
+  }, []);
+
+  const sharedCount = useMemo(() => {
+    return RESOURCES.filter(r => r.supportModel === 'Shared').length;
+  }, []);
+
+  const activeResourcesCount = useMemo(() => {
+    return RESOURCES.filter(r => r.status === 'Active' || !r.status).length;
+  }, []);
+
   const filteredResources = useMemo(() => {
     return RESOURCES.filter(r => {
-      // Primary Service Domain
+      // Primary Service Domain / Tower
       if (selectedDomain !== 'all' && r.serviceDomainId !== selectedDomain && r.towerId !== selectedDomain && r.serviceDomain !== selectedDomain) return false;
-      // Process Group
-      if (selectedProcessGroup !== 'all' && r.processGroup !== selectedProcessGroup) return false;
+      // Department
+      if (selectedDepartment !== 'all' && r.department !== selectedDepartment && r.processGroup !== selectedDepartment) return false;
       // Role
       if (selectedRole !== 'all' && r.roleCode !== selectedRole && r.role !== selectedRole) return false;
       // Level
       if (selectedLevel !== 'all' && r.level !== selectedLevel) return false;
-      // Classification: Saudi / Expatriate
-      if (selectedType !== 'all' && r.resourceType !== selectedType) return false;
+      // Support Model (Dedicated vs Shared)
+      if (selectedSupportModel !== 'all' && (r.supportModel || 'Dedicated') !== selectedSupportModel) return false;
+      // Employment Type
+      if (selectedEmploymentType !== 'all' && (r.employmentType || r.employmentRelationship || 'Permanent') !== selectedEmploymentType) return false;
       // Location: Onsite / Offshore
       if (selectedLocation !== 'all' && r.location !== selectedLocation) return false;
       // Track
@@ -96,6 +116,7 @@ export default function ResourceDirectoryPage() {
           r.role?.toLowerCase().includes(q) ||
           r.roleCode?.toLowerCase().includes(q) ||
           r.serviceDomain?.toLowerCase().includes(q) ||
+          r.department?.toLowerCase().includes(q) ||
           r.processGroup?.toLowerCase().includes(q) ||
           r.skill?.toLowerCase().includes(q) ||
           r.certification?.toLowerCase().includes(q) ||
@@ -105,22 +126,22 @@ export default function ResourceDirectoryPage() {
       return true;
     });
   }, [
-    selectedDomain, selectedProcessGroup,
-    selectedRole, selectedLevel, selectedType, selectedLocation,
+    selectedDomain, selectedDepartment, selectedRole, selectedLevel,
+    selectedSupportModel, selectedEmploymentType, selectedLocation,
     selectedTrack, selectedStatus, selectedAvailability, searchQuery, storeVersion
   ]);
 
   // Visual 1: Onsite vs Offshore
   const locationData = [
-    { name: 'Onsite (Riyadh HQ)', value: stats.onsite, color: '#6B1D2A' },
+    { name: 'Onsite (HQ)', value: stats.onsite, color: '#6B1D2A' },
     { name: 'Offshore Dedicated', value: stats.offshore - 3, color: '#2563EB' },
     { name: 'Offshore Flex Pool', value: 3, color: '#7C3AED' },
   ];
 
-  // Visual 2: Gender Diversity
-  const genderData = [
-    { name: `Female (${stats.femalePercent}%)`, value: stats.female, color: '#EC4899' },
-    { name: `Male (${100 - stats.femalePercent}%)`, value: stats.total - stats.female, color: '#3B82F6' },
+  // Visual 2: Support Model Allocation (Dedicated vs Shared)
+  const supportModelData = [
+    { name: `Dedicated Support (${dedicatedCount} FTEs)`, value: dedicatedCount, color: '#2563EB' },
+    { name: `Shared Support (${sharedCount} Specialists)`, value: sharedCount, color: '#7C3AED' },
   ];
 
   // Visual 3: Service Domain Distribution
@@ -153,7 +174,7 @@ export default function ResourceDirectoryPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{
             width: '34px', height: '34px', borderRadius: 'var(--radius-full)',
-            background: 'var(--brand-primary)', color: 'white',
+            background: item.supportModel === 'Shared' ? 'var(--color-purple)' : 'var(--brand-primary)', color: 'white',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontWeight: 700, fontSize: '12px', flexShrink: 0
           }}>
@@ -164,7 +185,7 @@ export default function ResourceDirectoryPage() {
             <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', display: 'flex', gap: '6px' }}>
               <span>{item.id}</span>
               <span>•</span>
-              <span>{item.positionId || 'POS'}</span>
+              <span>{item.department || item.processGroup || 'Operations'}</span>
             </div>
           </div>
         </div>
@@ -173,7 +194,7 @@ export default function ResourceDirectoryPage() {
     {
       key: 'role',
       label: 'Role',
-      width: '180px',
+      width: '175px',
       render: (val, item) => (
         <div>
           <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '12px' }}>{val}</div>
@@ -187,8 +208,8 @@ export default function ResourceDirectoryPage() {
     },
     {
       key: 'serviceDomainId',
-      label: 'Service Domain',
-      width: '190px',
+      label: 'Tower',
+      width: '180px',
       render: (val, item) => {
         const dom = getServiceDomainById(val || item.towerId);
         return (
@@ -202,7 +223,7 @@ export default function ResourceDirectoryPage() {
               color: 'var(--brand-primary)',
               border: '1px solid rgba(107, 29, 42, 0.2)',
               display: 'inline-block',
-              maxWidth: '180px',
+              maxWidth: '175px',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis'
@@ -215,89 +236,61 @@ export default function ResourceDirectoryPage() {
       }
     },
     {
-      key: 'level',
-      label: 'Level',
-      width: '70px',
-      render: (val) => (
-        <span
-          className="badge"
-          style={{
-            fontWeight: 800,
-            fontSize: '10px',
-            background: val === 'L3' ? 'rgba(220, 38, 38, 0.12)' : val === 'L2' ? 'rgba(37, 99, 235, 0.12)' : 'rgba(13, 159, 110, 0.12)',
-            color: val === 'L3' ? 'var(--color-red)' : val === 'L2' ? 'var(--color-blue)' : 'var(--color-green)',
-          }}
-        >
-          {val || 'L2'}
-        </span>
-      )
-    },
-    {
-      key: 'resourceType',
-      label: 'Type',
-      width: '110px',
-      render: (val) => (
-        <span
-          style={{
-            padding: '3px 8px',
-            borderRadius: 'var(--radius-full)',
-            fontSize: '11px',
-            fontWeight: 700,
-            background: val === 'Saudi' ? 'rgba(13, 159, 110, 0.12)' : 'rgba(37, 99, 235, 0.12)',
-            color: val === 'Saudi' ? 'var(--color-green)' : 'var(--color-blue)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '4px',
-          }}
-        >
-          {val === 'Saudi' ? '🇸🇦 Saudi' : '🌐 Expat'}
-        </span>
-      )
-    },
-    {
-      key: 'experience',
-      label: 'Experience',
-      width: '100px',
-      render: (val, item) => (
-        <div style={{ fontSize: '11px' }}>
-          <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{val || 5} yrs</span>
-          <span style={{ color: 'var(--text-tertiary)', marginLeft: '4px' }}>({item.relevantExperience || val || 4} rel)</span>
-        </div>
-      )
-    },
-    {
-      key: 'location',
-      label: 'Location',
-      width: '110px',
-      render: (val) => (
-        <span style={{ fontSize: '11px', fontWeight: 600, color: val === 'Onsite' ? 'var(--color-green)' : 'var(--color-blue)' }}>
-          {val === 'Onsite' ? '📍 Onsite (Riyadh)' : '🏢 Offshore'}
-        </span>
-      )
-    },
-    {
-      key: 'currentAssignment',
-      label: 'Assignment',
-      width: '160px',
-      render: (val) => (
-        <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }} title={val}>
-          {val || 'Core Operations'}
-        </span>
-      )
-    },
-    {
-      key: 'availability',
-      label: 'Availability',
-      width: '100px',
-      render: (val) => {
-        const pct = val || 95;
+      key: 'primaryAssignment',
+      label: 'Primary Assignment',
+      width: '185px',
+      render: (val, item) => {
+        const pAssign = item.primaryAssignment?.name || item.currentAssignment || 'Core Service Delivery';
         return (
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 700 }}>
-              <span style={{ color: pct >= 95 ? 'var(--color-green)' : 'var(--color-amber)' }}>{pct}%</span>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }} title={pAssign}>
+              {pAssign}
             </div>
-            <div style={{ height: '4px', borderRadius: '2px', background: 'var(--bg-tertiary)', marginTop: '2px', overflow: 'hidden' }}>
-              <div style={{ width: `${pct}%`, height: '100%', background: pct >= 95 ? 'var(--color-green)' : 'var(--color-amber)' }} />
+            <div style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>
+              {item.primaryAssignment?.allocation || (item.supportModel === 'Shared' ? 60 : 100)}% Primary
+            </div>
+          </div>
+        );
+      }
+    },
+    {
+      key: 'totalFte',
+      label: 'FTE',
+      width: '90px',
+      render: (val, item) => {
+        const fte = item.totalFte ? item.totalFte.toFixed(1) : '1.0';
+        return (
+          <span
+            className="badge"
+            style={{
+              fontWeight: 700,
+              fontSize: '11px',
+              background: 'rgba(37, 99, 235, 0.12)',
+              color: 'var(--color-blue)',
+              border: '1px solid rgba(37, 99, 235, 0.3)',
+            }}
+          >
+            {fte} FTE
+          </span>
+        );
+      }
+    },
+    {
+      key: 'allocation',
+      label: 'Allocation',
+      width: '135px',
+      render: (val, item) => {
+        const isShared = item.supportModel === 'Shared';
+        return (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700 }}>
+              <span style={{ color: isShared ? 'var(--color-purple)' : 'var(--color-emerald)' }}>
+                100% {isShared ? '(60/40 Split)' : 'Dedicated'}
+              </span>
+            </div>
+            <div style={{ height: '6px', borderRadius: '3px', background: 'var(--bg-tertiary)', marginTop: '4px', overflow: 'hidden', display: 'flex' }}>
+              <div style={{ width: isShared ? '60%' : '100%', height: '100%', background: isShared ? 'var(--color-blue)' : 'var(--color-emerald)' }} title="Primary Assignment Allocation (60%)" />
+              {isShared && <div style={{ width: '40%', height: '100%', background: 'var(--color-purple)' }} title="Shared Cross-Tower Support (40%)" />}
             </div>
           </div>
         );
@@ -319,36 +312,48 @@ export default function ResourceDirectoryPage() {
       }
     },
     {
-      key: 'slaHealth',
-      label: 'SLA Health',
-      width: '100px',
-      render: (val) => {
-        const score = val || 96;
+      key: 'supportModel',
+      label: 'Support Model',
+      width: '120px',
+      render: (val, item) => {
+        const isShared = (val || item.supportModel) === 'Shared';
         return (
           <span
+            className="badge"
             style={{
-              padding: '2px 8px',
+              padding: '3px 8px',
               borderRadius: 'var(--radius-full)',
               fontSize: '11px',
-              fontWeight: 800,
-              background: score >= 95 ? 'rgba(13, 159, 110, 0.15)' : 'rgba(217, 119, 6, 0.15)',
-              color: score >= 95 ? 'var(--color-green)' : 'var(--color-amber)',
+              fontWeight: 700,
+              background: isShared ? 'rgba(124, 58, 237, 0.12)' : 'rgba(37, 99, 235, 0.12)',
+              color: isShared ? 'var(--color-purple)' : 'var(--color-blue)',
+              border: `1px solid ${isShared ? 'rgba(124, 58, 237, 0.3)' : 'rgba(37, 99, 235, 0.3)'}`,
             }}
           >
-            {score}%
+            {isShared ? '⚡ Shared' : '★ Dedicated'}
           </span>
         );
       }
     },
     {
+      key: 'location',
+      label: 'Location',
+      width: '105px',
+      render: (val) => (
+        <span style={{ fontSize: '11px', fontWeight: 600, color: val === 'Onsite' ? 'var(--color-green)' : 'var(--color-blue)' }}>
+          {val === 'Onsite' ? '📍 Onsite' : '🏢 Offshore'}
+        </span>
+      )
+    },
+    {
       key: 'actions',
-      label: 'Actions',
+      label: 'Action',
       width: '130px',
       render: (_, item) => (
         <div style={{ display: 'flex', gap: '6px' }} onClick={e => e.stopPropagation()}>
           <button
-            onClick={() => navigate(`/resources/${item.id}`)}
-            title="Open Dedicated Full Profile"
+            onClick={() => setSelectedResource(item)}
+            title="Open Resource Profile (NCGR Roster View)"
             style={{
               padding: '4px 8px',
               borderRadius: 'var(--radius-sm)',
@@ -366,8 +371,8 @@ export default function ResourceDirectoryPage() {
             <Eye size={12} /> Profile
           </button>
           <button
-            onClick={() => setSelectedResource(item)}
-            title="Quick Modal"
+            onClick={() => navigate(`/resources/${item.id}`)}
+            title="Open Full Page View"
             style={{
               padding: '4px 7px',
               borderRadius: 'var(--radius-sm)',
@@ -393,20 +398,20 @@ export default function ResourceDirectoryPage() {
       <div className="page-header" style={{ marginBottom: 0 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <h1 className="page-title">Resource</h1>
-            <span className="badge badge-primary">{stats.total} Dedicated FTEs</span>
+            <h1 className="page-title">Resource Directory</h1>
+            <span className="badge badge-primary">{totalFte.toFixed(1)} Total FTE</span>
             <span className="badge badge-success">100% Staffing Compliance</span>
           </div>
           <p className="page-subtitle">
-            Workforce composition, certified technical competencies, and contractual track allocation across Riyadh and offshore delivery centers.
+            Workforce roster, certified competencies, and contractual track allocation across dedicated and shared support pools.
           </p>
         </div>
       </div>
 
-      {/* KPI Strip per Section 25 & Section 5 */}
+      {/* KPI Strip per Section 25, 30 & NCGR Adaptation */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
         gap: '12px',
       }}>
         <KPICard
@@ -422,37 +427,36 @@ export default function ResourceDirectoryPage() {
         <KPICard
           title="Total Headcount"
           value={stats.total}
-          subtitle="Contractual dedicated FTEs"
+          subtitle="Total enterprise personnel"
           icon={Users}
           sparklineData={[28, 30, 30, stats.total]}
         />
         <KPICard
-          title="Onsite Saudi Delivery"
-          value={stats.onsite}
-          unit="FTEs"
-          subtitle={`${Math.round((stats.onsite / stats.total) * 100)}% Riyadh Presence`}
-          icon={MapPin}
-        />
-        <KPICard
-          title="Offshore Centers"
-          value={stats.offshore}
-          unit="FTEs"
-          subtitle="Dedicated & Flex Pool"
+          title="Total FTE"
+          value={`${totalFte.toFixed(1)} FTE`}
+          status="success"
+          subtitle="Standardized full-time capacity"
           icon={Shield}
         />
         <KPICard
-          title="Female Ratio"
-          value={`${stats.femalePercent}%`}
-          subtitle={`${stats.female} Female Specialists`}
+          title="Dedicated Support"
+          value={`${dedicatedCount} FTEs`}
+          subtitle="100% single-tower commitment"
           icon={UserCheck}
         />
         <KPICard
-          title="Saudization Ratio"
-          value={`${stats.localNationalPercent}%`}
-          target="40%"
+          title="Shared Support"
+          value={`${sharedCount} Specs`}
+          status="primary"
+          subtitle="Cross-tower shared capacity"
+          icon={MapPin}
+        />
+        <KPICard
+          title="Active Resources"
+          value={`${activeResourcesCount}`}
           status="success"
-          subtitle={`${stats.localNational} Saudi Specialists`}
-          icon={Award}
+          subtitle="On-duty & deployed specialists"
+          icon={CheckCircle2}
         />
         <KPICard
           title="Staffing Coverage"
@@ -460,11 +464,11 @@ export default function ResourceDirectoryPage() {
           target="100%"
           status="success"
           subtitle="0 Open Resourcing Gaps"
-          icon={CheckCircle2}
+          icon={Award}
         />
       </div>
 
-      {/* 4 Visual Analytics Charts per Section 25 */}
+      {/* 4 Visual Analytics Charts */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))',
@@ -473,8 +477,8 @@ export default function ResourceDirectoryPage() {
         {/* Visual 1: Onsite vs Offshore Track Allocation */}
         <ChartCard
           title="Delivery Track Distribution"
-          subtitle="Onsite (Riyadh HQ) vs Offshore Dedicated & Flex Pool"
-          badge={`${stats.total} FTEs`}
+          subtitle="Onsite (HQ) vs Offshore Dedicated & Flex Pool"
+          badge={`${stats.total} Headcount`}
           height={250}
         >
           <ResponsiveContainer width="100%" height="100%">
@@ -517,17 +521,17 @@ export default function ResourceDirectoryPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Visual 2: Gender Diversity Composition */}
+        {/* Visual 2: Support Model Allocation (Dedicated vs Shared) */}
         <ChartCard
-          title="Workforce Diversity Breakdown"
-          subtitle="Female representation vs total consultant demographic"
-          badge="Diversity Index"
+          title="Support Model Allocation"
+          subtitle="Dedicated Support vs Cross-Tower Shared Support FTEs"
+          badge={`${totalFte.toFixed(1)} FTE Total`}
           height={250}
         >
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={genderData}
+                data={supportModelData}
                 cx="50%"
                 cy="50%"
                 innerRadius={50}
@@ -535,7 +539,7 @@ export default function ResourceDirectoryPage() {
                 paddingAngle={4}
                 dataKey="value"
               >
-                {genderData.map((entry, index) => (
+                {supportModelData.map((entry, index) => (
                   <Cell key={`cell-g-${index}`} fill={entry.color} stroke="var(--bg-card)" strokeWidth={1} />
                 ))}
               </Pie>
@@ -668,7 +672,7 @@ export default function ResourceDirectoryPage() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            {/* Primary Filter: Service Domain */}
+            {/* Primary Filter: Tower / Service Domain */}
             <select
               value={selectedDomain}
               onChange={e => setSelectedDomain(e.target.value)}
@@ -682,10 +686,53 @@ export default function ResourceDirectoryPage() {
                 fontWeight: 600,
               }}
             >
-              <option value="all">All Service Domains (7)</option>
+              <option value="all">All Towers / Domains (7)</option>
               {SERVICE_DOMAINS.map(d => (
                 <option key={d.id} value={d.id}>{d.name}</option>
               ))}
+            </select>
+
+            {/* Support Model Filter (NCGR Roster Concept) */}
+            <select
+              value={selectedSupportModel}
+              onChange={e => setSelectedSupportModel(e.target.value)}
+              style={{
+                padding: '8px 12px',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-primary)',
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-primary)',
+                fontSize: 'var(--text-xs)',
+                fontWeight: 600,
+              }}
+            >
+              <option value="all">All Support Models</option>
+              <option value="Dedicated">★ Dedicated Support (100%)</option>
+              <option value="Shared">⚡ Shared Support (Cross-Tower)</option>
+            </select>
+
+            {/* Department Filter */}
+            <select
+              value={selectedDepartment}
+              onChange={e => setSelectedDepartment(e.target.value)}
+              style={{
+                padding: '8px 12px',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-primary)',
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-primary)',
+                fontSize: 'var(--text-xs)',
+                fontWeight: 600,
+              }}
+            >
+              <option value="all">All Departments</option>
+              <option value="Workplace Technologies">Workplace Technologies</option>
+              <option value="Cloud & Data Center">Cloud & Data Center</option>
+              <option value="Database & BASIS Administration">Database & BASIS Administration</option>
+              <option value="Security & Identity Governance">Security & Identity Governance</option>
+              <option value="Integration & Middleware">Integration & Middleware</option>
+              <option value="Enterprise Applications">Enterprise Applications</option>
+              <option value="Service Management & Governance">Service Management & Governance</option>
             </select>
 
             {/* Level Select */}
@@ -723,27 +770,8 @@ export default function ResourceDirectoryPage() {
               }}
             >
               <option value="all">All Locations</option>
-              <option value="Onsite">📍 Onsite (Riyadh HQ)</option>
+              <option value="Onsite">📍 Onsite (HQ)</option>
               <option value="Offshore">🏢 Offshore Center</option>
-            </select>
-
-            {/* Saudi / Expat Select */}
-            <select
-              value={selectedType}
-              onChange={e => setSelectedType(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-primary)',
-                background: 'var(--bg-secondary)',
-                color: 'var(--text-primary)',
-                fontSize: 'var(--text-xs)',
-                fontWeight: 600,
-              }}
-            >
-              <option value="all">All Classifications</option>
-              <option value="Saudi">🇸🇦 Saudi National</option>
-              <option value="Expatriate">🌐 Expatriate</option>
             </select>
 
             {/* Availability Select */}
@@ -767,14 +795,15 @@ export default function ResourceDirectoryPage() {
             </select>
 
             {/* Reset Filters */}
-            {(selectedTrack !== 'all' || selectedDomain !== 'all' || selectedType !== 'all' || selectedLevel !== 'all' || selectedLocation !== 'all' || selectedAvailability !== 'all' || searchQuery) && (
+            {(selectedTrack !== 'all' || selectedDomain !== 'all' || selectedSupportModel !== 'all' || selectedDepartment !== 'all' || selectedLevel !== 'all' || selectedLocation !== 'all' || selectedAvailability !== 'all' || searchQuery) && (
               <button
                 onClick={() => {
                   setSelectedTrack('all');
                   setSelectedDomain('all');
+                  setSelectedSupportModel('all');
+                  setSelectedDepartment('all');
                   setSelectedLevel('all');
                   setSelectedLocation('all');
-                  setSelectedType('all');
                   setSelectedAvailability('all');
                   setSearchQuery('');
                 }}
@@ -795,33 +824,54 @@ export default function ResourceDirectoryPage() {
           </div>
         </div>
 
-        {/* Track quick pills */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-          <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 600 }}>Track:</span>
-          {['all', 'AMS-ON-RUN', 'AMS-OF-RUN', 'AMS-OF-Flex', 'ENH-OF-RUN'].map(tr => (
-            <button
-              key={tr}
-              onClick={() => setSelectedTrack(tr)}
-              className={`btn ${selectedTrack === tr ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-              style={{ padding: '3px 10px', fontSize: '11px' }}
-            >
-              {tr === 'all' ? `All Tracks` : tr}
-            </button>
-          ))}
+        {/* Quick pills bar: Support Model & Track */}
+        <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center', paddingTop: '4px', borderTop: '1px solid var(--border-secondary)' }}>
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 600 }}>Model:</span>
+            {[
+              { id: 'all', label: 'All Models' },
+              { id: 'Dedicated', label: '★ Dedicated' },
+              { id: 'Shared', label: '⚡ Shared' },
+            ].map(m => (
+              <button
+                key={m.id}
+                onClick={() => setSelectedSupportModel(m.id)}
+                className={`btn ${selectedSupportModel === m.id ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                style={{ padding: '2px 8px', fontSize: '11px' }}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 600 }}>Track:</span>
+            {['all', 'AMS-ON-RUN', 'AMS-OF-RUN', 'AMS-OF-Flex', 'ENH-OF-RUN'].map(tr => (
+              <button
+                key={tr}
+                onClick={() => setSelectedTrack(tr)}
+                className={`btn ${selectedTrack === tr ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                style={{ padding: '2px 8px', fontSize: '11px' }}
+              >
+                {tr === 'all' ? `All Tracks` : tr}
+              </button>
+            ))}
+          </div>
+
           <span style={{ marginLeft: 'auto', fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', fontWeight: 600 }}>
-            Showing <strong>{filteredResources.length}</strong> of {RESOURCES.length} specialists
+            Showing <strong>{filteredResources.length}</strong> of {RESOURCES.length} specialists ({totalFte.toFixed(1)} Total FTE)
           </span>
         </div>
       </div>
 
       {/* Table */}
       <DataTable
-        title="Consultant Roster & Certifications"
-        subtitle="Click any consultant row or action buttons to inspect governance metrics, SLA compliance, or open full profile."
+        title="Enterprise Resource Roster & Workforce Directory"
+        subtitle="Roster structure with dedicated and shared support model tracking, primary service assignments, and standardized FTE allocations."
         columns={columns}
         data={filteredResources}
-        onRowClick={(item) => navigate(`/resources/${item.id}`)}
-        exportFilename="itms-resources.csv"
+        onRowClick={(item) => setSelectedResource(item)}
+        exportFilename="itms-resource-roster.csv"
       />
 
       {/* Centered Record Detail Modal (Section 7, 23) */}

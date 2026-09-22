@@ -3,59 +3,84 @@
  * Derives operational analytics, distributions, time-series trends, ageing buckets,
  * and unified calendar events directly from master & demo datasets.
  */
-import { incidents, serviceRequests, enhancements, problems, RESOURCES, audits, findings, risks, ctas, licenses, knowledgeArticles, customerFeedback } from './demoData';
-import { ENTITIES, APPLICATIONS, TRACKS } from './masterData';
-import { SLA_POLICIES, OVERALL_MONTHLY_RESOLUTION_TARGET } from './config';
-import { SERVICE_DOMAINS, groupByServiceDomain } from './serviceDomains';
+import { incidents, serviceRequests, enhancements, problems, RESOURCES, audits, findings, risks, ctas, licenses, knowledgeArticles, customerFeedback } from './demoData.js';
+import { ENTITIES, APPLICATIONS, TRACKS } from './masterData.js';
+import { SLA_POLICIES, OVERALL_MONTHLY_RESOLUTION_TARGET } from './config.js';
+import { SERVICE_DOMAINS, groupByServiceDomain } from './serviceDomains.js';
+import {
+  matchesPeriod as checkMatchesPeriod,
+  isTicketOpenInPeriod,
+  calculateBacklogLifecycle,
+  MONTH_SHORT_NAMES,
+  getPeriodDateRange,
+} from '../utils/periodUtils.js';
 
-// ── Period Scope Matcher (Month, Quarter, YTD) ──
+// ── Re-export Period Scope Matcher for backwards compatibility ──
 export function matchesPeriod(dateStr, period) {
-  if (!period || period === 'all' || period === 'ytd_2026') return true;
-  if (!dateStr) return true;
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return true;
-  const month = d.getMonth() + 1; // 1-12
-
-  // Exact month keys
-  if (period === 'm_jan' || period === '2026-01') return month === 1;
-  if (period === 'm_feb' || period === '2026-02') return month === 2;
-  if (period === 'm_mar' || period === '2026-03') return month === 3;
-  if (period === 'm_apr' || period === '2026-04') return month === 4;
-  if (period === 'm_may' || period === '2026-05') return month === 5;
-  if (period === 'm_jun' || period === '2026-06') return month === 6;
-  if (period === 'm_jul' || period === '2026-07') return month === 7;
-  if (period === 'm_aug' || period === '2026-08') return month === 8;
-  if (period === 'm_sep' || period === '2026-09') return month === 9;
-
-  // Quarters
-  if (period === 'q1_2026') return month >= 1 && month <= 3;
-  if (period === 'q2_2026') return month >= 4 && month <= 6;
-  if (period === 'q3_2026') return month >= 7 && month <= 9;
-
-  return true;
+  return checkMatchesPeriod(dateStr, period);
 }
 
 // ═══════════════════════════════════════════════════
 // 1. INCIDENT ANALYTICS SELECTORS (Section 18)
 // ═══════════════════════════════════════════════════
 export function getIncidentAnalytics(filter = {}) {
-  const filtered = incidents.filter(item => {
+  if (filter.recordType && filter.recordType !== 'all' && filter.recordType !== 'Incident') {
+    return {
+      total: 0,
+      open: 0,
+      openingBacklog: 0,
+      inflow: 0,
+      outflow: 0,
+      closingBacklog: 0,
+      p1: 0,
+      p2: 0,
+      p3: 0,
+      p4: 0,
+      breached: 0,
+      atRisk: 0,
+      responseSla: 98.4,
+      resolutionSla: 98.0,
+      priorityDistribution: [],
+      monthlyTrend: [],
+      ageingBuckets: [],
+      slaComparison: [],
+      exceptionQueue: [],
+      serviceDomainDistribution: [],
+      filteredList: [],
+    };
+  }
+
+  // Base filtering without period to support backlog lifecycle calculation
+  const baseFiltered = incidents.filter(item => {
     if (filter.entity && filter.entity !== 'all' && item.entity !== filter.entity) return false;
     if (filter.serviceDomain && filter.serviceDomain !== 'all' && item.serviceDomainId !== filter.serviceDomain && item.serviceDomain !== filter.serviceDomain) return false;
     if (filter.domain && filter.domain !== 'all' && item.serviceDomain !== filter.domain) return false;
     if (filter.priority && filter.priority !== 'all' && item.priority !== filter.priority) return false;
     if (filter.status && filter.status !== 'all' && item.status !== filter.status) return false;
     if (filter.app && filter.app !== 'all' && item.application !== filter.app) return false;
-    if (filter.period && !matchesPeriod(item.createdDate, filter.period)) return false;
     return true;
   });
 
-  const total = filtered.length;
+  // Calculate lifecycle-aware backlog (Opening + Inflow - Outflow = Closing)
+  const backlog = calculateBacklogLifecycle(baseFiltered, filter.period || 'all');
+
+  // Filtered list for display in table and current period KPIs
+  const filtered = baseFiltered.filter(item => {
+    if (filter.period && filter.period !== 'all') {
+      return isTicketOpenInPeriod(item, filter.period) || checkMatchesPeriod(item.createdDate, filter.period);
+    }
+    return true;
+  });
+
+  const inflowTickets = backlog.inflowTickets;
+  const total = filter.period && filter.period !== 'all' ? inflowTickets.length : filtered.length;
   const p1 = filtered.filter(i => i.priority === 'P1');
   const p2 = filtered.filter(i => i.priority === 'P2');
   const p3 = filtered.filter(i => i.priority === 'P3');
   const p4 = filtered.filter(i => i.priority === 'P4');
-  const open = filtered.filter(i => !['Closed', 'Resolved'].includes(i.status));
+  
+  // Lifecycle-aware open count
+  const openCount = backlog.activeOpen;
   const breached = filtered.filter(i => i.slaStatus === 'Breached');
   const atRisk = filtered.filter(i => i.slaStatus === 'At Risk');
 
@@ -67,45 +92,64 @@ export function getIncidentAnalytics(filter = {}) {
     { name: 'P4 - Low', value: p4.length, color: '#71777C', key: 'P4' },
   ];
 
-  // 4-Month Created vs Closed Trend
-  const monthlyTrend = [
-    { month: 'Mar 2026', Created: 44, Closed: 41, Open: 28, Breached: 2 },
-    { month: 'Apr 2026', Created: 52, Closed: 49, Open: 31, Breached: 1 },
-    { month: 'May 2026', Created: 48, Closed: 50, Open: 29, Breached: 1 },
-    { month: 'Jun 2026', Created: Math.max(12, total), Closed: Math.max(10, total - open.length), Open: open.length, Breached: breached.length },
-  ];
+  // Dynamic Monthly Created vs Closed Trend across active months
+  const months = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09'];
+  const monthlyTrend = months.map(m => {
+    const mBacklog = calculateBacklogLifecycle(baseFiltered, m);
+    const mCreated = baseFiltered.filter(i => i.createdDate && i.createdDate.startsWith(m)).length;
+    const mClosed = baseFiltered.filter(i => {
+      const d = i.closedDate || i.resolvedDate || i.createdDate;
+      return d && d.startsWith(m) && ['Closed', 'Resolved'].includes(i.status);
+    }).length;
+    const mBreached = baseFiltered.filter(i => i.createdDate && i.createdDate.startsWith(m) && i.slaStatus === 'Breached').length;
+    const [, mo] = m.split('-');
+    return {
+      month: `${MONTH_SHORT_NAMES[Number(mo) - 1]} 2026`,
+      Created: mCreated,
+      Closed: mClosed,
+      Open: mBacklog.closingBacklog,
+      Breached: mBreached,
+    };
+  });
 
-  // 5 Ageing Buckets per Section 18: 0–3 days, 4–7 days, 8–15 days, 16–30 days, 30+ days
+  // 5 Ageing Buckets: 0–3 days, 4–7 days, 8–15 days, 16–30 days, 30+ days
   const ageingBuckets = [
-    { bucket: '0–3 days', count: Math.round(open.length * 0.45), color: '#0D9F6E' },
-    { bucket: '4–7 days', count: Math.round(open.length * 0.30), color: '#2563EB' },
-    { bucket: '8–15 days', count: Math.round(open.length * 0.15), color: '#D97706' },
-    { bucket: '16–30 days', count: Math.round(open.length * 0.08), color: '#EA580C' },
-    { bucket: '30+ days', count: Math.max(0, open.length - Math.round(open.length * 0.98)), color: '#DC2626' },
+    { bucket: '0–3 days', count: Math.round(openCount * 0.45), color: '#0D9F6E' },
+    { bucket: '4–7 days', count: Math.round(openCount * 0.30), color: '#2563EB' },
+    { bucket: '8–15 days', count: Math.round(openCount * 0.15), color: '#D97706' },
+    { bucket: '16–30 days', count: Math.round(openCount * 0.08), color: '#EA580C' },
+    { bucket: '30+ days', count: Math.max(0, openCount - Math.round(openCount * 0.98)), color: '#DC2626' },
   ];
 
   // Response vs Resolution SLA Performance
   const slaComparison = [
-    { metric: 'P1 (30m / 4h)', Response: 100, Resolution: p1.length ? Math.round((p1.filter(i => i.slaStatus !== 'Breached').length / p1.length) * 100) : 96, Target: 95 },
-    { metric: 'P2 (2h / 8h)', Response: 98, Resolution: p2.length ? Math.round((p2.filter(i => i.slaStatus !== 'Breached').length / p2.length) * 100) : 94, Target: 90 },
-    { metric: 'P3 (1d / 2d)', Response: 96, Resolution: 95, Target: 90 },
-    { metric: 'P4 (2d / 4d)', Response: 98, Resolution: 96, Target: 85 },
+    { metric: 'P1 (30m / 4h)', Response: 100, Resolution: p1.length ? Math.round((p1.filter(i => i.slaStatus !== 'Breached').length / p1.length) * 100) : 100, Target: 98 },
+    { metric: 'P2 (2h / 8h)', Response: 98, Resolution: p2.length ? Math.round((p2.filter(i => i.slaStatus !== 'Breached').length / p2.length) * 100) : 98, Target: 98 },
+    { metric: 'P3 (1d / 2d)', Response: 98, Resolution: p3.length ? Math.round((p3.filter(i => i.slaStatus !== 'Breached').length / p3.length) * 100) : 98, Target: 98 },
+    { metric: 'P4 (2d / 4d)', Response: 99, Resolution: p4.length ? Math.round((p4.filter(i => i.slaStatus !== 'Breached').length / p4.length) * 100) : 98, Target: 98 },
   ];
 
   // Critical Exception Queue
   const exceptionQueue = filtered.filter(i => i.priority === 'P1' || i.priority === 'P2' || i.slaStatus === 'Breached' || i.slaStatus === 'At Risk');
 
+  const resolutionMetCount = filtered.filter(i => i.slaStatus !== 'Breached').length;
+  const resolutionSla = filtered.length ? Math.round((resolutionMetCount / filtered.length) * 100) : 98.0;
+
   return {
     total,
-    open: open.length,
+    open: openCount,
+    openingBacklog: backlog.openingBacklog,
+    inflow: backlog.inflow,
+    outflow: backlog.outflow,
+    closingBacklog: backlog.closingBacklog,
     p1: p1.length,
     p2: p2.length,
     p3: p3.length,
     p4: p4.length,
     breached: breached.length,
     atRisk: atRisk.length,
-    responseSla: 97.4,
-    resolutionSla: total ? Math.round((filtered.filter(i => i.slaStatus !== 'Breached').length / total) * 100) : 95.4,
+    responseSla: 98.4,
+    resolutionSla,
     priorityDistribution,
     monthlyTrend,
     ageingBuckets,
@@ -120,60 +164,138 @@ export function getIncidentAnalytics(filter = {}) {
 // 2. SERVICE REQUEST ANALYTICS SELECTORS (Section 19)
 // ═══════════════════════════════════════════════════
 export function getServiceRequestAnalytics(filter = {}) {
-  const filtered = serviceRequests.filter(item => {
+  if (filter.recordType && filter.recordType !== 'all' && filter.recordType !== 'Service Request') {
+    return {
+      total: 0,
+      open: 0,
+      openingBacklog: 0,
+      inflow: 0,
+      outflow: 0,
+      closingBacklog: 0,
+      fulfilled: 0,
+      slaPercent: 98.0,
+      categoryDistribution: [],
+      classificationDistribution: [],
+      categoryMonthly: [],
+      monthlyTrend: [],
+      ageingBuckets: [],
+      serviceDomainDistribution: [],
+      filteredList: [],
+    };
+  }
+
+  // CRITICAL PRIORITY RULE (Item 10):
+  // Service Requests do NOT have P1, P2, or P3 priorities.
+  // Selecting P1, P2, or P3 MUST return 0 Service Requests!
+  if (filter.priority && filter.priority !== 'all') {
+    if (['P1', 'P2', 'P3'].includes(filter.priority)) {
+      return {
+        total: 0,
+        open: 0,
+        openingBacklog: 0,
+        inflow: 0,
+        outflow: 0,
+        closingBacklog: 0,
+        fulfilled: 0,
+        slaPercent: 98.0,
+        categoryDistribution: [],
+        classificationDistribution: [],
+        categoryMonthly: [],
+        monthlyTrend: [],
+        ageingBuckets: [],
+        serviceDomainDistribution: [],
+        filteredList: [],
+      };
+    }
+  }
+
+  const baseFiltered = serviceRequests.filter(item => {
     if (filter.entity && filter.entity !== 'all' && item.entity !== filter.entity) return false;
     if (filter.serviceDomain && filter.serviceDomain !== 'all' && item.serviceDomainId !== filter.serviceDomain && item.serviceDomain !== filter.serviceDomain) return false;
     if (filter.domain && filter.domain !== 'all' && item.serviceDomain !== filter.domain) return false;
+    if (filter.priority && filter.priority !== 'all') {
+      if (filter.priority === 'P4' && item.priority !== 'P4') return false;
+    }
     if (filter.status && filter.status !== 'all' && item.status !== filter.status) return false;
     if (filter.app && filter.app !== 'all' && item.application !== filter.app) return false;
-    if (filter.period && !matchesPeriod(item.createdDate, filter.period)) return false;
     return true;
   });
 
-  const total = filtered.length;
-  const standard = filtered.filter(s => s.srType === 'Standard');
-  const major = filtered.filter(s => s.srType === 'Major');
-  const open = filtered.filter(s => !['Closed', 'Resolved', 'Rejected'].includes(s.status));
+  const backlog = calculateBacklogLifecycle(baseFiltered, filter.period || 'all');
+
+  const filtered = baseFiltered.filter(item => {
+    if (filter.period && filter.period !== 'all') {
+      return isTicketOpenInPeriod(item, filter.period) || checkMatchesPeriod(item.createdDate, filter.period);
+    }
+    return true;
+  });
+
+  const total = filter.period && filter.period !== 'all' ? backlog.inflowTickets.length : filtered.length;
+  const openCount = backlog.activeOpen;
   const fulfilled = filtered.filter(s => ['Closed', 'Resolved'].includes(s.status));
 
-  // Classification Distribution (Standard vs Major)
-  const classificationDistribution = [
-    { name: 'Standard SR (<16h)', value: standard.length, color: '#2563EB' },
-    { name: 'Major SR (≥16h)', value: major.length, color: '#6B1D2A' },
-  ];
+  // Category Distribution (replacing Standard vs Major per Item 15)
+  const categoryCounts = {};
+  filtered.forEach(s => {
+    const cat = s.category || 'Configuration Request';
+    categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+  });
 
-  // Category-wise Created vs Closed (4 Months)
-  const categoryMonthly = [
-    { category: 'Access Mgmt', Created: 24, Closed: 23, Target: 25 },
-    { category: 'Data Master Fix', Created: 18, Closed: 17, Target: 20 },
-    { category: 'Config Change', Created: 14, Closed: 13, Target: 15 },
-    { category: 'Custom Report', Created: 10, Closed: 9, Target: 12 },
-  ];
+  const colors = ['#2563EB', '#6B1D2A', '#0D9F6E', '#D97706', '#7C3AED', '#EC4899', '#0891B2'];
+  const categoryDistribution = Object.entries(categoryCounts).map(([name, value], idx) => ({
+    name,
+    value,
+    color: colors[idx % colors.length],
+  }));
 
-  // Monthly Trend
-  const monthlyTrend = [
-    { month: 'Mar 2026', Created: 32, Closed: 30, Open: 14 },
-    { month: 'Apr 2026', Created: 38, Closed: 36, Open: 16 },
-    { month: 'May 2026', Created: 42, Closed: 40, Open: 18 },
-    { month: 'Jun 2026', Created: total, Closed: fulfilled.length, Open: open.length },
-  ];
+  // Backwards compatibility alias
+  const classificationDistribution = categoryDistribution;
+
+  // Category Fulfilment Velocity
+  const categoryMonthly = Object.entries(categoryCounts).slice(0, 5).map(([category, count]) => ({
+    category,
+    Created: count,
+    Closed: Math.max(1, Math.round(count * 0.95)),
+    Target: count,
+  }));
+
+  // Dynamic Monthly Trend across 2026 active months
+  const months = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09'];
+  const monthlyTrend = months.map(m => {
+    const mCreated = baseFiltered.filter(s => s.createdDate && s.createdDate.startsWith(m)).length;
+    const mClosed = baseFiltered.filter(s => {
+      const d = s.closedDate || s.resolvedDate || s.createdDate;
+      return d && d.startsWith(m) && ['Closed', 'Resolved'].includes(s.status);
+    }).length;
+    const mBacklog = calculateBacklogLifecycle(baseFiltered, m);
+    const [, mo] = m.split('-');
+    return {
+      month: `${MONTH_SHORT_NAMES[Number(mo) - 1]} 2026`,
+      Created: mCreated,
+      Closed: mClosed,
+      Open: mBacklog.closingBacklog,
+    };
+  });
 
   // Open SR Ageing Buckets
   const ageingBuckets = [
-    { bucket: '0–3 days', count: Math.round(open.length * 0.50), color: '#0D9F6E' },
-    { bucket: '4–7 days', count: Math.round(open.length * 0.30), color: '#2563EB' },
-    { bucket: '8–15 days', count: Math.round(open.length * 0.12), color: '#D97706' },
-    { bucket: '16–30 days', count: Math.round(open.length * 0.06), color: '#EA580C' },
-    { bucket: '30+ days', count: Math.max(0, open.length - Math.round(open.length * 0.98)), color: '#DC2626' },
+    { bucket: '0–3 days', count: Math.round(openCount * 0.50), color: '#0D9F6E' },
+    { bucket: '4–7 days', count: Math.round(openCount * 0.30), color: '#2563EB' },
+    { bucket: '8–15 days', count: Math.round(openCount * 0.12), color: '#D97706' },
+    { bucket: '16–30 days', count: Math.round(openCount * 0.06), color: '#EA580C' },
+    { bucket: '30+ days', count: Math.max(0, openCount - Math.round(openCount * 0.98)), color: '#DC2626' },
   ];
 
   return {
     total,
-    standard: standard.length,
-    major: major.length,
-    open: open.length,
+    open: openCount,
+    openingBacklog: backlog.openingBacklog,
+    inflow: backlog.inflow,
+    outflow: backlog.outflow,
+    closingBacklog: backlog.closingBacklog,
     fulfilled: fulfilled.length,
-    slaPercent: 94.6,
+    slaPercent: filtered.length ? Math.round((filtered.filter(s => s.slaStatus === 'Met').length / filtered.length) * 100) : 98.0,
+    categoryDistribution,
     classificationDistribution,
     categoryMonthly,
     monthlyTrend,
@@ -193,16 +315,16 @@ export function getEnhancementAnalytics(filter = {}) {
     if (filter.domain && filter.domain !== 'all' && item.serviceDomain !== filter.domain) return false;
     if (filter.status && filter.status !== 'all' && item.status !== filter.status) return false;
     if (filter.app && filter.app !== 'all' && item.application !== filter.app) return false;
-    if (filter.period && !matchesPeriod(item.createdDate, filter.period)) return false;
+    if (filter.period && !checkMatchesPeriod(item.createdDate, filter.period)) return false;
     return true;
   });
 
   const total = filtered.length;
-  const minor = filtered.filter(e => e.category === 'Minor' || (e.effortHours && e.effortHours <= 80));
-  const major = filtered.filter(e => e.category === 'Major' || (e.effortHours && e.effortHours > 80));
-  const inBuild = filtered.filter(e => ['Build', 'Testing', 'In Progress'].includes(e.status));
+  const minor = filtered.filter(e => e.category === 'Minor' || (e.timeCountHrs && e.timeCountHrs <= 80));
+  const major = filtered.filter(e => e.category === 'Major' || (e.timeCountHrs && e.timeCountHrs > 80));
+  const inBuild = filtered.filter(e => ['In Development', 'Testing', 'Approved'].includes(e.status));
   const deployed = filtered.filter(e => ['Deployed', 'Closed'].includes(e.status));
-  const totalHours = filtered.reduce((acc, curr) => acc + (curr.effortHours || 40), 0);
+  const totalHours = filtered.reduce((acc, curr) => acc + (curr.timeCountHrs || 40), 0);
 
   // Minor vs Major Scale Donut
   const scaleDistribution = [
@@ -212,28 +334,35 @@ export function getEnhancementAnalytics(filter = {}) {
 
   // Delivery Pipeline Stages
   const pipelineStages = [
-    { stage: 'Requirements', count: filtered.filter(e => e.status === 'Requirements').length || 2, color: '#9CA3AB' },
-    { stage: 'Design', count: filtered.filter(e => e.status === 'Design').length || 3, color: '#2563EB' },
-    { stage: 'Build', count: filtered.filter(e => e.status === 'Build' || e.status === 'In Progress').length || 5, color: '#6B1D2A' },
-    { stage: 'Testing / QA', count: filtered.filter(e => e.status === 'Testing').length || 3, color: '#D97706' },
-    { stage: 'UAT', count: filtered.filter(e => e.status === 'UAT').length || 2, color: '#7C3AED' },
-    { stage: 'Deployed', count: deployed.length || 6, color: '#0D9F6E' },
+    { stage: 'Draft', count: filtered.filter(e => e.status === 'Draft').length, color: '#9CA3AB' },
+    { stage: 'Under Review', count: filtered.filter(e => e.status === 'Under Review').length, color: '#2563EB' },
+    { stage: 'Approved', count: filtered.filter(e => e.status === 'Approved').length, color: '#6B1D2A' },
+    { stage: 'In Dev / Test', count: inBuild.length, color: '#D97706' },
+    { stage: 'Deployed / Closed', count: deployed.length, color: '#0D9F6E' },
   ];
 
-  // Monthly Created vs Closed Trend
-  const monthlyTrend = [
-    { month: 'Mar 2026', Created: 12, Closed: 10, Hours: 480 },
-    { month: 'Apr 2026', Created: 16, Closed: 14, Hours: 620 },
-    { month: 'May 2026', Created: 14, Closed: 15, Hours: 580 },
-    { month: 'Jun 2026', Created: total, Closed: deployed.length, Hours: totalHours },
-  ];
+  // Dynamic Monthly Trend derived from filtered enhancements
+  const months = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09'];
+  const monthlyTrend = months.map(m => {
+    const inMonth = filtered.filter(e => e.createdDate && e.createdDate.startsWith(m));
+    const closedInMonth = inMonth.filter(e => e.status === 'Closed' || e.status === 'Deployed');
+    const hours = inMonth.reduce((sum, e) => sum + (e.timeCountHrs || 40), 0);
+    const [, mo] = m.split('-');
+    return {
+      month: `${MONTH_SHORT_NAMES[Number(mo) - 1]} 2026`,
+      Created: inMonth.length,
+      Closed: closedInMonth.length,
+      Hours: hours,
+    };
+  });
 
   // Ageing of active Enhancements
+  const openCount = total - deployed.length;
   const ageingBuckets = [
-    { bucket: '0–15 days', count: 6, color: '#0D9F6E' },
-    { bucket: '16–30 days', count: 5, color: '#2563EB' },
-    { bucket: '31–60 days', count: 4, color: '#D97706' },
-    { bucket: '> 60 days', count: 2, color: '#DC2626' },
+    { bucket: '0–15 days', count: Math.round(openCount * 0.4), color: '#0D9F6E' },
+    { bucket: '16–30 days', count: Math.round(openCount * 0.3), color: '#2563EB' },
+    { bucket: '31–60 days', count: Math.round(openCount * 0.2), color: '#D97706' },
+    { bucket: '> 60 days', count: Math.max(0, openCount - Math.round(openCount * 0.9)), color: '#DC2626' },
   ];
 
   return {
@@ -258,17 +387,51 @@ export function getProblemAnalytics(filter = {}) {
     if (filter.domain && filter.domain !== 'all' && item.serviceDomain !== filter.domain) return false;
     if (filter.status && filter.status !== 'all' && item.status !== filter.status) return false;
     if (filter.app && filter.app !== 'all' && item.application !== filter.app) return false;
+    if (filter.period && !checkMatchesPeriod(item.createdDate, filter.period)) return false;
     return true;
   });
+
+  const total = filtered.length;
+  const open = filtered.filter(p => p.status === 'Open' || p.status === 'In Progress');
+  const rcaPending = filtered.filter(p => p.rcaStatus === 'Pending' || p.rcaStatus === 'Not Started');
+  const closed = filtered.filter(p => p.status === 'Closed');
+  const rcaDelivered = filtered.filter(p => p.rcaStatus === 'Delivered');
+
+  // Dynamic monthly trend
+  const months = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09'];
+  const monthlyTrend = months.map(m => {
+    const inMonth = filtered.filter(p => p.createdDate && p.createdDate.startsWith(m));
+    const closedInMonth = inMonth.filter(p => p.status === 'Closed');
+    const [, mo] = m.split('-');
+    return {
+      month: `${MONTH_SHORT_NAMES[Number(mo) - 1]} 2026`,
+      Logged: inMonth.length,
+      Resolved: closedInMonth.length,
+      RcaDelivered: inMonth.filter(p => p.rcaStatus === 'Delivered').length,
+    };
+  });
+
+  // Ageing profile
+  const ageingBuckets = [
+    { bucket: '0–7 days', count: Math.round(open.length * 0.4), color: '#0D9F6E' },
+    { bucket: '8–14 days', count: Math.round(open.length * 0.3), color: '#2563EB' },
+    { bucket: '15–30 days', count: Math.round(open.length * 0.2), color: '#D97706' },
+    { bucket: '30+ days', count: Math.max(0, open.length - Math.round(open.length * 0.9)), color: '#DC2626' },
+  ];
+
   return {
-    total: filtered.length,
-    open: filtered.filter(p => p.status === 'Open' || p.status === 'In Progress').length,
-    rcaPending: filtered.filter(p => p.rcaStatus === 'Pending' || p.rcaStatus === 'Not Started').length,
-    closed: filtered.filter(p => p.status === 'Closed').length,
+    total,
+    open: open.length,
+    rcaPending: rcaPending.length,
+    rcaDelivered: rcaDelivered.length,
+    closed: closed.length,
+    monthlyTrend,
+    ageingBuckets,
     serviceDomainDistribution: groupByServiceDomain(filtered),
     filteredList: filtered,
   };
 }
+
 
 // ═══════════════════════════════════════════════════
 // 4. GLOBAL CALENDAR AGGREGATOR (Section 22 & 46)
@@ -610,15 +773,20 @@ export function getExecutiveBoardData(filter = {}) {
     ? Math.round((p2Incidents.filter(i => i.slaStatus !== 'Breached' && i.resolutionSla !== 'Breached').length / p2Count) * 100)
     : 100;
 
-  // SLA Performance Trend
-  const slaTrend = [
-    { month: 'Jan', Response: 98.2, Resolution: 94.0, Target: 88.0 },
-    { month: 'Feb', Response: 97.8, Resolution: 94.5, Target: 88.0 },
-    { month: 'Mar', Response: 98.4, Resolution: 95.0, Target: 88.0 },
-    { month: 'Apr', Response: 97.5, Resolution: 94.8, Target: 88.0 },
-    { month: 'May', Response: 98.0, Resolution: 95.2, Target: 88.0 },
-    { month: 'Jun', Response: 98.6, Resolution: 95.4, Target: 88.0 },
-  ];
+  // Contractual Resolution SLA Performance Trend (Dynamically generated from underlying data)
+  const months = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09'];
+  const slaTrend = months.map(m => {
+    const [, mo] = m.split('-');
+    const mIncidents = incidents.filter(i => i.createdDate && i.createdDate.startsWith(m));
+    const mBreached = mIncidents.filter(i => i.slaStatus === 'Breached').length;
+    const total = mIncidents.length;
+    const actualRes = total > 0 ? +(((total - mBreached) / total) * 100).toFixed(1) : 98.0;
+    return {
+      month: MONTH_SHORT_NAMES[Number(mo) - 1],
+      Resolution: Math.min(100, Math.max(90, actualRes)),
+      Target: OVERALL_MONTHLY_RESOLUTION_TARGET,
+    };
+  });
 
   // Overall Ticket Mix (Incidents, SRs, Enhancements, Problems)
   const ticketMix = [
@@ -643,17 +811,33 @@ export function getExecutiveBoardData(filter = {}) {
     { track: 'ENH-OF-RUN', Plan: 3, Actual: 3, Coverage: '100%' },
   ];
 
-  // Executive CSAT (Section 1 requirement: Overall 95%, 5 tiers, Very Poor removed, Poor < 5%, total 100%)
+  // Dynamic Executive CSAT derived from customer feedback in period
+  const periodFeedback = customerFeedback.filter(f => {
+    if (filter.period && filter.period !== 'all') {
+      return checkMatchesPeriod(f.date, filter.period);
+    }
+    return true;
+  });
+  const fbTotal = periodFeedback.length || 1;
+  const excCount = periodFeedback.filter(f => f.rating === 'Excellent' || f.rating === 'Very Satisfied').length;
+  const vgCount = periodFeedback.filter(f => f.rating === 'Very Good' || f.rating === 'Satisfied').length;
+  const gdCount = periodFeedback.filter(f => f.rating === 'Good' || f.rating === 'Neutral').length;
+  const avgCount = periodFeedback.filter(f => f.rating === 'Average' || f.rating === 'Dissatisfied').length;
+  const poorCount = periodFeedback.filter(f => f.rating === 'Poor' || f.rating === 'Very Dissatisfied').length;
+
+  // Formula per Item 40: CSAT = (Satisfied + Very Satisfied) / Total * 100
+  const dynamicCsatScore = Math.round(((excCount + vgCount) / fbTotal) * 100);
+
   const executiveCsat = {
-    overall: 95,
+    overall: dynamicCsatScore,
     target: 90,
-    status: 'success',
+    status: dynamicCsatScore >= 90 ? 'success' : 'warning',
     distribution: [
-      { name: 'Excellent', pct: 82, color: '#0D9F6E' },
-      { name: 'Very Good', pct: 9, color: '#2563EB' },
-      { name: 'Good', pct: 5, color: '#6366F1' },
-      { name: 'Average', pct: 2, color: '#D97706' },
-      { name: 'Poor', pct: 2, color: '#DC2626' },
+      { name: 'Very Satisfied', pct: Math.round((excCount / fbTotal) * 100), color: '#0D9F6E' },
+      { name: 'Satisfied', pct: Math.round((vgCount / fbTotal) * 100), color: '#2563EB' },
+      { name: 'Neutral', pct: Math.round((gdCount / fbTotal) * 100), color: '#6366F1' },
+      { name: 'Dissatisfied', pct: Math.round((avgCount / fbTotal) * 100), color: '#D97706' },
+      { name: 'Very Dissatisfied', pct: Math.round((poorCount / fbTotal) * 100), color: '#DC2626' },
     ],
   };
 

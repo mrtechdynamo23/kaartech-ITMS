@@ -21,12 +21,15 @@ import DetailDrawer from '../../components/common/DetailDrawer';
 import CreateTicketModal from '../../components/common/CreateTicketModal';
 import { getIncidentAnalytics, getServiceRequestAnalytics } from '../../data/analyticsSelectors';
 import { SERVICE_DOMAINS } from '../../data/serviceDomains';
+import { OVERALL_MONTHLY_RESOLUTION_TARGET } from '../../data/config';
 
 export default function CommandCenterOverview() {
   const navigate = useNavigate();
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [filters, setFilters] = useState({
+    period: 'all',
+    recordType: 'all',
     serviceDomain: 'all',
     entity: 'all',
     domain: 'all',
@@ -117,7 +120,9 @@ export default function CommandCenterOverview() {
       <FilterBar
         filters={filters}
         onChange={setFilters}
-        onReset={() => setFilters({ entity: 'all', domain: 'all', priority: 'all', status: 'all', app: 'all' })}
+        onReset={() => setFilters({ period: 'all', recordType: 'all', entity: 'all', domain: 'all', priority: 'all', status: 'all', app: 'all' })}
+        showPeriod={true}
+        showRecordType={true}
         showEntity={true}
         showDomain={true}
         showPriority={true}
@@ -192,31 +197,35 @@ export default function CommandCenterOverview() {
         />
         <KPICard
           title="Resolution SLA Met"
-          value="84.0%"
-          target="88.0%"
-          status="warning"
-          trend={-4.0}
-          trendPeriod="vs 88% target (-4 pp)"
+          value={`${incAnalytics.resolutionSla || 98.0}%`}
+          target={`${OVERALL_MONTHLY_RESOLUTION_TARGET}.0%`}
+          status={(incAnalytics.resolutionSla || 98.0) >= OVERALL_MONTHLY_RESOLUTION_TARGET ? 'success' : 'warning'}
+          trend={+((incAnalytics.resolutionSla || 98.0) - OVERALL_MONTHLY_RESOLUTION_TARGET).toFixed(1)}
+          trendPeriod={`vs ${OVERALL_MONTHLY_RESOLUTION_TARGET}% target`}
           isPositiveGood={true}
           icon={CheckCircle2}
-          sparklineData={[88, 86, 85, 84]}
+          sparklineData={[96, 97, 98, incAnalytics.resolutionSla || 98]}
           onClick={() => navigate('/reporting/sla')}
         />
         <KPICard
-          title="SLA Breaches"
+          title="Overall Contractual Breaches"
           value={incAnalytics.breached}
           status={incAnalytics.breached === 0 ? 'success' : 'danger'}
-          subtitle="Requires root cause action"
+          subtitle="Contractual penalty threshold assessment"
           icon={AlertTriangle}
           sparklineData={[1, 2, 2, incAnalytics.breached]}
         />
         <KPICard
-          title="Major SRs (≥16h)"
-          value={srAnalytics.major}
+          title="Fulfilled SRs"
+          value={srAnalytics.fulfilled}
           unit="SRs"
-          subtitle="Complex technical requests"
+          subtitle="Delivered requests"
           icon={Clock}
-          sparklineData={[8, 10, 11, srAnalytics.major]}
+          sparklineData={[
+            Math.max(0, srAnalytics.fulfilled - 8),
+            Math.max(0, srAnalytics.fulfilled - 4),
+            srAnalytics.fulfilled
+          ]}
           onClick={() => navigate('/command-center/service-requests')}
         />
       </div>
@@ -230,7 +239,7 @@ export default function CommandCenterOverview() {
       }}>
         {/* Ticket Inflow vs Resolution Velocity */}
         <ChartCard
-          title="Ticket Inflow vs Resolution Velocity (4 Months)"
+          title="Ticket Inflow vs Resolution Velocity (Monthly Trend)"
           subtitle="Monthly volume created vs successfully closed"
           height={260}
           actions={
@@ -265,8 +274,8 @@ export default function CommandCenterOverview() {
 
         {/* Operational Load by Service Domain */}
         <ChartCard
-          title="Operational Volume by Service Domain (7 RFP Domains)"
-          subtitle="Real-time incident & service request allocation across the 7 Primary Service Domains"
+          title="Operational Volume by Service Domain (Service Domains)"
+          subtitle="Real-time incident & service request allocation across the Primary Service Domains"
           height={260}
           actions={
             <button className="btn btn-ghost btn-sm" onClick={() => navigate('/command-center/service-requests')} style={{ fontSize: '11px' }}>
@@ -297,7 +306,7 @@ export default function CommandCenterOverview() {
         title="Live Dispatch & Operational Queue"
         subtitle="Click any row to inspect technical root cause, SLA countdowns, and consultant assignment."
         columns={columns}
-        data={incAnalytics.filteredList}
+        data={filters.recordType === 'Service Request' ? srAnalytics.filteredList : incAnalytics.filteredList}
         onRowClick={(item) => setSelectedTicket(item)}
         exportFilename="command-center-live-queue.csv"
       />

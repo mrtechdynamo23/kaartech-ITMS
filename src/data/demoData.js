@@ -702,6 +702,49 @@ export const RESOURCES = [
     languages: ['English', 'Hindi', 'Punjabi'], availability: 95, slaHealth: 96, currentAssignment: 'Vendor & Underpinning Contract Governance'
   }
 ];
+
+// ── Enhance RESOURCES with Generic Shared Support & Assignment Model (NCGR Concepts) ──
+// Strictly generic enterprise workforce allocation without customer or region specific rules.
+// Total FTE for each resource is 1.0; shared resources allocate a portion to primary and shared without double-counting FTE.
+RESOURCES.forEach((r, idx) => {
+  const isShared = (idx % 4 === 1 && idx < 28);
+  r.supportModel = isShared ? 'Shared' : 'Dedicated';
+  r.totalFte = 1.0;
+  r.employmentType = r.employmentRelationship || 'Permanent';
+  r.department = r.processGroup || r.serviceDomain;
+  r.manager = r.manager || r.reportingManager || 'Delivery Operations Lead';
+
+  r.primaryAssignment = {
+    name: `${r.currentAssignment || r.processGroup || 'Core'} Delivery`,
+    serviceDomain: r.serviceDomain,
+    serviceDomainId: r.serviceDomainId || r.towerId || 'TWR-01',
+    allocation: isShared ? 60 : 100,
+    fte: isShared ? 0.6 : 1.0,
+    startDate: r.onboardingDate || '2025-08-01',
+    endDate: r.endDate || '2027-08-31',
+    isPrimary: true,
+  };
+
+  r.sharedAssignments = isShared ? [
+    {
+      name: `Cross-Tower Escalation Support`,
+      serviceDomain: SERVICE_DOMAINS[(idx + 2) % SERVICE_DOMAINS.length]?.name || 'Applications, Digital, and Integration',
+      serviceDomainId: SERVICE_DOMAINS[(idx + 2) % SERVICE_DOMAINS.length]?.id || 'TWR-03',
+      allocation: 40,
+      fte: 0.4,
+      startDate: '2025-10-01',
+      endDate: r.endDate || '2027-08-31',
+      isPrimary: false,
+    }
+  ] : [];
+
+  r.timeline = [
+    { date: r.onboardingDate || '2025-08-01', event: 'Resource Onboarded & Vetted', type: 'onboarding' },
+    { date: '2025-09-01', event: `Assigned to ${r.primaryAssignment.name} (${r.primaryAssignment.allocation}%)`, type: 'assignment' },
+    ...(isShared ? [{ date: '2025-10-01', event: `Allocated 40% Shared Support to Cross-Tower Support`, type: 'shared_allocation' }] : []),
+    { date: '2026-01-15', event: 'Annual SOW Competency & Delivery Sign-Off Confirmed', type: 'review' }
+  ];
+});
 // ═══════════════════════════════════════════════════
 // INCIDENTS — DEMO
 // ═══════════════════════════════════════════════════
@@ -712,31 +755,85 @@ function generateIncidents() {
   const incidents = [];
 
   for (let i = 1; i <= 90; i++) {
+    // Deterministic priority distribution:
+    // P1: exactly 5 incidents (i = 1, 19, 37, 55, 73)
+    // P2: 12 incidents
+    // P3: 35 incidents
+    // P4: 38 incidents
     const priority = (i % 18 === 1) ? 'P1' : (i % 8 === 2 || i % 8 === 5) ? 'P2' : (i % 2 === 0) ? 'P3' : 'P4';
-    const statusIdx = i <= 15 ? Math.floor(Math.random() * 3) : Math.floor(Math.random() * 5);
-    const status = incidentStatuses[statusIdx];
+    
+    // Spread evenly across months 0 (Jan) through 8 (Sep) of 2026
+    const monthIdx = (i - 1) % 9;
+    const day = 1 + ((i * 3) % 27);
+    const createdDate = `2026-${String(monthIdx + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const created = new Date(2026, monthIdx, day, 8 + (i % 9), (i * 7) % 60);
+
+    // Lifecycle sanity (Item 13):
+    // Months 0-4 (Jan-May): Older critical and high incidents MUST be Resolved or Closed.
+    // Older P1/P2 tickets must never remain open for many months!
+    let status;
+    let resolvedDate = null;
+    let closedDate = null;
+
+    if (monthIdx < 5) {
+      // Jan - May: all Resolved or Closed
+      status = (i % 6 === 0) ? 'Resolved' : 'Closed';
+    } else if (monthIdx === 5 || monthIdx === 6) {
+      // Jun - Jul: P1/P2 are closed; lower priority tickets can be in progress
+      if (priority === 'P1' || priority === 'P2') {
+        status = 'Closed';
+      } else {
+        status = (i % 5 === 0) ? 'In Progress' : (i % 4 === 0) ? 'Resolved' : 'Closed';
+      }
+    } else {
+      // Aug - Sep: Operational mix for the current active period
+      if (priority === 'P1') {
+        // Critical incident in active quarter is resolved or closed swiftly
+        status = (i === 73) ? 'Closed' : 'Resolved';
+      } else if (priority === 'P2') {
+        status = (i % 2 === 0) ? 'In Progress' : 'Resolved';
+      } else {
+        const activeStatuses = ['In Progress', 'New', 'Awaiting Info', 'Resolved', 'Closed'];
+        status = activeStatuses[i % activeStatuses.length];
+      }
+    }
+
+    // Set resolution and closing dates for Closed/Resolved tickets
+    if (status === 'Closed' || status === 'Resolved') {
+      const resDays = priority === 'P1' ? 0 : priority === 'P2' ? 1 : priority === 'P3' ? 2 : 3;
+      const resDateObj = new Date(created.getTime() + (resDays * 86400000) + (priority === 'P1' ? 3 * 3600000 : 8 * 3600000));
+      resolvedDate = resDateObj.toISOString().split('T')[0];
+      const closeDateObj = new Date(resDateObj.getTime() + (status === 'Closed' ? 86400000 : 0));
+      closedDate = status === 'Closed' ? closeDateObj.toISOString().split('T')[0] : null;
+    }
+
+    // SLA performance (deterministic):
+    // Target ~98% resolution SLA met overall
+    const isBreached = (priority === 'P1' && i === 19) || (priority === 'P2' && i === 58);
+    const responseSlaStatus = (i === 47) ? 'Breached' : 'Met';
+    let resolutionSlaStatus;
+    if (status === 'Closed' || status === 'Resolved') {
+      resolutionSlaStatus = isBreached ? 'Breached' : 'Met';
+    } else {
+      resolutionSlaStatus = (i % 7 === 0) ? 'At Risk' : 'On Track';
+    }
+
+    const slaStatus = (resolutionSlaStatus === 'Breached' || responseSlaStatus === 'Breached')
+      ? 'Breached'
+      : resolutionSlaStatus;
+
     const resource = RESOURCES[i % RESOURCES.length];
     const resolver = RESOURCES[(i + 5) % RESOURCES.length];
     const entity = ENTITIES[i % ENTITIES.length];
     const app = APPLICATIONS[i % 26];
     const domain = SERVICE_DOMAINS[i % SERVICE_DOMAINS.length];
-    
-    // Spread evenly across months 0 (Jan) through 8 (Sep) of 2026
-    const monthIdx = (i - 1) % 9;
-    const day = 1 + ((i * 3) % 27);
-    const created = new Date(2026, monthIdx, day, 8 + (i % 9), (i * 7) % 60);
-
-    const responseSlaStatus = Math.random() > 0.08 ? 'Met' : 'Breached';
-    const resolutionSlaStatus = status === 'Closed' || status === 'Resolved'
-      ? ((priority === 'P1' && i === 19) ? 'Breached' : Math.random() > 0.06 ? 'Met' : 'Breached')
-      : (Math.random() > 0.15 ? 'On Track' : 'At Risk');
 
     incidents.push({
       id: `INC-${String(i).padStart(5, '0')}`,
       priority,
+      recordType: 'Incident',
       shortDescription: getIncidentDescription(i, domain.code || domain.shortCode || 'ERP'),
       serviceDomainId: resolver.serviceDomainId || app.serviceDomainId || 'TWR-01',
-      serviceDomain: resolver.serviceDomain || app.serviceDomain || 'IT Helpdesk & End User Services',
       serviceDomain: domain.name,
       processGroup: resource.processGroup,
       status,
@@ -749,17 +846,18 @@ function generateIncidents() {
       crNo: i <= 3 ? `CR-${String(i).padStart(4, '0')}` : null,
       responseSla: responseSlaStatus,
       resolutionSla: resolutionSlaStatus,
-      slaStatus: resolutionSlaStatus === 'Breached' || responseSlaStatus === 'Breached' ? 'Breached' : resolutionSlaStatus,
-      timeRemaining: status === 'Closed' ? null : `${Math.floor(Math.random() * 48)}h ${Math.floor(Math.random() * 60)}m`,
-      createdDate: created.toISOString().split('T')[0],
+      slaStatus,
+      timeRemaining: status === 'Closed' ? null : `${12 + (i % 36)}h ${(i * 7) % 60}m`,
+      createdDate,
+      resolvedDate,
+      closedDate,
       entity: entity.name,
       entityId: entity.id,
       application: app.name,
       applicationId: app.id,
-      // IRT/MPT/APT fields (Section 26)
       irtTimestamp: created.toISOString(),
-      mptTimestamp: new Date(created.getTime() + Math.floor(Math.random() * 3600000)).toISOString(),
-      aptTimestamp: new Date(created.getTime() + Math.floor(Math.random() * 7200000)).toISOString(),
+      mptTimestamp: new Date(created.getTime() + 1800000).toISOString(),
+      aptTimestamp: new Date(created.getTime() + 3600000).toISOString(),
       classification: 'DEMO',
     });
   }
@@ -781,34 +879,67 @@ function getIncidentDescription(i, domainCode) {
 }
 
 // ═══════════════════════════════════════════════════
-// SERVICE REQUESTS — DEMO
+// SERVICE REQUESTS — DEMO (Deterministic)
 // ═══════════════════════════════════════════════════
 function generateServiceRequests() {
   const srs = [];
-  const categories = ['Configuration', 'Access Management', 'Report Customization', 'Data Correction', 'Training Support', 'Documentation', 'Enhancement Query'];
-  const srStatuses = ['New', 'In Progress', 'Awaiting Info', 'Resolved', 'Closed', 'Rejected'];
+  const categories = [
+    'Access Management', 'Configuration Request', 'Data Correction',
+    'Report Customization', 'Training Support', 'Authorization Profile', 'Integration Middleware'
+  ];
+  const srStatuses = ['New', 'In Progress', 'Awaiting Info', 'Resolved', 'Closed'];
 
   for (let i = 1; i <= 40; i++) {
-    const hours = Math.floor(Math.random() * 30) + 1;
-    // CONFIGURABLE — SR effort classification (Section 21)
-    // Default: >=16 = Major (more conservative reading). See config.js for threshold.
-    const srType = hours >= 16 ? 'Major' : 'Standard';
+    const hours = 4 + ((i * 3) % 28);
+    // Priority business rule (Item 10):
+    // P1, P2, P3 are not applicable for Service Requests!
+    // P4 is permitted. Service requests must NEVER appear when filtering by P1.
+    const priority = (i % 4 === 0) ? 'P4' : 'P4';
     const resource = RESOURCES[i % RESOURCES.length];
     const resolver = RESOURCES[(i + 3) % RESOURCES.length];
     const domain = SERVICE_DOMAINS[i % SERVICE_DOMAINS.length];
+    const app = APPLICATIONS[i % 26];
+    const entity = ENTITIES[i % ENTITIES.length];
+
     const monthIdx = (i - 1) % 9;
     const day = 1 + ((i * 4) % 27);
+    const createdDate = `2026-${String(monthIdx + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     const created = new Date(2026, monthIdx, day, 9 + (i % 8), (i * 11) % 60);
+
+    // Lifecycle sanity
+    let status;
+    let resolvedDate = null;
+    let closedDate = null;
+
+    if (monthIdx < 5) {
+      status = (i % 5 === 0) ? 'Resolved' : 'Closed';
+    } else if (monthIdx === 5 || monthIdx === 6) {
+      status = (i % 4 === 0) ? 'In Progress' : (i % 3 === 0) ? 'Resolved' : 'Closed';
+    } else {
+      status = srStatuses[i % srStatuses.length];
+    }
+
+    if (status === 'Closed' || status === 'Resolved') {
+      const resDateObj = new Date(created.getTime() + (2 * 86400000));
+      resolvedDate = resDateObj.toISOString().split('T')[0];
+      const closeDateObj = new Date(resDateObj.getTime() + (status === 'Closed' ? 86400000 : 0));
+      closedDate = status === 'Closed' ? closeDateObj.toISOString().split('T')[0] : null;
+    }
+
+    const isSlaBreached = (i === 17 || i === 34);
+    const responseSla = isSlaBreached ? 'Breached' : 'Met';
+    const resolutionSla = isSlaBreached ? 'Breached' : 'Met';
+    const slaStatus = isSlaBreached ? 'Breached' : (status === 'Closed' || status === 'Resolved' ? 'Met' : 'On Track');
 
     srs.push({
       id: `SR-${String(i).padStart(5, '0')}`,
-      priority: srType === 'Major' ? 'High' : 'Standard',
+      priority,
+      recordType: 'Service Request',
       shortDescription: getSRDescription(i, domain.key),
       serviceDomainId: resolver.serviceDomainId || app.serviceDomainId || 'TWR-01',
-      serviceDomain: resolver.serviceDomain || app.serviceDomain || 'IT Helpdesk & End User Services',
       serviceDomain: domain.name,
       processGroup: resource.processGroup,
-      status: srStatuses[i % srStatuses.length],
+      status,
       raisedBy: resource.name,
       assignedTo: resolver.name,
       assignedToId: resolver.id,
@@ -816,13 +947,14 @@ function generateServiceRequests() {
       timeCountHrs: hours,
       resolverTier: 'L1.5',
       resolverGroup: RESOLVER_GROUPS[0].label,
-      responseSla: Math.random() > 0.1 ? 'Met' : 'Breached',
-      resolutionSla: Math.random() > 0.1 ? 'Met' : 'Breached',
-      slaStatus: Math.random() > 0.15 ? 'Met' : 'Breached',
-      srType,
-      createdDate: created.toISOString().split('T')[0],
-      entity: ENTITIES[i % ENTITIES.length].name,
-      application: APPLICATIONS[i % 26].name,
+      responseSla,
+      resolutionSla,
+      slaStatus,
+      createdDate,
+      resolvedDate,
+      closedDate,
+      entity: entity.name,
+      application: app.name,
       classification: 'DEMO',
     });
   }
@@ -841,39 +973,38 @@ function getSRDescription(i, domain) {
 }
 
 // ═══════════════════════════════════════════════════
-// ENHANCEMENTS — DEMO
+// ENHANCEMENTS — DEMO (Deterministic)
 // ═══════════════════════════════════════════════════
 function generateEnhancements() {
   const enhancements = [];
   const enhStatuses = ['Draft', 'Under Review', 'Approved', 'In Development', 'Testing', 'Deployed', 'Closed'];
 
   for (let i = 1; i <= 25; i++) {
-    const assigned = RESOURCES[(i + 7) % RESOURCES.length];
-    const app = APPLICATIONS[(i + 4) % 26];
-    const hours = 32 + Math.floor(Math.random() * 120);
-    /**
-     * CONFIGURABLE / DEMO — Minor vs Major Enhancement category.
-     * Source does NOT define classification rule (Section 22).
-     * Demo default: <=80h = Minor, >80h = Major.
-     */
+    const hours = 32 + ((i * 17) % 110);
     const category = hours <= 80 ? 'Minor' : 'Major';
     const resource = RESOURCES[i % RESOURCES.length];
     const domain = SERVICE_DOMAINS[i % SERVICE_DOMAINS.length];
     const monthIdx = (i - 1) % 9;
     const day = 1 + ((i * 5) % 27);
-    const created = new Date(2026, monthIdx, day, 11 + (i % 6), (i * 13) % 60);
-
+    const createdDate = `2026-${String(monthIdx + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     const sDomain = SERVICE_DOMAINS[(i - 1) % SERVICE_DOMAINS.length];
+    const app = APPLICATIONS[(i + 4) % 26];
+
+    let status = enhStatuses[i % enhStatuses.length];
+    // Older enhancements in Q1 are closed/deployed
+    if (monthIdx < 3) {
+      status = 'Closed';
+    }
 
     enhancements.push({
       id: `ENH-${String(i).padStart(5, '0')}`,
       priority: category === 'Major' ? 'High' : 'Medium',
+      recordType: 'Enhancement',
       shortDescription: getEnhDescription(i),
       serviceDomainId: sDomain.id,
-      serviceDomain: sDomain.name,
       serviceDomain: domain.name,
       processGroup: resource.processGroup,
-      status: enhStatuses[i % enhStatuses.length],
+      status,
       raisedBy: resource.name,
       assignedTo: RESOURCES[(i + 7) % RESOURCES.length].name,
       assignedToId: RESOURCES[(i + 7) % RESOURCES.length].id,
@@ -882,9 +1013,9 @@ function generateEnhancements() {
       resolverTier: 'L3',
       resolverGroup: RESOLVER_GROUPS[0].label,
       governanceStatus: i % 3 === 0 ? 'Approved' : i % 3 === 1 ? 'Pending' : 'Under Review',
-      createdDate: created.toISOString().split('T')[0],
+      createdDate,
       entity: ENTITIES[i % ENTITIES.length].name,
-      application: APPLICATIONS[i % 26].name,
+      application: app.name,
       classification: 'DEMO',
     });
   }
@@ -903,7 +1034,7 @@ function getEnhDescription(i) {
 }
 
 // ═══════════════════════════════════════════════════
-// PROBLEMS — DEMO
+// PROBLEMS — DEMO (Deterministic)
 // ═══════════════════════════════════════════════════
 function generateProblems() {
   const problems = [];
@@ -913,11 +1044,18 @@ function generateProblems() {
     const resource = RESOURCES[i % RESOURCES.length];
     const domain = SERVICE_DOMAINS[i % SERVICE_DOMAINS.length];
     const app = APPLICATIONS[i % 26];
-    const status = prbStatuses[(i - 1) % prbStatuses.length];
-    const created = new Date('2026-05-15');
-    created.setDate(created.getDate() + Math.floor(Math.random() * 100));
+    
+    // Spread across Jan - Sep 2026
+    const monthIdx = (i - 1) % 9;
+    const day = 1 + ((i * 4) % 27);
+    const createdDate = `2026-${String(monthIdx + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-    // Coherent RCA and lifecycle states (Section 17, 45)
+    let status = prbStatuses[(i - 1) % prbStatuses.length];
+    // Older problems in Jan–Apr are closed
+    if (monthIdx < 4) {
+      status = 'Closed';
+    }
+
     let rcaStatus = 'Not Started';
     let rootCause = null;
     let correctiveAction = null;
@@ -938,7 +1076,7 @@ function generateProblems() {
       kedbArticle = `KEDB-${String(i).padStart(5, '0')}`;
     } else if (status === 'Root Cause Identified') {
       rcaStatus = 'Delivered';
-      rootCause = `5-Why investigation completed. Underlying issue diagnosed in ${domain.label} core schema.`;
+      rootCause = `5-Why investigation completed. Underlying issue diagnosed in ${domain.label || domain.name} core schema.`;
       correctiveAction = 'Corrective action plan drafted for CAB sign-off.';
       kedbArticle = `KEDB-${String(i).padStart(5, '0')}`;
     } else if (status === 'In Progress') {
@@ -950,14 +1088,13 @@ function generateProblems() {
     }
 
     const linkedIncidents = [`INC-${String(i).padStart(5, '0')}`, `INC-${String(i + 1).padStart(5, '0')}`];
-
     const sDomain = SERVICE_DOMAINS[(i - 1) % SERVICE_DOMAINS.length];
 
     problems.push({
       id: `PRB-${String(i).padStart(5, '0')}`,
+      recordType: 'Problem',
       shortDescription: getProblemDescription(i),
       serviceDomainId: sDomain.id,
-      serviceDomain: sDomain.name,
       serviceDomain: domain.name,
       processGroup: resource.processGroup,
       status,
@@ -968,16 +1105,12 @@ function generateProblems() {
       application: app.name,
       applicationId: app.id,
       crId: i <= 8 ? `CR-${String(i).padStart(4, '0')}` : null,
-      rcaId: rcaStatus === 'Delivered' ? `RCA-${String(i).padStart(4, '0')}` : null,
       rcaStatus,
-      kedbArticle,
-      timeCount: Math.floor(Math.random() * 40) + 8,
-      createdDate: created.toISOString().split('T')[0],
-      description: `Recurring defect pattern identified across linked incidents in ${domain.label} domain.`,
       rootCause,
       correctiveAction,
       preventiveAction,
-      targetDate: new Date(created.getTime() + 30 * 24 * 3600 * 1000).toISOString().split('T')[0],
+      kedbArticle,
+      createdDate,
       classification: 'DEMO',
     });
   }
@@ -1005,29 +1138,50 @@ function generateRisks() {
   const risks = [];
   const riskStatuses = ['Open', 'Mitigating', 'Monitoring', 'Closed', 'Escalated'];
   const riskCategories = ['Avoid', 'Mitigate', 'Transfer', 'Accept', 'Escalate'];
+  const categories = ['Operational', 'Technical', 'Security', 'Financial', 'Resource'];
   const impacts = ['Critical', 'High', 'Medium', 'Low'];
   const likelihoods = ['Very Likely', 'Likely', 'Possible', 'Unlikely', 'Rare'];
+  const mitigations = [
+    'Deploy secondary on-call shadow, cross-train backup lead, document runbooks.',
+    'Initiate proactive license reconciliation, procurement escalation, and cloud tiering.',
+    'Implement automated message queue throttling, circuit breakers, and buffer pooling.',
+    'Execute post-cutover delta reconciliation audits and automated integrity monitors.',
+    'Provision dual-link redundancy, hot-standby gateways, and automated failover telemetry.',
+    'Accelerate vendor SLA renewal negotiations and establish interim support bridge agreement.',
+    'Conduct bi-weekly knowledge transfer workshops and structured peer shadow pairing.',
+    'Introduce automated CI/CD staging verification and prioritize security remediation sprint.',
+  ];
 
   for (let i = 1; i <= 22; i++) {
     const resource = RESOURCES[i % RESOURCES.length];
     const domain = SERVICE_DOMAINS[i % SERVICE_DOMAINS.length];
+    const impactVal = impacts[i % impacts.length];
+    const likelihoodVal = likelihoods[i % likelihoods.length];
+    const categoryVal = categories[i % categories.length];
+    const mitigationVal = mitigations[i % mitigations.length];
 
     risks.push({
       id: `RSK-${String(i).padStart(4, '0')}`,
       title: getRiskTitle(i),
-      description: `Risk identified in ${domain.label} domain requiring attention.`,
+      description: `Risk identified in ${domain.label || domain.name} domain requiring attention.`,
       serviceDomainId: resource.serviceDomainId || 'TWR-07',
-      serviceDomain: resource.serviceDomain || 'Service Management, Governance, and Delivery',
       serviceDomain: domain.name,
+      category: categoryVal,
       owner: resource.name,
       ownerId: resource.id,
-      impact: impacts[i % impacts.length],
-      likelihood: likelihoods[i % likelihoods.length],
-      // "Risk Response Category" — exact field name per Section 35
+      severity: impactVal,
+      impact: impactVal,
+      probability: likelihoodVal,
+      likelihood: likelihoodVal,
       riskResponseCategory: riskCategories[i % riskCategories.length],
       status: riskStatuses[i % riskStatuses.length],
+      mitigation: mitigationVal,
+      mitigationPlan: mitigationVal,
       raisedDate: new Date(2026, 4 + (i % 4), 1 + (i % 28)).toISOString().split('T')[0],
       dueDate: new Date(2026, 7 + (i % 3), 1 + (i % 28)).toISOString().split('T')[0],
+      age: `${Math.max(4, (i * 9) % 75)}d`,
+      inherentScore: impactVal === 'Critical' ? 20 : impactVal === 'High' ? 16 : impactVal === 'Medium' ? 12 : 6,
+      residualScore: impactVal === 'Critical' ? 8 : impactVal === 'High' ? 6 : 4,
       ctaId: i <= 10 ? `CTA-${String(i).padStart(4, '0')}` : null,
       findingId: i <= 8 ? `FND-${String(i).padStart(4, '0')}` : null,
       entity: ENTITIES[i % ENTITIES.length].name,
@@ -2258,7 +2412,7 @@ function generateCTAs() {
       raisedDate: new Date(2026, 5 + (i % 3), 1 + (i % 28)).toISOString().split('T')[0],
       dueDate: dueDate.toISOString().split('T')[0],
       status: ctaStatuses[i % ctaStatuses.length],
-      progress: Math.floor(Math.random() * 100),
+      progress: ((i * 17) % 90) + 10,
       serviceDomain: domain.name,
       application: APPLICATIONS[i % 26].name,
       entity: ENTITIES[i % ENTITIES.length].name,
@@ -2298,8 +2452,8 @@ function generateLicenses() {
 
   for (let i = 1; i <= 22; i++) {
     const app = APPLICATIONS[i % 26];
-    const quantity = Math.floor(Math.random() * 500) + 50;
-    const consumed = Math.floor(quantity * (0.5 + Math.random() * 0.5));
+    const quantity = 100 + ((i * 37) % 400);
+    const consumed = Math.floor(quantity * (0.6 + ((i % 5) * 0.07)));
 
     licenses.push({
       id: `LIC-${String(i).padStart(4, '0')}`,
@@ -2346,7 +2500,7 @@ function generateKnowledgeArticles() {
       lastUpdated: new Date(2026, 5 + (i % 4), 1 + (i % 28)).toISOString().split('T')[0],
       linkedIncidents: i <= 15 ? [`INC-${String(i).padStart(5, '0')}`] : [],
       linkedProblems: i <= 8 ? [`PRB-${String(i).padStart(5, '0')}`] : [],
-      viewCount: Math.floor(Math.random() * 200) + 10,
+      viewCount: 20 + ((i * 19) % 180),
       reviewStatus: i % 3 === 0 ? 'Review Due' : 'Current',
       classification: 'DEMO',
     });
@@ -2993,8 +3147,19 @@ export function getResourceStats() {
   const offshore = RESOURCES.filter(r => r.location === 'Offshore');
   const female = RESOURCES.filter(r => r.gender === 'Female');
   const saudi = RESOURCES.filter(r => r.resourceType === 'Saudi' || r.nationality === 'Saudi Arabia');
+  const dedicated = RESOURCES.filter(r => r.supportModel !== 'Shared');
+  const shared = RESOURCES.filter(r => r.supportModel === 'Shared');
+  const active = RESOURCES.filter(r => r.status === 'Active');
+  // Total FTE calculation: strictly 1.0 per unique resource, preventing double-counting!
+  const totalFte = Number(RESOURCES.reduce((acc, r) => acc + (r.totalFte || 1.0), 0).toFixed(1));
+
   return {
     total,
+    totalHeadcount: total,
+    totalFte,
+    dedicatedSupport: dedicated.length,
+    sharedSupport: shared.length,
+    activeResources: active.length,
     onsite: onsite.length,
     offshore: offshore.length,
     female: female.length,
@@ -3002,7 +3167,7 @@ export function getResourceStats() {
     localNational: saudi.length,
     localNationalPercent: Math.round((saudi.length / total) * 100),
     saudiNationals: saudi.length,
-    saudizationRate: Math.round((saudi.length / total) * 100)
+    saudizationRate: Math.round((saudi.length / total) * 100),
   };
 }
 

@@ -27,10 +27,12 @@ import DataTable from '../../components/common/DataTable';
 import DetailModal from '../../components/common/DetailModal';
 import { problems } from '../../data/demoData';
 import { SERVICE_DOMAINS, getServiceDomainById, groupByServiceDomain } from '../../data/serviceDomains';
+import { checkMatchesPeriod, isTicketOpenInPeriod } from '../../utils/periodUtils';
 
 export default function ProblemsPage() {
   const [selectedProblem, setSelectedProblem] = useState(null);
   const [filters, setFilters] = useState({
+    period: 'all',
     serviceDomain: 'all',
     entity: 'all',
     domain: 'all',
@@ -57,6 +59,9 @@ export default function ProblemsPage() {
 
   const filteredProblems = useMemo(() => {
     return allProblems.filter((item) => {
+      if (filters.period && filters.period !== 'all') {
+        if (!checkMatchesPeriod(item.createdDate, filters.period) && !isTicketOpenInPeriod(item, filters.period)) return false;
+      }
       if (filters.serviceDomain && filters.serviceDomain !== 'all') {
         if (item.serviceDomainId !== filters.serviceDomain && item.serviceDomain !== filters.serviceDomain) return false;
       }
@@ -81,7 +86,7 @@ export default function ProblemsPage() {
       serviceDomainId: sDomain.id,
       serviceDomain: sDomain.name,
       application: problemApp,
-assignedTo: problemLead.trim() || 'Problem Management Lead',
+      assignedTo: problemLead.trim() || 'Problem Management Lead',
       status: 'Open',
       rcaStatus: 'Pending',
       incidentIds: incArray.length > 0 ? incArray : ['INC-44912'],
@@ -100,11 +105,11 @@ assignedTo: problemLead.trim() || 'Problem Management Lead',
     setTimeout(() => setSuccessBanner(null), 5000);
   };
 
-  const openCount = allProblems.filter((p) => p.status === 'Open' || p.status === 'In Progress').length;
-  const rcaPendingCount = allProblems.filter((p) => p.rcaStatus === 'Pending' || p.rcaStatus === 'Not Started').length;
-  const rcaDeliveredCount = allProblems.filter((p) => p.rcaStatus === 'Delivered').length;
-  const correctiveActionCount = allProblems.filter((p) => p.status === 'Corrective Action').length;
-  const closedCount = allProblems.filter((p) => p.status === 'Closed').length;
+  const openCount = filteredProblems.filter((p) => p.status === 'Open' || p.status === 'In Progress').length;
+  const rcaPendingCount = filteredProblems.filter((p) => p.rcaStatus === 'Pending' || p.rcaStatus === 'Not Started').length;
+  const rcaDeliveredCount = filteredProblems.filter((p) => p.rcaStatus === 'Delivered').length;
+  const correctiveActionCount = filteredProblems.filter((p) => p.status === 'Corrective Action').length;
+  const closedCount = filteredProblems.filter((p) => p.status === 'Closed').length;
 
   // RCA Health Data (Delivered vs Pending)
   const rcaHealthData = [
@@ -114,9 +119,9 @@ assignedTo: problemLead.trim() || 'Problem Management Lead',
 
   // Backlog by Status Data
   const statusBacklogData = [
-    { status: 'Open', count: allProblems.filter((p) => p.status === 'Open').length, color: '#7A8288' },
-    { status: 'In Progress', count: allProblems.filter((p) => p.status === 'In Progress').length, color: '#3B82C4' },
-    { status: 'RCA Identified', count: allProblems.filter((p) => p.status === 'Root Cause Identified').length, color: '#E5A000' },
+    { status: 'Open', count: filteredProblems.filter((p) => p.status === 'Open').length, color: '#7A8288' },
+    { status: 'In Progress', count: filteredProblems.filter((p) => p.status === 'In Progress').length, color: '#3B82C4' },
+    { status: 'RCA Identified', count: filteredProblems.filter((p) => p.status === 'Root Cause Identified').length, color: '#E5A000' },
     { status: 'Corrective Action', count: correctiveActionCount, color: '#7357B8' },
     { status: 'Closed', count: closedCount, color: '#159A6A' },
   ];
@@ -234,6 +239,20 @@ assignedTo: problemLead.trim() || 'Problem Management Lead',
           </button>
         </div>
       </div>
+
+      {/* Context Filter Bar */}
+      <FilterBar
+        filters={filters}
+        onChange={setFilters}
+        onReset={() => setFilters({ period: 'all', serviceDomain: 'all', entity: 'all', domain: 'all', status: 'all', app: 'all' })}
+        showPeriod={true}
+        showServiceDomain={true}
+        showEntity={true}
+        showDomain={true}
+        showPriority={false}
+        showStatus={true}
+        showApp={true}
+      />
 
       {/* Success Notification Banner */}
       {successBanner && (
@@ -439,11 +458,11 @@ assignedTo: problemLead.trim() || 'Problem Management Lead',
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Visual 3: Problems by Service Domain (7 RFP Domains) */}
+        {/* Visual 3: Problems by Service Domain */}
         <ChartCard
           title="Problems by Service Domain"
-          subtitle="7 KaarTech RFP Canonical Service Domains distribution"
-          badge="7 RFP Domains"
+          subtitle="Distribution across Primary Service Domains"
+          badge="Service Domains"
           height={240}
         >
           <ResponsiveContainer width="100%" height="100%">

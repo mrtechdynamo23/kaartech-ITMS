@@ -1,10 +1,12 @@
-﻿/**
+/**
  * KaarTech ITMS Control Tower — Daily Service Report (DSR)
  * Route: /reporting/dsr
  */
 import React from 'react';
 import { FileText, Download, CheckCircle2, Clock, Activity, Printer } from 'lucide-react';
 import KPICard from '../../components/common/KPICard';
+
+import { OVERALL_MONTHLY_RESOLUTION_TARGET } from '../../data/config';
 
 export default function DSRReportPage() {
   const handlePrint = () => window.print();
@@ -37,9 +39,9 @@ export default function DSRReportPage() {
         />
         <KPICard
           title="Daily SLA Attainment"
-          value="96.4%"
+          value="98.2%"
           status="success"
-          target="88.0%"
+          target={`${OVERALL_MONTHLY_RESOLUTION_TARGET}.0%`}
           icon={CheckCircle2}
         />
         <KPICard

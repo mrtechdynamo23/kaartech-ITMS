@@ -159,7 +159,7 @@ export default function SLAPerformancePage() {
         {[
           { key: 'governance', label: 'Resource Governance SLAs (4 Categories)', icon: Target },
           { key: 'incident', label: 'Incident & Resolution SLAs (§5.1)', icon: Clock },
-          { key: 'breaches', label: `SLA Breaches (${breaches.length})`, icon: AlertOctagon },
+          { key: 'breaches', label: `Overall Contractual Breaches (${breaches.length})`, icon: AlertOctagon },
         ].map(tab => {
           const Icon = tab.icon;
           const isActive = activeReportTab === tab.key;
@@ -213,7 +213,7 @@ export default function SLAPerformancePage() {
 
             <ChartCard
               title="Service Domain SLA Performance Distribution"
-              subtitle="7 RFP Service Domains compliance comparison"
+              subtitle="Service Domains compliance comparison"
               height={250}
             >
               <ResponsiveContainer width="100%" height="100%">

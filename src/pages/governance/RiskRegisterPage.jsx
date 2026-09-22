@@ -62,33 +62,42 @@ export default function RiskRegisterPage() {
     setTimeout(() => setSuccessBanner(null), 5000);
   };
 
-  const highRisks = allRisks.filter(r => r.severity === 'High' || r.severity === 'Critical');
-  const mediumRisks = allRisks.filter(r => r.severity === 'Medium');
-  const lowRisks = allRisks.filter(r => r.severity === 'Low');
+  const criticalRisks = allRisks.filter(r => (r.severity || r.impact) === 'Critical');
+  const highRisks = allRisks.filter(r => (r.severity || r.impact) === 'High');
+  const mediumRisks = allRisks.filter(r => (r.severity || r.impact) === 'Medium');
+  const lowRisks = allRisks.filter(r => (r.severity || r.impact) === 'Low');
 
-  const filteredRisks = selectedSeverity === 'all'
-    ? allRisks
-    : allRisks.filter(r => r.severity?.toLowerCase() === selectedSeverity.toLowerCase());
+  const filteredRisks = useMemo(() => {
+    if (selectedSeverity === 'all') return allRisks;
+    return allRisks.filter(r => {
+      const sev = (r.severity || r.impact || '').toLowerCase();
+      return sev === selectedSeverity.toLowerCase();
+    });
+  }, [allRisks, selectedSeverity]);
 
   const columns = [
     { key: 'id', label: 'Risk ID', width: '110px' },
-    { key: 'title', label: 'Risk Description', wrap: true },
-    { key: 'category', label: 'Category', width: '130px' },
+    { key: 'title', label: 'Risk', wrap: true },
+    { key: 'category', label: 'Category', width: '120px' },
+    { key: 'owner', label: 'Owner', width: '140px' },
     {
       key: 'severity',
-      label: 'Risk Level',
-      width: '120px',
-      render: (val) => {
-        let cls = 'badge-neutral';
+      label: 'Severity',
+      width: '110px',
+      render: (val, item) => {
+        const sev = val || item.impact || 'Medium';
         let color = '#7A8288';
         let bg = 'rgba(122, 130, 136, 0.12)';
-        if (val === 'Critical' || val === 'High') {
+        if (sev === 'Critical') {
           color = '#D92D20';
           bg = 'rgba(217, 45, 32, 0.12)';
-        } else if (val === 'Medium') {
+        } else if (sev === 'High') {
+          color = '#F04438';
+          bg = 'rgba(240, 68, 56, 0.12)';
+        } else if (sev === 'Medium') {
           color = '#E5A000';
           bg = 'rgba(229, 160, 0, 0.12)';
-        } else if (val === 'Low') {
+        } else if (sev === 'Low') {
           color = '#159A6A';
           bg = 'rgba(21, 154, 106, 0.12)';
         }
@@ -102,16 +111,43 @@ export default function RiskRegisterPage() {
               fontWeight: 700,
             }}
           >
-            {val || 'Medium'}
+            {sev}
           </span>
         );
       }
     },
-    { key: 'inherentScore', label: 'Inherent', width: '90px', render: (v) => <span style={{ fontWeight: 600 }}>{v || 16}</span> },
-    { key: 'residualScore', label: 'Residual', width: '90px', render: (v) => <span style={{ color: '#159A6A', fontWeight: 700 }}>{v || 6}</span> },
-    { key: 'owner', label: 'Risk Owner', width: '150px' },
-    { key: 'status', label: 'Status', type: 'status', width: '120px' },
-    { key: 'dueDate', label: 'Mitigation Due', type: 'date', width: '120px' },
+    {
+      key: 'probability',
+      label: 'Probability',
+      width: '120px',
+      render: (v, item) => (
+        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', fontWeight: 500 }}>
+          {v || item.likelihood || 'Possible'}
+        </span>
+      ),
+    },
+    { key: 'status', label: 'Status', type: 'status', width: '110px' },
+    {
+      key: 'mitigationPlan',
+      label: 'Mitigation',
+      wrap: true,
+      render: (v, item) => (
+        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>
+          {v || item.mitigation || 'Standard controls active.'}
+        </span>
+      ),
+    },
+    { key: 'dueDate', label: 'Due Date', type: 'date', width: '110px' },
+    {
+      key: 'age',
+      label: 'Age',
+      width: '80px',
+      render: (v, item) => (
+        <span style={{ fontWeight: 600, color: 'var(--text-tertiary)', fontSize: 'var(--text-xs)' }}>
+          {v || item.age || '12d'}
+        </span>
+      ),
+    },
   ];
 
   return (
@@ -121,10 +157,10 @@ export default function RiskRegisterPage() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <h1 className="page-title">Enterprise Risk Register</h1>
-            <span className="badge badge-warning">{highRisks.length} Elevated Risks</span>
+            <span className="badge badge-warning">{criticalRisks.length + highRisks.length} Elevated Risks</span>
             <span className="badge badge-success">100% Contained Controls</span>
           </div>
-          <p className="page-subtitle">Proactive risk identification, 5x5 exposure matrix, and residual risk mitigation governance.</p>
+          <p className="page-subtitle">Proactive risk identification, severity distribution, and residual risk mitigation governance.</p>
         </div>
 
         <button
@@ -194,86 +230,215 @@ export default function RiskRegisterPage() {
         />
       </div>
 
-      {/* 5x5 Risk Matrix & Filter */}
+      {/* Risk Severity Distribution & Interactive Filter */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '16px' }}>
-        {/* Risk Heat Map Visual */}
+        {/* Risk Severity Distribution Visual */}
         <div className="chart-card">
-          <h3 className="chart-card-title">5x5 Risk Exposure Matrix</h3>
-          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '14px' }}>
-            Impact (Horizontal) vs Likelihood (Vertical)
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <h3 className="chart-card-title" style={{ margin: 0 }}>Risk Severity Distribution</h3>
+            {selectedSeverity !== 'all' && (
+              <button
+                onClick={() => setSelectedSeverity('all')}
+                className="btn btn-ghost btn-sm"
+                style={{ fontSize: '11px', padding: '2px 8px', color: 'var(--brand-primary)' }}
+              >
+                Reset Filter
+              </button>
+            )}
+          </div>
+          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '18px' }}>
+            Live exposure distribution across tracked risk catalog. Click any severity bar to filter the Active Risk Register.
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '4px', maxWidth: '400px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             {[
-              ['#E5A000', '#E5A000', '#D92D20', '#D92D20', '#D92D20'],
-              ['#159A6A', '#E5A000', '#E5A000', '#D92D20', '#D92D20'],
-              ['#159A6A', '#159A6A', '#E5A000', '#E5A000', '#D92D20'],
-              ['#159A6A', '#159A6A', '#159A6A', '#E5A000', '#E5A000'],
-              ['#159A6A', '#159A6A', '#159A6A', '#159A6A', '#E5A000'],
-            ].map((row, rowIdx) => (
-              row.map((color, colIdx) => (
+              {
+                id: 'critical',
+                label: 'Critical',
+                count: criticalRisks.length,
+                color: '#D92D20',
+                bg: 'rgba(217, 45, 32, 0.12)',
+                border: '#D92D2040',
+                desc: 'Severe operational interruption or regulatory impact',
+              },
+              {
+                id: 'high',
+                label: 'High',
+                count: highRisks.length,
+                color: '#F04438',
+                bg: 'rgba(240, 68, 56, 0.12)',
+                border: '#F0443840',
+                desc: 'Major business process degradation or key dependency',
+              },
+              {
+                id: 'medium',
+                label: 'Medium',
+                count: mediumRisks.length,
+                color: '#E5A000',
+                bg: 'rgba(229, 160, 0, 0.12)',
+                border: '#E5A00040',
+                desc: 'Moderate operational friction with active workarounds',
+              },
+              {
+                id: 'low',
+                label: 'Low',
+                count: lowRisks.length,
+                color: '#159A6A',
+                bg: 'rgba(21, 154, 106, 0.12)',
+                border: '#159A6A40',
+                desc: 'Minor procedural gap or standard low-risk advisory',
+              },
+            ].map((tier) => {
+              const total = allRisks.length || 1;
+              const pct = Math.round((tier.count / total) * 100);
+              const isSelected = selectedSeverity === tier.id;
+
+              return (
                 <div
-                  key={`${rowIdx}-${colIdx}`}
+                  key={tier.id}
+                  onClick={() => setSelectedSeverity(isSelected ? 'all' : tier.id)}
                   style={{
-                    height: '40px',
-                    borderRadius: '4px',
-                    background: color,
-                    opacity: 0.88,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontWeight: 700,
-                    fontSize: 'var(--text-xs)',
+                    padding: '10px 14px',
+                    borderRadius: 'var(--radius-md, 8px)',
+                    background: isSelected ? tier.bg : 'var(--bg-secondary, #f8fafc)',
+                    border: `1.5px solid ${isSelected ? tier.color : 'var(--border-secondary, #e2e8f0)'}`,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) e.currentTarget.style.borderColor = tier.color;
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) e.currentTarget.style.borderColor = 'var(--border-secondary, #e2e8f0)';
                   }}
                 >
-                  {(5 - rowIdx) * (colIdx + 1)}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span
+                        className="badge"
+                        style={{
+                          backgroundColor: tier.bg,
+                          color: tier.color,
+                          border: `1px solid ${tier.border}`,
+                          fontWeight: 700,
+                          fontSize: '11px',
+                          minWidth: '65px',
+                          textAlign: 'center',
+                        }}
+                      >
+                        {tier.label}
+                      </span>
+                      <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                        {tier.desc}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 700, color: tier.color }}>
+                        {tier.count}
+                      </span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', minWidth: '32px', textAlign: 'right' }}>
+                        ({pct}%)
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Horizontal Bar */}
+                  <div style={{
+                    width: '100%',
+                    height: '8px',
+                    borderRadius: '4px',
+                    background: 'var(--border-primary, #e2e8f0)',
+                    overflow: 'hidden',
+                  }}>
+                    <div style={{
+                      width: `${Math.max(pct, 4)}%`,
+                      height: '100%',
+                      background: tier.color,
+                      borderRadius: '4px',
+                      transition: 'width 0.4s ease',
+                    }} />
+                  </div>
                 </div>
-              ))
-            ))}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '8px', maxWidth: '400px', margin: '8px auto 0' }}>
-            <span>Impact: 1 (Low)</span>
-            <span>Impact: 5 (Critical)</span>
+              );
+            })}
           </div>
         </div>
 
-        {/* Severity Quick Filters */}
-        <div className="chart-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <h3 className="chart-card-title">Filter by Risk Classification</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
-            <button
-              onClick={() => setSelectedSeverity('all')}
-              className={`btn ${selectedSeverity === 'all' ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ justifyContent: 'space-between' }}
-            >
-              <span>All Tracked Risks</span>
-              <span>{allRisks.length}</span>
-            </button>
-            <button
-              onClick={() => setSelectedSeverity('critical')}
-              className={`btn ${selectedSeverity === 'critical' ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ justifyContent: 'space-between', borderLeft: '4px solid #D92D20' }}
-            >
-              <span>Critical / High Severity</span>
-              <span>{highRisks.length}</span>
-            </button>
-            <button
-              onClick={() => setSelectedSeverity('medium')}
-              className={`btn ${selectedSeverity === 'medium' ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ justifyContent: 'space-between', borderLeft: '4px solid #E5A000' }}
-            >
-              <span>Medium Severity</span>
-              <span>{mediumRisks.length}</span>
-            </button>
-            <button
-              onClick={() => setSelectedSeverity('low')}
-              className={`btn ${selectedSeverity === 'low' ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ justifyContent: 'space-between', borderLeft: '4px solid #159A6A' }}
-            >
-              <span>Low Severity</span>
-              <span>{lowRisks.length}</span>
-            </button>
+        {/* Quick Filter & Governance Controls */}
+        <div className="chart-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div>
+            <h3 className="chart-card-title">Risk Governance & Register Controls</h3>
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '14px' }}>
+              Filter by exposure severity to drill down into active mitigations and escalation pathways.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button
+                onClick={() => setSelectedSeverity('all')}
+                className={`btn ${selectedSeverity === 'all' ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ justifyContent: 'space-between', padding: '10px 14px' }}
+              >
+                <span style={{ fontWeight: 600 }}>All Tracked Risks</span>
+                <span className="badge badge-neutral">{allRisks.length}</span>
+              </button>
+              <button
+                onClick={() => setSelectedSeverity('critical')}
+                className={`btn ${selectedSeverity === 'critical' ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ justifyContent: 'space-between', padding: '10px 14px', borderLeft: '4px solid #D92D20' }}
+              >
+                <span style={{ fontWeight: 600 }}>Critical Severity</span>
+                <span className="badge" style={{ background: 'rgba(217, 45, 32, 0.12)', color: '#D92D20', fontWeight: 700 }}>
+                  {criticalRisks.length}
+                </span>
+              </button>
+              <button
+                onClick={() => setSelectedSeverity('high')}
+                className={`btn ${selectedSeverity === 'high' ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ justifyContent: 'space-between', padding: '10px 14px', borderLeft: '4px solid #F04438' }}
+              >
+                <span style={{ fontWeight: 600 }}>High Severity</span>
+                <span className="badge" style={{ background: 'rgba(240, 68, 56, 0.12)', color: '#F04438', fontWeight: 700 }}>
+                  {highRisks.length}
+                </span>
+              </button>
+              <button
+                onClick={() => setSelectedSeverity('medium')}
+                className={`btn ${selectedSeverity === 'medium' ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ justifyContent: 'space-between', padding: '10px 14px', borderLeft: '4px solid #E5A000' }}
+              >
+                <span style={{ fontWeight: 600 }}>Medium Severity</span>
+                <span className="badge" style={{ background: 'rgba(229, 160, 0, 0.12)', color: '#E5A000', fontWeight: 700 }}>
+                  {mediumRisks.length}
+                </span>
+              </button>
+              <button
+                onClick={() => setSelectedSeverity('low')}
+                className={`btn ${selectedSeverity === 'low' ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ justifyContent: 'space-between', padding: '10px 14px', borderLeft: '4px solid #159A6A' }}
+              >
+                <span style={{ fontWeight: 600 }}>Low Severity</span>
+                <span className="badge" style={{ background: 'rgba(21, 154, 106, 0.12)', color: '#159A6A', fontWeight: 700 }}>
+                  {lowRisks.length}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div style={{
+            marginTop: '16px',
+            padding: '12px 14px',
+            borderRadius: 'var(--radius-md, 8px)',
+            background: 'var(--bg-secondary, #f8fafc)',
+            border: '1px solid var(--border-secondary, #e2e8f0)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: 'var(--text-xs)',
+          }}>
+            <span style={{ color: 'var(--text-secondary)' }}>Showing in table:</span>
+            <span style={{ fontWeight: 700, color: 'var(--brand-primary)' }}>
+              {filteredRisks.length} of {allRisks.length} risks
+            </span>
           </div>
         </div>
       </div>
@@ -353,7 +518,7 @@ export default function RiskRegisterPage() {
                   </h3>
                 </div>
                 <p style={{ fontSize: '12px', color: 'var(--text-tertiary)', margin: 0 }}>
-                  Enter potential exposure into the Enterprise 5x5 Risk Matrix
+                  Enter potential exposure into the Enterprise Risk Register
                 </p>
               </div>
               <button

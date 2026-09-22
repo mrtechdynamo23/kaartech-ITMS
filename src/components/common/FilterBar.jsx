@@ -1,11 +1,7 @@
-/**
- * KaarTech ITMS Control Tower — FilterBar Component
- * Multi-dimensional filtering by Entity, Domain, Priority, Track, Status, Application.
- * Upgraded with custom FilterDropdowns (Section 21) and active filter badge counter (Section 22).
- */
 import React from 'react';
 import { Filter, X, RotateCcw } from 'lucide-react';
 import FilterDropdown from './FilterDropdown';
+import PeriodFilter from './PeriodFilter';
 import { ENTITIES, APPLICATIONS, TRACKS } from '../../data/masterData';
 import { SERVICE_DOMAINS } from '../../data/serviceDomains';
 
@@ -13,6 +9,8 @@ export default function FilterBar({
   filters = {},
   onChange,
   onReset,
+  showPeriod = false,
+  showRecordType = false,
   showServiceDomain = true,
   showEntity = true,
   showPriority = true,
@@ -22,10 +20,21 @@ export default function FilterBar({
   statusOptions = ['New', 'In Progress', 'Awaiting Info', 'Resolved', 'Closed'],
 }) {
   const handleFilterChange = (key, value) => {
+    // If user switches recordType to Service Request and current priority is P1/P2/P3, reset priority
+    if (key === 'recordType' && value === 'Service Request' && ['P1', 'P2', 'P3'].includes(filters.priority)) {
+      onChange({ ...filters, [key]: value, priority: 'all' });
+      return;
+    }
     onChange({ ...filters, [key]: value });
   };
 
   const activeFilterCount = Object.values(filters).filter(v => v && v !== 'all' && v !== '').length;
+
+  const recordTypeOptions = [
+    { value: 'all', label: 'All Ticket Types' },
+    { value: 'Incident', label: 'Incidents' },
+    { value: 'Service Request', label: 'Service Requests' },
+  ];
 
   const serviceDomainOptions = [
     { value: 'all', label: 'All Service Domains (7)' },
@@ -37,14 +46,21 @@ export default function FilterBar({
     ...ENTITIES.map(ent => ({ value: ent.name, label: ent.name }))
   ];
 
-
-  const priorityOptions = [
-    { value: 'all', label: 'All Priorities' },
-    { value: 'P1', label: 'P1 - Critical' },
-    { value: 'P2', label: 'P2 - High' },
-    { value: 'P3', label: 'P3 - Medium' },
-    { value: 'P4', label: 'P4 - Low' },
-  ];
+  // Record-type aware priority options:
+  // For Service Requests: P1/P2/P3 are not applicable per business rule; only P4 is permitted.
+  const isSROnly = filters.recordType === 'Service Request';
+  const priorityOptions = isSROnly
+    ? [
+        { value: 'all', label: 'All Priorities' },
+        { value: 'P4', label: 'P4 - Low (Permitted for SR)' },
+      ]
+    : [
+        { value: 'all', label: 'All Priorities' },
+        { value: 'P1', label: 'P1 - Critical' },
+        { value: 'P2', label: 'P2 - High' },
+        { value: 'P3', label: 'P3 - Medium' },
+        { value: 'P4', label: 'P4 - Low' },
+      ];
 
   const statusDropdownOptions = [
     { value: 'all', label: 'All Statuses' },
@@ -106,6 +122,27 @@ export default function FilterBar({
           </span>
         )}
       </div>
+
+      {/* Period Filter */}
+      {showPeriod && (
+        <PeriodFilter
+          value={filters.period || 'all'}
+          onChange={(val) => handleFilterChange('period', val)}
+          minWidth="160px"
+          maxWidth="210px"
+        />
+      )}
+
+      {/* Record Type Filter */}
+      {showRecordType && (
+        <FilterDropdown
+          value={filters.recordType || 'all'}
+          options={recordTypeOptions}
+          onChange={(val) => handleFilterChange('recordType', val)}
+          minWidth="140px"
+          maxWidth="190px"
+        />
+      )}
 
       {/* Primary Service Domain Filter */}
       {showServiceDomain && (

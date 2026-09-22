@@ -55,8 +55,8 @@ export const SLA_POLICIES = {
   },
 };
 
-// Overall monthly resolution target — SOURCE-CONFIRMED
-export const OVERALL_MONTHLY_RESOLUTION_TARGET = 88; // %
+// Overall monthly resolution target — Configurable enterprise target (Demo default: 98%)
+export const OVERALL_MONTHLY_RESOLUTION_TARGET = 98; // % (Configurable: 97–98%)
 
 // ═══════════════════════════════════════════════════
 // SERVICE REQUEST THRESHOLDS (Section 21)

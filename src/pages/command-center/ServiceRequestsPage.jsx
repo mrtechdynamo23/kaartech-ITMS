@@ -31,6 +31,7 @@ export default function ServiceRequestsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(null);
   const [filters, setFilters] = useState({
+    period: 'all',
     serviceDomain: 'all',
     entity: 'all',
     domain: 'all',
@@ -45,27 +46,13 @@ export default function ServiceRequestsPage() {
   const displayList = useMemo(() => {
     let list = analytics.filteredList;
     if (selectedCategoryFilter) {
-      if (selectedCategoryFilter === 'Standard') {
-        list = list.filter(item => item.srType === 'Standard' || !item.srType);
-      } else if (selectedCategoryFilter === 'Major') {
-        list = list.filter(item => item.srType === 'Major');
-      }
+      list = list.filter(item => item.category === selectedCategoryFilter);
     }
     return list;
   }, [analytics.filteredList, selectedCategoryFilter]);
 
   const columns = [
     { key: 'id', label: 'SR ID', width: '110px' },
-    {
-      key: 'srType',
-      label: 'Classification',
-      width: '130px',
-      render: (val) => (
-        <span className={`badge ${val === 'Major' ? 'badge-primary' : 'badge-neutral'}`}>
-          {val === 'Major' ? 'Major (≥16h)' : 'Standard (<16h)'}
-        </span>
-      )
-    },
     { key: 'shortDescription', label: 'Request Summary', wrap: true },
     {
       key: 'serviceDomain',
@@ -135,7 +122,8 @@ export default function ServiceRequestsPage() {
       <FilterBar
         filters={filters}
         onChange={setFilters}
-        onReset={() => setFilters({ serviceDomain: 'all', entity: 'all', domain: 'all', status: 'all', app: 'all' })}
+        onReset={() => setFilters({ period: 'all', serviceDomain: 'all', entity: 'all', domain: 'all', status: 'all', app: 'all' })}
+        showPeriod={true}
         showServiceDomain={true}
         showEntity={true}
         showDomain={true}
@@ -144,10 +132,10 @@ export default function ServiceRequestsPage() {
         showApp={true}
       />
 
-      {/* KPI Strip */}
+      {/* KPI Strip - Balanced 4 Cards */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
         gap: '12px',
       }}>
         <KPICard
@@ -156,22 +144,6 @@ export default function ServiceRequestsPage() {
           subtitle={`${analytics.open} in active pipeline`}
           icon={Layers}
           sparklineData={[28, 32, 35, 38, analytics.total]}
-        />
-        <KPICard
-          title="Standard SRs (<16h)"
-          value={analytics.standard}
-          unit="SRs"
-          subtitle="Routine configuration & access"
-          icon={CheckSquare}
-          sparklineData={[18, 22, 24, analytics.standard]}
-        />
-        <KPICard
-          title="Major SRs (≥16h)"
-          value={analytics.major}
-          unit="SRs"
-          subtitle="Complex technical service"
-          icon={Clock}
-          sparklineData={[6, 8, 9, analytics.major]}
         />
         <KPICard
           title="Active In-Flight"
@@ -192,30 +164,30 @@ export default function ServiceRequestsPage() {
         <KPICard
           title="SLA Attainment"
           value={`${analytics.slaPercent}%`}
-          target="90%"
-          status={analytics.slaPercent >= 90 ? 'success' : 'warning'}
+          target="95.0%"
+          status={analytics.slaPercent >= 95 ? 'success' : 'warning'}
           icon={Clock}
-          sparklineData={[92, 94, 93, analytics.slaPercent]}
+          sparklineData={[92, 94, 95, analytics.slaPercent]}
         />
       </div>
 
-      {/* PRIMARY VISUAL ANALYTICS GRID (4 Charts per Section 19) */}
+      {/* PRIMARY VISUAL ANALYTICS GRID */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))',
         gap: '16px',
       }}>
-        {/* Visual 1: Standard vs Major Distribution */}
+        {/* Visual 1: Category Distribution */}
         <ChartCard
-          title="Standard vs Major SR Distribution"
-          subtitle="Click segment to filter table by effort classification (<16h vs ≥16h)"
+          title="Service Request Category Distribution"
+          subtitle="Click segment to filter table by category"
           badge={`${analytics.total} Total`}
           height={260}
         >
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={analytics.classificationDistribution}
+                data={analytics.categoryDistribution}
                 cx="50%"
                 cy="50%"
                 innerRadius={55}
@@ -225,17 +197,16 @@ export default function ServiceRequestsPage() {
                 cursor="pointer"
                 onClick={(entry) => {
                   if (entry && entry.name) {
-                    const type = entry.name.startsWith('Major') ? 'Major' : 'Standard';
-                    setSelectedCategoryFilter(selectedCategoryFilter === type ? null : type);
+                    setSelectedCategoryFilter(selectedCategoryFilter === entry.name ? null : entry.name);
                   }
                 }}
               >
-                {analytics.classificationDistribution.map((entry, index) => (
+                {analytics.categoryDistribution.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={entry.color}
                     stroke="var(--bg-card)"
-                    strokeWidth={selectedCategoryFilter && entry.name.includes(selectedCategoryFilter) ? 3 : 1}
+                    strokeWidth={selectedCategoryFilter === entry.name ? 3 : 1}
                   />
                 ))}
               </Pie>
@@ -264,9 +235,9 @@ export default function ServiceRequestsPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Visual 2: Category-wise Created vs Closed (4 Months) */}
+        {/* Visual 2: Category Fulfilment Velocity (Monthly Trend) */}
         <ChartCard
-          title="Category Fulfilment Velocity (Last 4 Months)"
+          title="Category Fulfilment Velocity (Monthly Trend)"
           subtitle="Created vs Closed volume across primary technical service domains"
           badge="Contractual Velocity"
           height={260}
@@ -331,8 +302,8 @@ export default function ServiceRequestsPage() {
         {/* Visual 4: Monthly Created / Closed / Open Trend */}
         <ChartCard
           title="Monthly Fulfilment Trend"
-          subtitle="Historical intake vs resolution volume over the last 4 months"
-          badge="4-Month Horizon"
+          subtitle="Historical intake vs resolution volume over time"
+          badge="Monthly Trend"
           height={260}
         >
           <ResponsiveContainer width="100%" height="100%">
@@ -371,7 +342,7 @@ export default function ServiceRequestsPage() {
 
         {/* Visual 5: Service Requests by Service Domain */}
         <ChartCard
-          title="Service Requests by Service Domain (7 RFP Domains)"
+          title="Service Requests by Service Domain (Service Domains)"
           subtitle="Click bar to filter active service request queue"
           height={260}
         >
@@ -420,7 +391,7 @@ export default function ServiceRequestsPage() {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Filter size={14} color="var(--brand-primary)" />
-            <span>Filtering table by classification: <strong>{selectedCategoryFilter}</strong> ({displayList.length} records)</span>
+            <span>Filtering table by category: <strong>{selectedCategoryFilter}</strong> ({displayList.length} records)</span>
           </div>
           <button
             onClick={() => setSelectedCategoryFilter(null)}

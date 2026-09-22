@@ -289,10 +289,10 @@ export default function SettingsPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div>
               <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0 }}>
-                7 Primary RFP Service Domains
+                Primary Service Domains
               </h3>
               <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', margin: '4px 0 0' }}>
-                All 7 Service Domains configured according to RFP SOW requirements. Enable or disable domains for portal filtering.
+                All 7 Service Domains configured according to SOW requirements. Enable or disable domains for portal filtering.
               </p>
             </div>
             <span className="badge badge-primary">{config.activeDomains.filter(d => d.enabled).length} of 7 Active</span>

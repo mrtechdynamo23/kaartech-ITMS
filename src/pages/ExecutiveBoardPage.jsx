@@ -26,14 +26,15 @@ import {
 import KPICard from '../components/common/KPICard';
 import ChartCard from '../components/common/ChartCard';
 import { getExecutiveBoardData } from '../data/analyticsSelectors';
-import {  ENTITIES } from '../data/masterData';
+import { ENTITIES } from '../data/masterData';
 import { SERVICE_DOMAINS } from '../data/serviceDomains';
 import { useResourceManagement } from '../data/resourceManagementStore';
 import { RESOURCES } from '../data/demoData';
+import { OVERALL_MONTHLY_RESOLUTION_TARGET } from '../data/config';
 
 export default function ExecutiveBoardPage() {
   const navigate = useNavigate();
-  const [period, setPeriod] = useState('q2_2026');
+  const [period, setPeriod] = useState('all');
   const [selectedEntity, setSelectedEntity] = useState('all');
   const [selectedDomain, setSelectedDomain] = useState('all');
 
@@ -137,18 +138,26 @@ export default function ExecutiveBoardPage() {
               color: 'var(--text-primary)',
             }}
           >
+            <option value="all">All Periods</option>
             <optgroup label="Month">
-              <option value="m_sep">September 2026</option>
-              <option value="m_aug">August 2026</option>
-              <option value="m_jul">July 2026</option>
+              <option value="2026-09">September 2026</option>
+              <option value="2026-08">August 2026</option>
+              <option value="2026-07">July 2026</option>
+              <option value="2026-06">June 2026</option>
+              <option value="2026-05">May 2026</option>
+              <option value="2026-04">April 2026</option>
+              <option value="2026-03">March 2026</option>
+              <option value="2026-02">February 2026</option>
+              <option value="2026-01">January 2026</option>
             </optgroup>
             <optgroup label="Quarter">
-              <option value="q3_2026">Q3 2026 (Jul – Sep)</option>
-              <option value="q2_2026">Q2 2026 (Apr – Jun)</option>
               <option value="q1_2026">Q1 2026 (Jan – Mar)</option>
+              <option value="q2_2026">Q2 2026 (Apr – Jun)</option>
+              <option value="q3_2026">Q3 2026 (Jul – Sep)</option>
+              <option value="q4_2026">Q4 2026 (Oct – Dec)</option>
             </optgroup>
             <optgroup label="YTD">
-              <option value="ytd_2026">YTD 2026 (Jan – Sep)</option>
+              <option value="ytd_2026">YTD 2026</option>
             </optgroup>
           </select>
 
@@ -254,7 +263,7 @@ export default function ExecutiveBoardPage() {
             onClick={() => navigate('/resources/assignments')}
           />
           <KPICard
-            title="Open SLA Breaches"
+            title="Overall Contractual Breaches"
             value={openBreachesCount}
             subtitle={openBreachesCount === 0 ? 'Zero Breaches' : 'Action In Progress'}
             status={openBreachesCount === 0 ? 'success' : 'danger'}
@@ -309,13 +318,13 @@ export default function ExecutiveBoardPage() {
         </div>
       </div>
 
-      {/* ── 2. Primary Service Domain Operational Distribution (Section 30) ── */}
+      {/* ── 2. Primary Service Domain Operational Distribution ── */}
       <div className="card" style={{ padding: '20px', marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
           <div>
             <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Layers size={18} style={{ color: 'var(--brand-primary)' }} />
-              Primary Service Domain Distribution (7 RFP Service Domains)
+              Primary Service Domain Distribution (Service Domains)
             </h3>
             <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', margin: '4px 0 0' }}>
               Contractual personnel allocation, operational delivery pods, and live drill-down into Resource Directory
@@ -380,20 +389,20 @@ export default function ExecutiveBoardPage() {
         </div>
       </div>
 
-      {/* ── 3. Primary Visual Analytics (SLA Performance + Ticket Mix) ── */}
+      {/* ── 3. Primary Visual Analytics (Contractual Resolution + Ticket Mix + CSAT) ── */}
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
           gap: '16px',
           marginBottom: '20px',
         }}
       >
-        {/* SLA Performance Trend */}
+        {/* Contractual Resolution Performance (Response SLA removed, 98% target) */}
         <ChartCard
-          title="Contractual SLA Performance Trend"
-          subtitle="Monthly Response vs Resolution compliance vs Contractual 88% Threshold"
-          badge="RFP §5.1 Benchmark"
+          title="Contractual Resolution Performance"
+          subtitle={`Monthly Contractual Resolution % vs Contractual ${OVERALL_MONTHLY_RESOLUTION_TARGET}% Target`}
+          badge={`Target: ${OVERALL_MONTHLY_RESOLUTION_TARGET}%`}
           badgeVariant="badge-success"
           height={260}
           actions={
@@ -409,22 +418,18 @@ export default function ExecutiveBoardPage() {
                   <stop offset="5%" stopColor="#0D9F6E" stopOpacity={0.35}/>
                   <stop offset="95%" stopColor="#0D9F6E" stopOpacity={0}/>
                 </linearGradient>
-                <linearGradient id="slaRespGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563EB" stopOpacity={0.25}/>
-                  <stop offset="95%" stopColor="#2563EB" stopOpacity={0}/>
-                </linearGradient>
               </defs>
               <XAxis dataKey="month" stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
-              <YAxis domain={[80, 100]} stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
+              <YAxis domain={[85, 100]} stroke="var(--text-tertiary)" fontSize={11} tickLine={false} />
               <Tooltip
                 contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '11px', boxShadow: 'var(--shadow-lg)' }}
                 labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
                 itemStyle={{ color: 'var(--text-primary)' }}
+                formatter={(val, name) => [`${val}%`, name]}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '6px' }} />
-              <Area type="monotone" dataKey="Resolution" stroke="#0D9F6E" fillOpacity={1} fill="url(#slaResGrad)" strokeWidth={2} name="Resolution SLA %" />
-              <Area type="monotone" dataKey="Response" stroke="#2563EB" fillOpacity={1} fill="url(#slaRespGrad)" strokeWidth={1.5} name="Response SLA %" />
-              <Area type="monotone" dataKey="Target" stroke="#6B1D2A" strokeDasharray="3 3" fill="none" strokeWidth={1.5} name="Contract Target (88%)" />
+              <Area type="monotone" dataKey="Resolution" stroke="#0D9F6E" fillOpacity={1} fill="url(#slaResGrad)" strokeWidth={2} name="Actual Resolution %" />
+              <Area type="monotone" dataKey="Target" stroke="#6B1D2A" strokeDasharray="3 3" fill="none" strokeWidth={2} name={`Contractual Target (${OVERALL_MONTHLY_RESOLUTION_TARGET}%)`} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -460,6 +465,38 @@ export default function ExecutiveBoardPage() {
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }} />
             </PieChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        {/* Customer Satisfaction Index (CSAT) per Item 41 */}
+        <ChartCard
+          title="Customer Satisfaction Index (CSAT)"
+          subtitle={`Dynamic score for ${period === 'all' ? 'All Periods' : period.toUpperCase()}`}
+          badge={`CSAT: ${boardData.executiveCsat.overall}%`}
+          badgeVariant={boardData.executiveCsat.overall >= 90 ? 'badge-success' : 'badge-warning'}
+          height={260}
+          actions={
+            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/customer/feedback')} style={{ fontSize: '11px' }}>
+              CSAT Hub <ArrowRight size={11} />
+            </button>
+          }
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={boardData.executiveCsat.distribution} layout="vertical" margin={{ top: 10, right: 20, left: 20, bottom: 0 }}>
+              <XAxis type="number" stroke="var(--text-tertiary)" fontSize={11} tickLine={false} unit="%" domain={[0, 100]} />
+              <YAxis dataKey="name" type="category" stroke="var(--text-tertiary)" fontSize={11} tickLine={false} width={105} />
+              <Tooltip
+                contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '11px', boxShadow: 'var(--shadow-lg)' }}
+                labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
+                itemStyle={{ color: 'var(--text-primary)' }}
+                formatter={(val) => [`${val}%`, 'Satisfaction']}
+              />
+              <Bar dataKey="pct" radius={[0, 4, 4, 0]} name="Distribution %">
+                {boardData.executiveCsat.distribution.map((entry, index) => (
+                  <Cell key={`csat-cell-${index}`} fill={entry.color} />
+                ))}
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </ChartCard>
       </div>

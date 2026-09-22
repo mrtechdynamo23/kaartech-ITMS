@@ -6,6 +6,8 @@ import React from 'react';
 import { Award, Download, ShieldCheck, CheckCircle2, TrendingUp, DollarSign, Activity, FileText, Printer } from 'lucide-react';
 import KPICard from '../../components/common/KPICard';
 
+import { OVERALL_MONTHLY_RESOLUTION_TARGET } from '../../data/config';
+
 export default function ExecutiveReportPage() {
   const handlePrint = () => window.print();
 
@@ -37,8 +39,8 @@ export default function ExecutiveReportPage() {
       <div className="kpi-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '24px' }}>
         <KPICard
           title="Overall SLA Score"
-          value="95.4%"
-          target="88.0%"
+          value="97.8%"
+          target={`${OVERALL_MONTHLY_RESOLUTION_TARGET}.0%`}
           status="success"
           trend={+1.8}
           icon={CheckCircle2}
